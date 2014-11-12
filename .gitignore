@@ -1,0 +1,6 @@
+# IntelliJ stuff
+.idea/
+*.iml
+
+# Maven build dir
+target/
