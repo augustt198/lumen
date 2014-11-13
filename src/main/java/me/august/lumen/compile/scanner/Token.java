@@ -16,6 +16,17 @@ public class Token {
         this.type = type;
     }
 
+    public Token expectType(Type type) {
+        return expectType(type, "Expected token type " + type + ", found " + this.type);
+    }
+
+    public Token expectType(Type type, String msg) {
+        if (this.type != type) {
+            throw new RuntimeException(msg);
+        }
+        return this;
+    }
+
     public String getContent() {
         return content;
     }
@@ -46,6 +57,10 @@ public class Token {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public boolean hasAttribute(Type.Attribute a) {
+        return type.hasAttribute(a);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package me.august.lumen.compile.scanner;
 
+import me.august.lumen.common.Modifier;
+
 public enum Type {
 
     L_PAREN,
@@ -12,20 +14,56 @@ public enum Type {
     R_BRACKET,
 
     COMMA,
+    COLON,
 
     NUMBER,
     STRING,
 
     IDENTIFIER,
 
+    IMPORT_PATH,
+
     // keywords
     DEF_KEYWORD,
+    IMPORT_KEYWORD,
+    CLASS_KEYWORD,
 
     // access modifiers
-    ACC_PUBLIC,
-    ACC_PRIVATE,
-    ACC_PROTECTED,
-    ACC_PACKAGE,
+    ACC_PUBLIC(Attribute.ACC_MOD),
+    ACC_PRIVATE(Attribute.ACC_MOD),
+    ACC_PROTECTED(Attribute.ACC_MOD),
+    ACC_PACKAGE(Attribute.ACC_MOD),
 
-    EOF
+    EOF;
+
+    private Attribute[] attrs;
+
+    Type() {
+        this(new Attribute[]{});
+    }
+
+    Type(Attribute... attrs) {
+        this.attrs = attrs;
+    }
+
+    public boolean hasAttribute(Attribute a) {
+        for (Attribute at : attrs) {
+            if (at == a) return true;
+        }
+        return false;
+    }
+
+    public Modifier toModifier() {
+        switch (this) {
+            case ACC_PUBLIC:    return Modifier.PUBLIC;
+            case ACC_PRIVATE:   return Modifier.PRIVATE;
+            case ACC_PROTECTED: return Modifier.PRIVATE;
+            case ACC_PACKAGE:   return Modifier.PACKAGE_PRIVATE;
+            default:            return null;
+        }
+    }
+
+    public static enum Attribute {
+        ACC_MOD
+    }
 }

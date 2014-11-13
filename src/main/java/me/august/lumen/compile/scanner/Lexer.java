@@ -1,13 +1,14 @@
 package me.august.lumen.compile.scanner;
 
-import static me.august.lumen.compile.scanner.Type.*;
-
 import me.august.lumen.common.Chars;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Stack;
+
+import static me.august.lumen.compile.scanner.Type.*;
 
 public class Lexer implements Iterable<Token> {
 
@@ -16,6 +17,8 @@ public class Lexer implements Iterable<Token> {
     static {
         Object[][] pairs = {
             {"def",     DEF_KEYWORD},
+            {"import",  IMPORT_KEYWORD},
+            {"class",   CLASS_KEYWORD},
 
             {"pb",      ACC_PUBLIC},
             {"public",  ACC_PUBLIC},
@@ -33,6 +36,8 @@ public class Lexer implements Iterable<Token> {
 
     private Reader reader;
     private int pos;
+
+    private Stack<Token> queued = new Stack<>();
 
     public Lexer(Reader reader) {
         this.reader = reader;
@@ -68,6 +73,8 @@ public class Lexer implements Iterable<Token> {
     }
 
     public Token nextToken() {
+        if (!queued.empty()) return queued.pop();
+
         while (true) {
             int read = read();
             if (read == -1) return token(EOF);
@@ -80,14 +87,15 @@ public class Lexer implements Iterable<Token> {
             else if (c == '[') return token(L_BRACKET);
             else if (c == ']') return token(R_BRACKET);
 
-            else if (c == ':') return token(COMMA);
+            else if (c == ',') return token(COMMA);
+            else if (c == ':') return token(COLON);
 
             else if (Chars.isAlpha(c)) return nextIdent(c);
             else if (Chars.isDigit(c)) return nextNumber(c);
             else if (c == '"') return nextString();
 
             else if (c == ' ' || c == '\r' || c == '\n' || c =='\t') {
-                continue;
+                continue; // ignore whitespace chars
             } else {
                 throw new RuntimeException("Unexpected character: " + c);
             }
@@ -98,34 +106,70 @@ public class Lexer implements Iterable<Token> {
         return new Token(null, pos, pos + 1, type);
     }
 
+    // Gets the next identifier, following this pattern:
+    // [a-zA-Z_]\w*
+    private String ident() {
+        StringBuilder sb = new StringBuilder();
+
+        while (true) {
+            int peek = peek();
+            if (peek < 0) break;
+            char c = (char) peek;
+
+            if (Chars.isAlpha(c) || (sb.length() > 1 && Chars.isDigit(c))) {
+                sb.append(c);
+                read();
+            } else {
+                break;
+            }
+        }
+        return sb.toString();
+    }
+
     private Token nextIdent(char firstChar) {
         StringBuilder sb = new StringBuilder();
         sb.append(firstChar);
 
         int startPos = pos;
+        sb.append(ident());
         int endPos   = pos;
 
-        while (true) {
-            int peek = peek();
-            if (peek == -1) break;
-            char c = (char) peek;
-
-            if (Chars.isAlpha(c) || Chars.isDigit(c)) {
-                sb.append(c);
-                read(); // consume character
-                endPos++;
-            } else {
-                break;
-            }
-        }
         String ident = sb.toString();
 
         Token token = new Token(ident, startPos, endPos, null);
         Type type = KEYWORDS.get(ident);
-        if (type == null) type = IDENTIFIER;
+        if (type == null) {
+            type = IDENTIFIER;
+        } else {
+            handleKeyword(type);
+        }
         token.setType(type);
 
         return token;
+    }
+
+    private void handleKeyword(Type keyword) {
+        if (keyword == IMPORT_KEYWORD) {
+            handleImport();
+        }
+    }
+
+    private void handleImport() {
+        read(); // consume whitespace
+
+        int startPos = pos;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(ident());
+
+        while(peek() == '.') {
+            sb.append('.');
+            sb.append(ident());
+        }
+
+        int endPos = pos;
+        String importPath = sb.toString();
+        queued.push(new Token(importPath, startPos, endPos, IMPORT_PATH));
     }
 
     private Token nextNumber(char firstDigit) {
