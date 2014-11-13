@@ -90,6 +90,11 @@ public class Lexer implements Iterable<Token> {
             else if (c == ',') return token(COMMA);
             else if (c == ':') return token(COLON);
 
+            else if (c == '+') return token(PLUS);
+            else if (c == '-') return token(MIN);
+            else if (c == '*') return token(MULT);
+            else if (c == '/') return token(DIV);
+
             else if (Chars.isAlpha(c)) return nextIdent(c);
             else if (Chars.isDigit(c)) return nextNumber(c);
             else if (c == '"') return nextString();

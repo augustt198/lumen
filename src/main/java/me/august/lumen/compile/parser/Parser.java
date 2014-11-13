@@ -58,9 +58,10 @@ public class Parser {
         String name = lexer.nextToken().expectType(IDENTIFIER).getContent();
         Token token = lexer.nextToken();
 
-        String superClass = parseSuperclass(token);
+        String superClass   = parseSuperclass(token);
+        String[] interfaces = parseInterfaces(token);
 
-        return new ClassNode(name, superClass, new String[]{}, mod);
+        return new ClassNode(name, superClass, interfaces, mod);
     }
 
     private String parseSuperclass(Token token) {
@@ -68,6 +69,29 @@ public class Parser {
             return lexer.nextToken().expectType(IDENTIFIER, "Expected superclass identifier").getContent();
         } else {
             return OBJECT_CLASS_NAME;
+        }
+    }
+
+    private String[] parseInterfaces(Token token) {
+        if (token.getType() == PLUS) {
+            List<String> interfaces = new ArrayList<>();
+
+            lexer.nextToken().expectType(L_PAREN);
+            Token current = lexer.nextToken();
+            while (true) {
+                interfaces.add(current.expectType(IDENTIFIER).getContent());
+
+                current = lexer.nextToken();
+                if (current.getType() == COMMA) {
+                    current = lexer.nextToken();
+                } else if (current.getType() == R_PAREN) {
+                    break;
+                }
+            }
+
+            return interfaces.toArray(new String[interfaces.size()]);
+        } else {
+            return new String[]{};
         }
     }
 

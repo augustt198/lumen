@@ -16,6 +16,11 @@ public enum Type {
     COMMA,
     COLON,
 
+    PLUS,
+    MIN,
+    MULT,
+    DIV,
+
     NUMBER,
     STRING,
 
