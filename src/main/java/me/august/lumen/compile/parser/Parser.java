@@ -59,6 +59,7 @@ public class Parser {
         Token token = lexer.nextToken();
 
         String superClass   = parseSuperclass(token);
+        token = lexer.nextToken();
         String[] interfaces = parseInterfaces(token);
 
         return new ClassNode(name, superClass, interfaces, mod);
