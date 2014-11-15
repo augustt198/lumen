@@ -1,16 +1,28 @@
 package me.august.lumen;
 
-import me.august.lumen.compile.parser.Parser;
+import me.august.lumen.compile.Driver;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.scanner.Lexer;
 
+import java.io.Reader;
+import java.io.StringReader;
+
 public class Main {
 
-    public static void main(String[] args) {
-        Lexer lexer = new Lexer("import something\npv class Foo : Sup +(Bar, Baz)");
-        ProgramNode prgm = new Parser(lexer).parseMain();
+    private static final String SRC =
+        "import something\n" +
+        "class Foo : Super +(Bar, Baz) {\n" +
+            "pv thing: String\n" +
+        "}";
 
-        System.out.println(prgm);
+    public static void main(String[] args) throws Exception {
+        Reader reader   = new StringReader(SRC);
+        Driver driver   = new Driver(reader);
+
+        Lexer lexer         = driver.phase1Scanning();
+        ProgramNode program = driver.phase2Parsing(lexer);
+
+        System.out.println(program);
     }
 
 }

@@ -1,11 +1,13 @@
 package me.august.lumen.compile.parser.ast;
 
-import org.objectweb.asm.ClassVisitor;
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.ClassCodeGen;
+import org.objectweb.asm.ClassVisitor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ClassNode implements ClassCodeGen {
 
@@ -13,6 +15,8 @@ public class ClassNode implements ClassCodeGen {
     private String name;
     private String superClass;
     private String[] interfaces;
+
+    private List<FieldNode> fields = new ArrayList<>();
 
     public ClassNode(String name, String superClass, String[] interfaces, Modifier... modifiers) {
         this.name       = name;
@@ -31,6 +35,16 @@ public class ClassNode implements ClassCodeGen {
             superClass,
             interfaces
         );
+
+        for (FieldNode field : fields) {
+            visitor.visitField(
+                Modifier.compose(field.getModifiers()),
+                field.getName(),
+                field.getType(),
+                null,
+                null
+            );
+        }
     }
 
     @Override
@@ -40,6 +54,12 @@ public class ClassNode implements ClassCodeGen {
             ", name='" + name + '\'' +
             ", superClass='" + superClass + '\'' +
             ", interfaces=" + Arrays.toString(interfaces) +
+            ", fields=" + fields +
             '}';
     }
+
+    public List<FieldNode> getFields() {
+        return fields;
+    }
+
 }

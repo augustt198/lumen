@@ -1,23 +1,23 @@
 package me.august.lumen.compile;
 
-import org.objectweb.asm.ClassWriter;
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.scanner.Lexer;
+import org.objectweb.asm.ClassWriter;
 
-import java.io.InputStream;
+import java.io.Reader;
 
 public class Driver {
 
-    InputStream input;
+    Reader reader;
 
-    public Driver(InputStream input) {
-        this.input = input;
+    public Driver(Reader reader) {
+        this.reader = reader;
     }
 
     public Lexer phase1Scanning() {
-        return new Lexer(input);
+        return new Lexer(reader);
     }
 
     public ProgramNode phase2Parsing(Lexer lexer) {

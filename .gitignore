@@ -4,3 +4,6 @@
 
 # Maven build dir
 target/
+
+# Build stuff
+out/
