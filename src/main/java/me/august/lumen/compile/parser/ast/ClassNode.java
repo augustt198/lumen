@@ -1,6 +1,6 @@
 package me.august.lumen.compile.parser.ast;
 
-import jdk.internal.org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassVisitor;
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.ClassCodeGen;

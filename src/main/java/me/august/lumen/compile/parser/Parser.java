@@ -62,6 +62,8 @@ public class Parser {
         token = lexer.nextToken();
         String[] interfaces = parseInterfaces(token);
 
+        lexer.nextToken().expectType(L_BRACKET);
+
         return new ClassNode(name, superClass, interfaces, mod);
     }
 
