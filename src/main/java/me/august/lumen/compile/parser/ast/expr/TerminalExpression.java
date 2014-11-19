@@ -2,7 +2,7 @@ package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.compile.scanner.Op;
 
-public class TerminalExpression implements Expression {
+public abstract class TerminalExpression implements Expression {
 
     @Override
     public Expression[] getChildren() {

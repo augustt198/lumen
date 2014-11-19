@@ -14,4 +14,9 @@ public class NumExpr extends TerminalExpression {
             "value=" + value +
             '}';
     }
+
+    @Override
+    public boolean isConstant() {
+        return true;
+    }
 }

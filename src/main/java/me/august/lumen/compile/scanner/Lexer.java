@@ -96,6 +96,8 @@ public class Lexer implements Iterable<Token> {
             else if (c == '*') return token(MULT);
             else if (c == '/') return token(DIV);
 
+            else if (c == '=') return nextEqOrAssign();
+
             else if (Chars.isAlpha(c)) return nextIdent(c);
             else if (Chars.isDigit(c)) return nextNumber(c);
             else if (c == '"') return nextString();
@@ -221,6 +223,10 @@ public class Lexer implements Iterable<Token> {
         }
 
         return new Token(sb.toString(), startPos, endPos, STRING);
+    }
+
+    private Token nextEqOrAssign() {
+        return token(peek() == '=' ? EQ : ASSIGN);
     }
 
     @Override

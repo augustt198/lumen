@@ -117,7 +117,20 @@ public class Parser {
         next().expectType(COLON);
         String type = next().expectType(IDENTIFIER).getContent();
 
-        return new FieldNode(name, type, mods);
+        FieldNode field = new FieldNode(name, type, mods);
+
+        Expression defaultValue = null;
+        // field has default value
+        if (peek().getType() == Type.ASSIGN) {
+            next(); // consume
+
+            // needs fixing
+            // defaultValue = parseExpression();
+        }
+
+        field.setDefaultValue(defaultValue);
+
+        return field;
     }
 
     private String parseSuperclass(Token token) {
@@ -234,7 +247,8 @@ public class Parser {
         Expression left = parseShift();
 
         Type peek = peek().getType();
-        if (peek == Type.LT || peek == Type.GT || peek == Type.LTE || peek == Type.GTE || peek == Type.IS_KEYWORD) {
+        if (peek == Type.LT || peek == Type.GT || peek == Type.LTE ||
+            peek == Type.GTE || peek == Type.IS_KEYWORD) {
             next(); // consume
 
             Expression right = parseExpression();

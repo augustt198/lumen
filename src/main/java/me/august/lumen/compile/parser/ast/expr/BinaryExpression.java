@@ -25,6 +25,11 @@ public class BinaryExpression implements Expression {
         return new Expression[]{left, right};
     }
 
+    @Override
+    public boolean isConstant() {
+        return left.isConstant() && right.isConstant();
+    }
+
     public Expression getLeft() {
         return left;
     }

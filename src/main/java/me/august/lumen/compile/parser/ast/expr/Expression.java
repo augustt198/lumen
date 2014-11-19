@@ -6,5 +6,6 @@ public interface Expression {
 
     Expression[] getChildren();
     Op getOp();
+    boolean isConstant();
 
 }

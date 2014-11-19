@@ -11,10 +11,10 @@ import java.io.StringReader;
 public class Main {
 
     private static final String SRC =
-        "import test.hello";
+        "class Thing : Hi + (Interface) { field: String }";
 
     private static final String EXPR =
-        "3 * (4 + 4) / 4";
+        "(3 / 4) + 5";
 
     public static void main(String[] args) throws Exception {
 

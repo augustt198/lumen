@@ -44,6 +44,8 @@ public enum Type {
     MULT,
     DIV,
 
+    ASSIGN,
+
     NUMBER,
     STRING,
 

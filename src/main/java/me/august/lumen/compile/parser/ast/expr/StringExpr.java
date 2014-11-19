@@ -14,4 +14,9 @@ public class StringExpr extends TerminalExpression {
             "string='" + string + '\'' +
             '}';
     }
+
+    @Override
+    public boolean isConstant() {
+        return true;
+    }
 }
