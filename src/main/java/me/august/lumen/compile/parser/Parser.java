@@ -1,6 +1,5 @@
 package me.august.lumen.compile.parser;
 
-import com.sun.javafx.applet.ExperimentalExtensions;
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;

@@ -2,7 +2,6 @@ package me.august.lumen.compile;
 
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.ClassNode;
-import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.scanner.Lexer;
 import org.objectweb.asm.ClassWriter;
 
