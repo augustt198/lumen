@@ -20,9 +20,8 @@ public class Driver {
         return new Lexer(reader);
     }
 
-    public ProgramNode phase2Parsing(Lexer lexer) {
-        Parser parser = new Parser(lexer);
-        return parser.parseMain();
+    public Parser phase2Parsing(Lexer lexer) {
+        return new Parser(lexer);
     }
 
     public byte[] phase3Bytecode(ClassNode cls) {

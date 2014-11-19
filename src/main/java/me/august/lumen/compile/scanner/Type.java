@@ -16,6 +16,29 @@ public enum Type {
     COMMA,
     COLON,
 
+    // =========
+    // operators
+    // =========
+
+    LOGIC_OR,
+    LOGIC_AND,
+
+    BIT_OR,
+    BIT_XOR,
+    BIT_AND,
+
+    EQ,
+    NE,
+
+    LT,
+    GT,
+    LTE,
+    GTE,
+
+    SH_L,   // <<
+    SH_R,   // >>
+    U_SH_R, // >>>
+
     PLUS,
     MIN,
     MULT,
@@ -32,6 +55,7 @@ public enum Type {
     DEF_KEYWORD,
     IMPORT_KEYWORD,
     CLASS_KEYWORD,
+    IS_KEYWORD,     // equivalent to Java `instanceof` keyword
 
     // access modifiers
     ACC_PUBLIC(Attribute.ACC_MOD),

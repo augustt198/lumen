@@ -19,6 +19,7 @@ public class Lexer implements Iterable<Token> {
             {"def",     DEF_KEYWORD},
             {"import",  IMPORT_KEYWORD},
             {"class",   CLASS_KEYWORD},
+            {"is",      IS_KEYWORD},
 
             {"pb",      ACC_PUBLIC},
             {"public",  ACC_PUBLIC},
@@ -168,7 +169,7 @@ public class Lexer implements Iterable<Token> {
         sb.append(ident());
 
         while(peek() == '.') {
-            sb.append('.');
+            sb.append((char) read());
             sb.append(ident());
         }
 
