@@ -11,7 +11,10 @@ import java.io.StringReader;
 public class Main {
 
     private static final String SRC =
-        "class Thing : Hi + (Interface) { field: String }";
+        "class Thing : Hi + (Interface) {\n" +
+            "field: String = (2 + 2)\n" +
+            "field2: String = 4\n" +
+        "}";
 
     private static final String EXPR =
         "(3 / 4) + 5";

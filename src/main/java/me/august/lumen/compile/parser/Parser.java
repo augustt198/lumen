@@ -124,8 +124,7 @@ public class Parser {
         if (peek().getType() == Type.ASSIGN) {
             next(); // consume
 
-            // needs fixing
-            // defaultValue = parseExpression();
+            defaultValue = parseExpression();
         }
 
         field.setDefaultValue(defaultValue);
@@ -328,6 +327,9 @@ public class Parser {
             next().expectType(R_PAREN);
 
             return expr;
+        } else if (token.getType() == Type.IDENTIFIER) {
+            next();
+            return new IdentExpr(token.getContent());
         } else {
             throw new RuntimeException("Unexpected token: " + token);
         }

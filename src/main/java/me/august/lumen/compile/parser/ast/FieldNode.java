@@ -44,6 +44,7 @@ public class FieldNode {
             "name='" + name + '\'' +
             ", type='" + type + '\'' +
             ", modifiers=" + Arrays.toString(modifiers) +
+            ", defaultValue=" + defaultValue +
             '}';
     }
 }
