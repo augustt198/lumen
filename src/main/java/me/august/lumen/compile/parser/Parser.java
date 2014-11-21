@@ -11,9 +11,7 @@ import me.august.lumen.compile.scanner.Op;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.Type;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 import static me.august.lumen.compile.scanner.Type.*;
 
@@ -108,7 +106,8 @@ public class Parser {
         if (token.getType() == IDENTIFIER) {
             cls.getFields().add(parseField(token, mods));
         } else if (token.getType() == DEF_KEYWORD) {
-            // TODO parse methods
+            next();
+            cls.getMethods().add(parseMethod(mods));
         }
     }
 
@@ -130,6 +129,53 @@ public class Parser {
         field.setDefaultValue(defaultValue);
 
         return field;
+    }
+
+    private MethodNode parseMethod(Modifier[] mods) {
+        String name = current.expectType(IDENTIFIER).getContent();
+        next(); // consume name
+
+        String type;
+        if (current.getType() == Type.COLON) {
+            type = next().expectType(IDENTIFIER).getContent();
+            next(); // consume type
+        } else {
+            type = "V";
+        }
+
+        current.expectType(L_PAREN);
+        next(); // consume ')'
+
+        Map<String, String> params = new HashMap<>();
+
+        while (current.getType() != R_PAREN) {
+            String paramName = current.expectType(IDENTIFIER).getContent();
+
+            next().expectType(Type.COLON);
+
+            String paramType = next().expectType(IDENTIFIER).getContent();
+            next(); // consume param type
+
+            params.put(paramName, paramType);
+        }
+
+        MethodNode method = new MethodNode(name, type, mods);
+        method.setParameters(params);
+
+        if (peek().getType() == L_BRACE) {
+            next(); // consume '{'
+            method.setHasBody(true);
+
+            System.out.println(peek());
+            while (peek().getType() != R_BRACE) {
+                //System.out.println(current);
+                Expression expr = parseExpression();
+                method.getExpressions().add(expr);
+                //System.out.println("parsed expression ")
+            }
+        }
+
+        return method;
     }
 
     private String parseSuperclass(Token token) {
