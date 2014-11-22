@@ -1,5 +1,8 @@
 package me.august.lumen.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum Modifier {
 
     PUBLIC(0x0001),
@@ -32,5 +35,15 @@ public enum Modifier {
             res |= m.value;
         }
         return res;
+    }
+
+    public static Modifier[] fromAccess(int access) {
+        List<Modifier> modifiers = new ArrayList<>();
+        for (Modifier mod : values()) {
+            if ((access & mod.getValue()) == mod.getValue()) {
+                modifiers.add(mod);
+            }
+        }
+        return modifiers.toArray(new Modifier[modifiers.size()]);
     }
 }

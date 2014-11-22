@@ -61,7 +61,7 @@ public class MethodNode {
         this.returnType = returnType;
     }
 
-    public boolean isHasBody() {
+    public boolean hasBody() {
         return hasBody;
     }
 
