@@ -14,4 +14,12 @@ public class FieldData extends BaseData {
     public String getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return "FieldData{" +
+            "name='" + name + '\'' +
+            ", type='" + type + '\'' +
+            '}';
+    }
 }
