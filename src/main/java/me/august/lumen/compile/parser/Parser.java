@@ -375,10 +375,29 @@ public class Parser {
             return expr;
         } else if (token.getType() == Type.IDENTIFIER) {
             next();
-            return new IdentExpr(token.getContent());
+            String name = token.getContent();
+            if (peek().getType() != L_PAREN) { // not a method
+                return new IdentExpr(name);
+            } else {
+                next(); // consume ')'
+                return new MethodCallExpr(name, parseExpressionList(Type.COMMA, Type.R_PAREN));
+            }
         } else {
             throw new RuntimeException("Unexpected token: " + token);
         }
+    }
+
+    private List<Expression> parseExpressionList(Type delim, Type end) {
+        List<Expression> exprs = new ArrayList<>();
+
+        while (peek().getType() != end) {
+            exprs.add(parseExpression());
+            if (peek().getType() == delim) {
+                next();
+            }
+        }
+
+        return exprs;
     }
 
 }

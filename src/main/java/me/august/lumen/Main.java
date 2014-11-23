@@ -24,10 +24,9 @@ public class Main {
         "}";
 
     private static final String EXPR =
-        "(3 / 4) + 5";
+        "foo(bar(1 + 3))";
 
     public static void main(String[] args) throws Exception {
-
         Reader reader = new StringReader(SRC);
         Driver driver = new Driver(reader);
 
