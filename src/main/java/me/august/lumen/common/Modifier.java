@@ -44,6 +44,9 @@ public enum Modifier {
                 modifiers.add(mod);
             }
         }
+        if (modifiers.contains(PRIVATE) || modifiers.contains(PROTECTED)) {
+            modifiers.remove(PACKAGE_PRIVATE);
+        }
         return modifiers.toArray(new Modifier[modifiers.size()]);
     }
 }
