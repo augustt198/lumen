@@ -1,5 +1,8 @@
 package me.august.lumen.compile.parser.ast;
 
+import me.august.lumen.compile.resolve.impl.NameResolver;
+import me.august.lumen.compile.resolve.lookup.DependencyManager;
+
 import java.util.Arrays;
 
 public class ProgramNode {
@@ -26,6 +29,15 @@ public class ProgramNode {
 
     public void setClassNode(ClassNode classNode) {
         this.classNode = classNode;
+    }
+
+    private void resolve() {
+        resolveTypes();
+    }
+
+    private void resolveTypes() {
+        NameResolver resolver = new NameResolver(new DependencyManager(), imports);
+        // TODO continue
     }
 
     @Override

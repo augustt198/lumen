@@ -2,10 +2,13 @@ package me.august.lumen.compile.resolve.data;
 
 import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.common.Modifier;
+import me.august.lumen.compile.parser.ast.FieldNode;
 import org.objectweb.asm.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +33,36 @@ public class ClassData extends BaseData {
         reader.accept(analyzer, 0);
 
         return analyzer.classData;
+    }
+
+    public static ClassData fromClass(Class<?> cls) {
+        ClassData data = new ClassData(cls.getName(), Modifier.fromAccess(cls.getModifiers()));
+        data.superClass = cls.getSuperclass().getName();
+        String[] interfaces = new String[cls.getInterfaces().length];
+        for (int i = 0; i < interfaces.length; i++) {
+            interfaces[i] = cls.getInterfaces()[i].toString();
+        }
+        data.interfaces = interfaces;
+
+        for (Method method : cls.getDeclaredMethods()) {
+            String returnType = BytecodeUtil.toType(method.getReturnType());
+            String[] paramsTypes = new String[method.getParameterCount()];
+            for (int i = 0; i < paramsTypes.length; i++) {
+                paramsTypes[i] = BytecodeUtil.toType(method.getParameterTypes()[i]);
+            }
+            Modifier[] mods = Modifier.fromAccess(method.getModifiers());
+            MethodData methodData = new MethodData(method.getName(), returnType, paramsTypes, mods);
+
+            data.getMethods().add(methodData);
+        }
+
+        for (Field field : cls.getDeclaredFields()) {
+            Modifier[] mods = Modifier.fromAccess(field.getModifiers());
+            FieldData fieldData = new FieldData(field.getName(), field.getType().toString(), mods);
+
+            data.getFields().add(fieldData);
+        }
+        return data;
     }
 
     @Override
@@ -96,4 +129,5 @@ public class ClassData extends BaseData {
             return super.visitField(access, name, desc, sig, val);
         }
     }
+
 }

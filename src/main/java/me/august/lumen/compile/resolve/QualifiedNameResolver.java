@@ -1,10 +1,10 @@
 package me.august.lumen.compile.resolve;
 
-import me.august.lumen.common.Result;
 import me.august.lumen.compile.parser.ast.ProgramNode;
+import me.august.lumen.compile.resolve.data.ClassData;
 
 public interface QualifiedNameResolver {
 
-    Result<String, Exception> qualifiedName(String simpleName, ProgramNode prgm);
+    ClassData fromSimpleName(String simpleName, ProgramNode prgm);
 
 }
