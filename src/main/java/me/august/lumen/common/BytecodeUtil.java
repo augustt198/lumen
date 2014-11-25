@@ -37,4 +37,27 @@ public final class BytecodeUtil {
 
         return types.toArray(new String[types.size()]);
     }
+
+    public static String toType(Class<?> cls) {
+        switch (cls.getName()) {
+            case "boolean":
+                return "Z";
+            case "byte":
+            case "char":
+            case "short":
+            case "int":
+            case "float":
+            case "double":
+            case "void":
+                return cls.getName().substring(0, 1).toUpperCase();
+            case "long":
+                return "J";
+            default:
+                if (cls.isArray()) {
+                    return '[' + toType(cls.getComponentType());
+                } else {
+                    return 'L' + cls.getName().replace('.', '/') + ';';
+                }
+        }
+    }
 }
