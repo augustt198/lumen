@@ -227,8 +227,13 @@ public class Lexer implements Iterable<Token> {
         return new Token(sb.toString(), startPos, endPos, STRING);
     }
 
+    // precondition: last read char was '='
     private Token nextEqOrAssign() {
-        return token(peek() == '=' ? EQ : ASSIGN);
+        if (peek() == '=') { // "=="
+            read(); // consume '='
+            return token(EQ);
+        }
+        return token(ASSIGN);
     }
 
     @Override
