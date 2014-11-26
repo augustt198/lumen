@@ -59,6 +59,8 @@ public enum Type {
     CLASS_KEYWORD,
     IS_KEYWORD,     // equivalent to Java `instanceof` keyword
 
+    VAR_KEYWORD,    // declare new local variable
+
     // access modifiers
     ACC_PUBLIC(Attribute.ACC_MOD),
     ACC_PRIVATE(Attribute.ACC_MOD),

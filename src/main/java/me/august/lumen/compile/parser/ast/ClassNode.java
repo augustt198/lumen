@@ -68,4 +68,20 @@ public class ClassNode implements ClassCodeGen {
     public List<MethodNode> getMethods() {
         return methods;
     }
+
+    public Modifier[] getModifiers() {
+        return modifiers;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSuperClass() {
+        return superClass;
+    }
+
+    public String[] getInterfaces() {
+        return interfaces;
+    }
 }

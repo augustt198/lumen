@@ -15,11 +15,13 @@ public class Lexer implements Iterable<Token> {
     private static final Map<String, Type> KEYWORDS = new HashMap<>();
 
     static {
+        // looks better than map.put(...) x 100
         Object[][] pairs = {
             {"def",     DEF_KEYWORD},
             {"import",  IMPORT_KEYWORD},
             {"class",   CLASS_KEYWORD},
             {"is",      IS_KEYWORD},
+            {"var",     VAR_KEYWORD},
 
             {"pb",      ACC_PUBLIC},
             {"public",  ACC_PUBLIC},
