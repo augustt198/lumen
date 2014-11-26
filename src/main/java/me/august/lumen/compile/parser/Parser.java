@@ -77,11 +77,9 @@ public class Parser {
 
     private ClassNode parseClass(Modifier mod) {
         String name = next().expectType(IDENTIFIER).getContent();
-        Token token = next();
 
-        String superClass   = parseSuperclass(token);
-        token = next();
-        String[] interfaces = parseInterfaces(token);
+        String superClass   = parseSuperclass();
+        String[] interfaces = parseInterfaces();
 
         next().expectType(L_BRACE); // expect {
         ClassNode cls = new ClassNode(name, superClass, interfaces, mod);
@@ -166,28 +164,27 @@ public class Parser {
             next(); // consume '{'
             method.setHasBody(true);
 
-            System.out.println(peek());
             while (peek().getType() != R_BRACE) {
-                //System.out.println(current);
                 Expression expr = parseExpression();
                 method.getExpressions().add(expr);
-                //System.out.println("parsed expression ")
             }
         }
 
         return method;
     }
 
-    private String parseSuperclass(Token token) {
-        if (token.getType() == COLON) {
+    private String parseSuperclass() {
+        if (peek().getType() == COLON) {
+            next();
             return next().expectType(IDENTIFIER, "Expected superclass identifier").getContent();
         } else {
             return OBJECT_CLASS_NAME;
         }
     }
 
-    private String[] parseInterfaces(Token token) {
-        if (token.getType() == PLUS) {
+    private String[] parseInterfaces() {
+        if (peek().getType() == PLUS) {
+            next();
             List<String> interfaces = new ArrayList<>();
 
             next().expectType(L_PAREN);
