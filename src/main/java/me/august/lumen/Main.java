@@ -50,7 +50,7 @@ public class Main {
     }
 
     private static void saveBytecode(ProgramNode node, String path) throws IOException {
-        BuildContext context = () -> 51;
+        BuildContext context = new Driver.CompileBuildContext();
         ClassWriter writer   = new ClassWriter(0);
 
         node.getClassNode().generate(writer, context);

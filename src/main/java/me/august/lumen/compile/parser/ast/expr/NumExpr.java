@@ -19,4 +19,22 @@ public class NumExpr extends TerminalExpression {
     public boolean isConstant() {
         return true;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NumExpr numExpr = (NumExpr) o;
+
+        if (Double.compare(numExpr.value, value) != 0) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        long temp = Double.doubleToLongBits(value);
+        return (int) (temp ^ (temp >>> 32));
+    }
 }

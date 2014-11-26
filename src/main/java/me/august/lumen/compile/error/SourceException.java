@@ -2,8 +2,8 @@ package me.august.lumen.compile.error;
 
 public class SourceException extends Exception {
 
-    private int begin;
-    private int end;
+    private int begin = -1;
+    private int end   = -1;
 
     public SourceException() {
         super();

@@ -2,7 +2,6 @@ package me.august.lumen.compile.resolve.data;
 
 import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.common.Modifier;
-import me.august.lumen.compile.parser.ast.FieldNode;
 import org.objectweb.asm.*;
 
 import java.io.IOException;
