@@ -1,0 +1,7 @@
+class Thing {
+
+    def foo() {
+        var bar: String = "Hello " + "world"
+    }
+
+}

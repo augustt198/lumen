@@ -1,13 +1,14 @@
 package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.common.Modifier;
+import me.august.lumen.compile.parser.ast.CodeBlock;
 
 import java.util.*;
 
 public class MethodNode {
 
     private Map<String, String> parameters = new HashMap<>();
-    private List<Expression> expressions = new ArrayList<>();
+    private List<CodeBlock> code = new ArrayList<>();
 
     private String name;
     private Modifier[] modifiers;
@@ -29,12 +30,12 @@ public class MethodNode {
         this.parameters = parameters;
     }
 
-    public List<Expression> getExpressions() {
-        return expressions;
+    public List<CodeBlock> getCode() {
+        return code;
     }
 
-    public void setExpressions(List<Expression> expressions) {
-        this.expressions = expressions;
+    public void setCode(List<CodeBlock> code) {
+        this.code = code;
     }
 
     public String getName() {
@@ -73,7 +74,7 @@ public class MethodNode {
     public String toString() {
         return "MethodNode{" +
             "parameters=" + parameters +
-            ", expressions=" + expressions +
+            ", code=" + code +
             ", name='" + name + '\'' +
             ", modifiers=" + Arrays.toString(modifiers) +
             ", returnType='" + returnType + '\'' +

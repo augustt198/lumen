@@ -1,10 +1,8 @@
 package me.august.lumen.compile.parser;
 
 import me.august.lumen.common.Modifier;
-import me.august.lumen.compile.parser.ast.ClassNode;
-import me.august.lumen.compile.parser.ast.FieldNode;
-import me.august.lumen.compile.parser.ast.ImportNode;
-import me.august.lumen.compile.parser.ast.ProgramNode;
+import me.august.lumen.compile.parser.ast.*;
+import me.august.lumen.compile.parser.ast.code.VarDeclaration;
 import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.scanner.Lexer;
 import me.august.lumen.compile.scanner.Op;
@@ -165,8 +163,14 @@ public class Parser {
             method.setHasBody(true);
 
             while (peek().getType() != R_BRACE) {
-                Expression expr = parseExpression();
-                method.getExpressions().add(expr);
+                CodeBlock code;
+                if (peek().getType() == VAR_KEYWORD) {
+                    next();
+                    code = parseLocalVariable();
+                } else {
+                    code = parseExpression();
+                }
+                method.getCode().add(code);
             }
         }
 
@@ -204,6 +208,20 @@ public class Parser {
         } else {
             return new String[]{};
         }
+    }
+
+    private VarDeclaration parseLocalVariable() {
+        String name = next().expectType(IDENTIFIER).getContent();
+        next().expectType(COLON);
+        String type = next().expectType(IDENTIFIER).getContent();
+
+        Expression value = null;
+        if (peek().getType() == ASSIGN) {
+            next(); // consume '='
+            value = parseExpression();
+        }
+
+        return new VarDeclaration(name, type, value);
     }
 
     public Expression parseExpression() {
