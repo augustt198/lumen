@@ -98,6 +98,14 @@ public class Lexer implements Iterable<Token> {
             else if (c == '*') return token(MULT);
             else if (c == '/') return token(DIV);
 
+            else if (c == '>') return nextGtOrGteOrShift();
+            else if (c == '<') return nextLtOrLteOrShift();
+
+            else if (c == '|') return nextOr();
+            else if (c == '&') return nextAnd();
+
+            else if (c == '!') return nextNegOrNe();
+
             else if (c == '=') return nextEqOrAssign();
 
             else if (Chars.isAlpha(c)) return nextIdent(c);
@@ -227,13 +235,114 @@ public class Lexer implements Iterable<Token> {
         return new Token(sb.toString(), startPos, endPos, STRING);
     }
 
-    // precondition: last read char was '='
+    /*
+    Precondition: last read char was '='
+
+    Differentiates the following tokens:
+    EQ      "==" (equality operator)
+    ASSIGN  "="  (assignment operator)
+     */
     private Token nextEqOrAssign() {
         if (peek() == '=') { // "=="
             read(); // consume '='
             return token(EQ);
         }
         return token(ASSIGN);
+    }
+
+    /*
+    Precondition: last read char was '>'
+
+    Differentiates the following tokens:
+    GT      ">"   (greater than)
+    GTE     ">="  (greater than or equal to)
+    SH_R    ">>"  (right bitshift)
+    U_SH_R  ">>>" (unsigned right bitshift)
+     */
+    private Token nextGtOrGteOrShift() {
+        Type ty;
+        if (peek() == '=') {
+            read(); // consume '='
+            ty = GTE;
+        } else if (peek() == '>') {
+            read(); // consume 2nd '>'
+            if (peek() == '>') {
+                read(); // consume 3rd '>'
+                ty = U_SH_R;
+            } else {
+                ty = SH_R;
+            }
+        } else {
+            ty = GT;
+        }
+        return token(ty);
+    }
+
+    /*
+    Precondition: last read char was '<'
+
+    Differentiates the following tokens:
+    LT   "<"  (less than)
+    LTE  "<=" (less than or equal to)
+    SH_L "<<" (left bitshift)
+     */
+    private Token nextLtOrLteOrShift() {
+        Type ty;
+        if (peek() == '=') {
+            read(); // consume '='
+            ty = LTE;
+        } else if (peek() == '<') {
+            read(); // consume 2nd '<'
+            ty = SH_L;
+        } else {
+            ty = LT;
+        }
+        return token(ty);
+    }
+
+    /*
+    Precondition: last read char was '|'
+
+    Differentiates the following tokens:
+    LOGIC_OR  "||" (logical OR)
+    BIT_OR    "|"  (bitwise OR)
+     */
+    private Token nextOr() {
+        if (peek() == '|') {
+            read(); // consume '|'
+            return token(LOGIC_OR);
+        }
+        return token(BIT_OR);
+    }
+
+    /*
+    Precondition: last read char was '&'
+
+    Differentiates the following tokens:
+    LOGIC_AND  "&&" (logical AND)
+    BIT_AND    "&"  (bitwise AND)
+     */
+    private Token nextAnd() {
+        if (peek() == '&') {
+            read(); // consume '&'
+            return token(LOGIC_AND);
+        }
+        return token(BIT_AND);
+    }
+
+    /*
+    Precondition: last read char was '!'
+
+    Differentiates the following tokens:
+    NEG  "!"  (negate)
+    NE   "!=" (not equal to)
+     */
+    private Token nextNegOrNe() {
+        if (peek() == '=') {
+            read(); // consume '='
+            return token(NE);
+        }
+        return token(NEG);
     }
 
     @Override

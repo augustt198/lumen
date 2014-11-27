@@ -20,6 +20,8 @@ public enum Type {
     // operators
     // =========
 
+    NEG, // ! (negate)
+
     LOGIC_OR,
     LOGIC_AND,
 
