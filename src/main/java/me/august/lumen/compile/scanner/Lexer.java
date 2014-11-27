@@ -105,6 +105,7 @@ public class Lexer implements Iterable<Token> {
             else if (c == '&') return nextAnd();
 
             else if (c == '!') return nextNegOrNe();
+            else if (c == '?') return token(QUESTION);
 
             else if (c == '=') return nextEqOrAssign();
 

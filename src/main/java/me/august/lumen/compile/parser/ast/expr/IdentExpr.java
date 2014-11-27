@@ -29,4 +29,11 @@ public class IdentExpr extends TerminalExpression {
     public int hashCode() {
         return identifier != null ? identifier.hashCode() : 0;
     }
+
+    @Override
+    public String toString() {
+        return "IdentExpr{" +
+            "identifier='" + identifier + '\'' +
+            '}';
+    }
 }

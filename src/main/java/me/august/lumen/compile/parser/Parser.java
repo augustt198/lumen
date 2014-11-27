@@ -4,6 +4,7 @@ import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.parser.ast.*;
 import me.august.lumen.compile.parser.ast.code.VarDeclaration;
 import me.august.lumen.compile.parser.ast.expr.*;
+import me.august.lumen.compile.parser.ast.expr.eval.TernaryExpr;
 import me.august.lumen.compile.scanner.Lexer;
 import me.august.lumen.compile.scanner.Op;
 import me.august.lumen.compile.scanner.Token;
@@ -225,6 +226,26 @@ public class Parser {
     }
 
     public Expression parseExpression() {
+        return parseTernary();
+    }
+
+    private Expression parseTernary() {
+        Expression condition = parseLogicOr();
+
+        if (peek().getType() == Type.QUESTION) {
+            next(); // consume '?'
+
+            Expression trueExpr = parseExpression();
+            next().expectType(Type.COLON);
+            Expression falseExpr = parseExpression();
+
+            return new TernaryExpr(condition, trueExpr, falseExpr);
+        }
+
+        return condition;
+    }
+
+    private Expression parseLogicOr() {
         Expression left = parseLogicAnd();
 
         if (peek().getType() == Type.LOGIC_OR) {

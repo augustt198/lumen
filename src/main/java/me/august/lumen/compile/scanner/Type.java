@@ -16,6 +16,8 @@ public enum Type {
     COMMA,
     COLON,
 
+    QUESTION,
+
     // =========
     // operators
     // =========
