@@ -7,6 +7,7 @@ import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.parser.ast.code.IfStatement;
 import me.august.lumen.compile.parser.ast.code.VarDeclaration;
+import me.august.lumen.compile.parser.ast.code.WhileStatement;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
 import org.junit.Test;
 
@@ -40,13 +41,19 @@ public class MethodTest {
         ClassNode cls = program.getClassNode();
 
         MethodNode method = cls.getMethods().get(0);
+
         testIfStatement(method, 0);
+        testWhileStatement(method, 1);
     }
 
     private void testIfStatement(MethodNode method, int idx) {
         CodeBlock code = method.getBody().getChildren().get(idx);
         assertTrue("Expected if statement", code instanceof IfStatement);
-        System.out.println(code);
     }
 
+    private void testWhileStatement(MethodNode method, int idx) {
+        CodeBlock code = method.getBody().getChildren().get(idx);
+        assertTrue("Expected while statement", code instanceof WhileStatement);
+    }
+    
 }

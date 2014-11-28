@@ -72,6 +72,8 @@ public enum Type {
     IF_KEYWORD,
     ELSE_KEYWORD,
 
+    WHILE_KEYWORD,
+
     // access modifiers
     ACC_PUBLIC(Attribute.ACC_MOD),
     ACC_PRIVATE(Attribute.ACC_MOD),

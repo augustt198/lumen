@@ -8,6 +8,8 @@ pb class Foo {
         } else {
 
         }
+
+        while 4 / 4 { }
     }
 
 }

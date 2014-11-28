@@ -5,6 +5,7 @@ import me.august.lumen.compile.parser.ast.*;
 import me.august.lumen.compile.parser.ast.code.Body;
 import me.august.lumen.compile.parser.ast.code.IfStatement;
 import me.august.lumen.compile.parser.ast.code.VarDeclaration;
+import me.august.lumen.compile.parser.ast.code.WhileStatement;
 import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.parser.ast.expr.eval.TernaryExpr;
 import me.august.lumen.compile.scanner.Lexer;
@@ -183,6 +184,9 @@ public class Parser {
             } else if (ty == IF_KEYWORD) {
                 next();
                 code = parseIfStatement();
+            } else if (ty == WHILE_KEYWORD) {
+                next();
+                code = parseWhileStatement();
             } else {
                 code = parseExpression();
             }
@@ -262,6 +266,13 @@ public class Parser {
         }
 
         return new IfStatement(condition, body, elseIfs, elseBody);
+    }
+
+    private WhileStatement parseWhileStatement() {
+        Expression condition = parseExpression();
+        Body body = parseBody();
+
+        return new WhileStatement(condition, body);
     }
 
     public Expression parseExpression() {
