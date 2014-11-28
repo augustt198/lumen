@@ -46,6 +46,7 @@ public class MethodTest {
     private void testIfStatement(MethodNode method, int idx) {
         CodeBlock code = method.getBody().getChildren().get(idx);
         assertTrue("Expected if statement", code instanceof IfStatement);
+        System.out.println(code);
     }
 
 }

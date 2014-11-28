@@ -70,6 +70,7 @@ public enum Type {
     VAR_KEYWORD,    // declare new local variable
 
     IF_KEYWORD,
+    ELSE_KEYWORD,
 
     // access modifiers
     ACC_PUBLIC(Attribute.ACC_MOD),

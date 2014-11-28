@@ -3,6 +3,10 @@ pb class Foo {
     def foo() {
         if 2 + 2 {
 
+        } else if 3 * 3 {
+
+        } else {
+
         }
     }
 

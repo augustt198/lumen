@@ -27,6 +27,28 @@ public class IfStatement implements CodeBlock {
     public static class ElseIf {
         private Expression condition;
         private Body body;
+
+        public ElseIf(Expression condition, Body body) {
+            this.condition = condition;
+            this.body = body;
+        }
+
+        @Override
+        public String toString() {
+            return "ElseIf{" +
+                "condition=" + condition +
+                ", body=" + body +
+                '}';
+        }
     }
 
+    @Override
+    public String toString() {
+        return "IfStatement{" +
+            "condition=" + condition +
+            ", trueBody=" + trueBody +
+            ", elseIfs=" + elseIfs +
+            ", elseBody=" + elseBody +
+            '}';
+    }
 }

@@ -23,6 +23,7 @@ public class Lexer implements Iterable<Token> {
             {"is",      IS_KEYWORD              },
             {"var",     VAR_KEYWORD             },
             {"if",      IF_KEYWORD              },
+            {"else",    ELSE_KEYWORD            },
 
             {"pb",      ACC_PUBLIC              },
             {"public",  ACC_PUBLIC              },

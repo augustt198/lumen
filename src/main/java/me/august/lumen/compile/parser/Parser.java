@@ -244,7 +244,24 @@ public class Parser {
         Expression condition = parseExpression();
         Body body = parseBody();
 
-        return new IfStatement(condition, body);
+        List<IfStatement.ElseIf> elseIfs = new ArrayList<>();
+        Body elseBody = null;
+
+        while (peek().getType() == ELSE_KEYWORD) {
+            next(); // consume 'else'
+            if (peek().getType() == IF_KEYWORD) {
+                next(); // consume 'if'
+                IfStatement.ElseIf elseIf = new IfStatement.ElseIf(
+                    parseExpression(), parseBody()
+                );
+                elseIfs.add(elseIf);
+            } else { // so meta
+                if (elseBody != null) throw new RuntimeException("There is already an else branch");
+                elseBody = parseBody();
+            }
+        }
+
+        return new IfStatement(condition, body, elseIfs, elseBody);
     }
 
     public Expression parseExpression() {
