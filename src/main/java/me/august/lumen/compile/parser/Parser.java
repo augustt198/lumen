@@ -3,6 +3,7 @@ package me.august.lumen.compile.parser;
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.parser.ast.*;
 import me.august.lumen.compile.parser.ast.code.Body;
+import me.august.lumen.compile.parser.ast.code.IfStatement;
 import me.august.lumen.compile.parser.ast.code.VarDeclaration;
 import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.parser.ast.expr.eval.TernaryExpr;
@@ -172,13 +173,22 @@ public class Parser {
         next().expectType(L_BRACE);
 
         while (peek().getType() != R_BRACE) {
-            if (peek().getType() == VAR_KEYWORD) {
+            Type ty = peek().getType();
+            CodeBlock code;
+            if (ty == VAR_KEYWORD) {
                 next();
-                body.addCode(parseLocalVariable());
+                code = parseLocalVariable();
+            } else if (ty == L_BRACE) {
+                code = parseBody();
+            } else if (ty == IF_KEYWORD) {
+                next();
+                code = parseIfStatement();
             } else {
-                body.addCode(parseExpression());
+                code = parseExpression();
             }
+            body.addCode(code);
         }
+        next();
 
         return body;
     }
@@ -228,6 +238,13 @@ public class Parser {
         }
 
         return new VarDeclaration(name, type, value);
+    }
+
+    private IfStatement parseIfStatement() {
+        Expression condition = parseExpression();
+        Body body = parseBody();
+
+        return new IfStatement(condition, body);
     }
 
     public Expression parseExpression() {

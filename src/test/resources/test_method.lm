@@ -1,4 +1,4 @@
-class Thing {
+pb class Foo {
 
     def foo() {
         var bar: String = "Hello " + "world"

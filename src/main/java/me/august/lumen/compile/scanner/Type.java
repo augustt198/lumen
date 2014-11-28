@@ -65,6 +65,8 @@ public enum Type {
 
     VAR_KEYWORD,    // declare new local variable
 
+    IF_KEYWORD,
+
     // access modifiers
     ACC_PUBLIC(Attribute.ACC_MOD),
     ACC_PRIVATE(Attribute.ACC_MOD),

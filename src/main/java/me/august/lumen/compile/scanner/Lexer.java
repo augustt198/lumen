@@ -17,20 +17,21 @@ public class Lexer implements Iterable<Token> {
     static {
         // looks better than map.put(...) x 100
         Object[][] pairs = {
-            {"def",     DEF_KEYWORD},
-            {"import",  IMPORT_KEYWORD},
-            {"class",   CLASS_KEYWORD},
-            {"is",      IS_KEYWORD},
-            {"var",     VAR_KEYWORD},
+            {"def",     DEF_KEYWORD             },
+            {"import",  IMPORT_KEYWORD          },
+            {"class",   CLASS_KEYWORD           },
+            {"is",      IS_KEYWORD              },
+            {"var",     VAR_KEYWORD             },
+            {"if",      IF_KEYWORD              },
 
-            {"pb",      ACC_PUBLIC},
-            {"public",  ACC_PUBLIC},
-            {"pv",      ACC_PRIVATE},
-            {"private", ACC_PRIVATE},
-            {"pt",      ACC_PROTECTED},
-            {"protected",       ACC_PROTECTED},
-            {"pk",              ACC_PACKAGE},
-            {"package_private", ACC_PACKAGE}
+            {"pb",      ACC_PUBLIC              },
+            {"public",  ACC_PUBLIC              },
+            {"pv",      ACC_PRIVATE             },
+            {"private", ACC_PRIVATE             },
+            {"pt",      ACC_PROTECTED           },
+            {"protected",       ACC_PROTECTED   },
+            {"pk",              ACC_PACKAGE     },
+            {"package_private", ACC_PACKAGE     }
         };
         for (Object[] pair : pairs) {
             KEYWORDS.put((String) pair[0], (Type) pair[1]);

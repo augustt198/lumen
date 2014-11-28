@@ -1,0 +1,9 @@
+pb class Foo {
+
+    def foo() {
+        if 2 + 2 {
+
+        }
+    }
+
+}
