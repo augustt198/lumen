@@ -276,7 +276,21 @@ public class Parser {
     }
 
     public Expression parseExpression() {
-        return parseTernary();
+        return parseAssignment();
+    }
+
+    private Expression parseAssignment() {
+        Expression left = parseTernary();
+
+        if (peek().getType() == Type.ASSIGN) {
+            if (!(left instanceof IdentExpr))
+                throw new RuntimeException("Left hand expression must be an identifier");
+            Expression right = parseExpression();
+
+            return new AssignmentExpr((IdentExpr) left, right);
+        }
+
+        return left;
     }
 
     private Expression parseTernary() {

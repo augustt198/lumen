@@ -4,7 +4,7 @@ import me.august.lumen.compile.scanner.Op;
 
 public class AssignmentExpr extends BinaryExpression {
 
-    public AssignmentExpr(Expression right, Expression left) {
+    public AssignmentExpr(IdentExpr right, Expression left) {
         super(right, left, Op.ASSIGN);
     }
 
