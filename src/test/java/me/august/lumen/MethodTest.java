@@ -55,5 +55,5 @@ public class MethodTest {
         CodeBlock code = method.getBody().getChildren().get(idx);
         assertTrue("Expected while statement", code instanceof WhileStatement);
     }
-    
+
 }

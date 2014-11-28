@@ -453,6 +453,15 @@ public class Parser {
         } else if (token.getType() == Type.NUMBER) {
             next();
             return new NumExpr(Double.parseDouble(token.getContent()));
+        } else if (token.getType() == Type.TRUE) {
+            next();
+            return new TrueExpr();
+        } else if (token.getType() == Type.FALSE) {
+            next();
+            return new FalseExpr();
+        } else if (token.getType() == Type.NULL) {
+            next();
+            return new NullExpr();
         } else if (token.getType() == Type.L_PAREN) {
             next();
             Expression expr = parseExpression();
