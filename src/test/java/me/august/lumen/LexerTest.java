@@ -25,6 +25,7 @@ public class LexerTest {
             BIT_AND, LOGIC_AND,
             ASSIGN, EQ,
             COMMA, COLON,
+            TRUE, FALSE, NULL /* "null" */, NULL /* "nil" */,
             EOF
         };
 

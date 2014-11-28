@@ -50,8 +50,12 @@ public enum Type {
 
     ASSIGN,
 
+    // literals
     NUMBER,
     STRING,
+    TRUE,
+    FALSE,
+    NULL,
 
     IDENTIFIER,
 

@@ -9,3 +9,4 @@ identifier
 & &&
 = ==
 , :
+true false null nil

@@ -31,7 +31,12 @@ public class Lexer implements Iterable<Token> {
             {"pt",      ACC_PROTECTED           },
             {"protected",       ACC_PROTECTED   },
             {"pk",              ACC_PACKAGE     },
-            {"package_private", ACC_PACKAGE     }
+            {"package_private", ACC_PACKAGE     },
+
+            {"true",    TRUE                    },
+            {"false",   FALSE                   },
+            {"null",    NULL                    },
+            {"nil",     NULL                    }
         };
         for (Object[] pair : pairs) {
             KEYWORDS.put((String) pair[0], (Type) pair[1]);
