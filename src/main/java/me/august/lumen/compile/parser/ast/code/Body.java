@@ -19,8 +19,16 @@ public class Body implements CodeBlock {
         this.children = children;
     }
 
-    private void addCode(CodeBlock code) {
+    public void addCode(CodeBlock code) {
         children.add(code);
+    }
+
+    public List<CodeBlock> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<CodeBlock> children) {
+        this.children = children;
     }
 
     @Override
@@ -28,5 +36,12 @@ public class Body implements CodeBlock {
         for (CodeBlock code : children) {
             code.generate(visitor, context);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Body{" +
+            "children=" + children +
+            '}';
     }
 }

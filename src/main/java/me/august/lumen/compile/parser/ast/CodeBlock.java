@@ -6,7 +6,6 @@ import org.objectweb.asm.MethodVisitor;
 
 public interface CodeBlock extends MethodCodeGen {
 
-    default void generate(MethodVisitor visitor, BuildContext context) {
-    }
+    default void generate(MethodVisitor visitor, BuildContext context) { }
 
 }

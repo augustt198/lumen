@@ -2,6 +2,7 @@ package me.august.lumen.compile.parser;
 
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.parser.ast.*;
+import me.august.lumen.compile.parser.ast.code.Body;
 import me.august.lumen.compile.parser.ast.code.VarDeclaration;
 import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.parser.ast.expr.eval.TernaryExpr;
@@ -160,22 +161,26 @@ public class Parser {
         method.setParameters(params);
 
         if (peek().getType() == L_BRACE) {
-            next(); // consume '{'
-            method.setHasBody(true);
-
-            while (peek().getType() != R_BRACE) {
-                CodeBlock code;
-                if (peek().getType() == VAR_KEYWORD) {
-                    next();
-                    code = parseLocalVariable();
-                } else {
-                    code = parseExpression();
-                }
-                method.getCode().add(code);
-            }
+            method.setBody(parseBody());
         }
 
         return method;
+    }
+
+    private Body parseBody() {
+        Body body = new Body();
+        next().expectType(L_BRACE);
+
+        while (peek().getType() != R_BRACE) {
+            if (peek().getType() == VAR_KEYWORD) {
+                next();
+                body.addCode(parseLocalVariable());
+            } else {
+                body.addCode(parseExpression());
+            }
+        }
+
+        return body;
     }
 
     private String parseSuperclass() {

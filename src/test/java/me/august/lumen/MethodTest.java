@@ -21,9 +21,9 @@ public class MethodTest {
         assertEquals("Expected 1 method in class", cls.getMethods().size(), 1);
 
         MethodNode method = cls.getMethods().get(0);
-        assertEquals("Expected one code block", method.getCode().size(), 1);
+        assertEquals("Expected one code block", method.getBody().getChildren().size(), 1);
 
-        CodeBlock code = method.getCode().get(0);
+        CodeBlock code = method.getBody().getChildren().get(0);
         assertTrue("Expected code to be a variable declaration", code instanceof VarDeclaration);
 
         VarDeclaration var = (VarDeclaration) code;

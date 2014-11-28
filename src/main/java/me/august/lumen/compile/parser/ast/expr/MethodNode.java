@@ -2,19 +2,19 @@ package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.parser.ast.CodeBlock;
+import me.august.lumen.compile.parser.ast.code.Body;
 
 import java.util.*;
 
 public class MethodNode {
 
-    private Map<String, String> parameters = new HashMap<>();
-    private List<CodeBlock> code = new ArrayList<>();
-
     private String name;
     private Modifier[] modifiers;
     private String returnType;
 
-    private boolean hasBody;
+    private Map<String, String> parameters = new HashMap<>();
+
+    private Body body;
 
     public MethodNode(String name, String returnType, Modifier... modifiers) {
         this.name = name;
@@ -28,14 +28,6 @@ public class MethodNode {
 
     public void setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
-    }
-
-    public List<CodeBlock> getCode() {
-        return code;
-    }
-
-    public void setCode(List<CodeBlock> code) {
-        this.code = code;
     }
 
     public String getName() {
@@ -62,22 +54,26 @@ public class MethodNode {
         this.returnType = returnType;
     }
 
-    public boolean hasBody() {
-        return hasBody;
+    public Body getBody() {
+        return body;
     }
 
-    public void setHasBody(boolean hasBody) {
-        this.hasBody = hasBody;
+    public void setBody(Body body) {
+        this.body = body;
+    }
+
+    public boolean hasBody() {
+        return body != null;
     }
 
     @Override
     public String toString() {
         return "MethodNode{" +
             "parameters=" + parameters +
-            ", code=" + code +
             ", name='" + name + '\'' +
             ", modifiers=" + Arrays.toString(modifiers) +
             ", returnType='" + returnType + '\'' +
+            ", body=" + body +
             '}';
     }
 }
