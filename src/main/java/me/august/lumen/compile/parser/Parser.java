@@ -505,6 +505,7 @@ public class Parser {
                 next();
             }
         }
+        next().expectType(end);
 
         return exprs;
     }
