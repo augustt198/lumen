@@ -1,7 +1,5 @@
 package me.august.lumen;
 
-import static org.junit.Assert.*;
-
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.ProgramNode;
@@ -10,6 +8,9 @@ import me.august.lumen.compile.parser.ast.code.VarDeclaration;
 import me.august.lumen.compile.parser.ast.code.WhileStatement;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class MethodTest {
 

@@ -65,6 +65,8 @@ public enum Type {
     DEF_KEYWORD,
     IMPORT_KEYWORD,
     CLASS_KEYWORD,
+    STATIC_KEYWORD(Attribute.ACC_MOD),
+
     IS_KEYWORD,     // equivalent to Java `instanceof` keyword
 
     VAR_KEYWORD,    // declare new local variable

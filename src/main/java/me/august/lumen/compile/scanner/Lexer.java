@@ -25,6 +25,8 @@ public class Lexer implements Iterable<Token> {
             {"if",      IF_KEYWORD              },
             {"else",    ELSE_KEYWORD            },
             {"while",   WHILE_KEYWORD           },
+            {"stc",     STATIC_KEYWORD          },
+            {"static",  STATIC_KEYWORD          },
 
             {"pb",      ACC_PUBLIC              },
             {"public",  ACC_PUBLIC              },
