@@ -31,7 +31,13 @@ public class Parser {
         this.lexer = lexer;
     }
 
-    // maximum lookhead = 1
+    /**
+     * Returns the next token, without continuing to next token.
+     * The maximum lookahead is 1, i.e. calling peek() twice will
+     * always yield the same value.
+     *
+     * @return The next token
+     */
     private Token peek() {
         if (queued.isEmpty()) {
             return queued.push(next());
@@ -40,11 +46,23 @@ public class Parser {
         }
     }
 
+    /**
+     * Reads the next token from the Lexer
+     *
+     * @return The next token
+     */
     private Token next() {
         if (!queued.isEmpty()) return queued.pop();
         return current = lexer.nextToken();
     }
 
+    /**
+     * The main parsing entry point.
+     * Accepts the following grammar:
+     * (import | class)*
+     *
+     * @return The program AST node
+     */
     public ProgramNode parseMain() {
         List<String> imports = new ArrayList<>();
 
@@ -77,10 +95,18 @@ public class Parser {
         return new ProgramNode(importNodes, classNode);
     }
 
+    /**
+     * Parses a class.
+     * Accepts the following grammar:
+     * [superclass][interfaces](field | method)*
+     *
+     * @param mod The class's access modifier
+     * @return THe class AST node
+     */
     private ClassNode parseClass(Modifier mod) {
         String name = next().expectType(IDENTIFIER).getContent();
 
-        String superClass   = parseSuperclass();
+        String superClass = parseSuperclass();
         String[] interfaces = parseInterfaces();
 
         next().expectType(L_BRACE); // expect {
@@ -95,6 +121,14 @@ public class Parser {
         return cls;
     }
 
+    /**
+     * Parses either a field or method definition.
+     * Accepts the following grammar:
+     * (field | method)
+     *
+     * @param cls   The class AST node
+     * @param token The current token
+     */
     private void parseClassFieldOrMethod(ClassNode cls, Token token) {
         List<Modifier> modList = new ArrayList<>();
         while (token.getType().hasAttribute(Attribute.ACC_MOD)) {
@@ -111,6 +145,15 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a field definition.
+     * Accepts the following grammar:
+     * name ":" type [= expression]
+     *
+     * @param token The current token
+     * @param mods  The field's access modifiers
+     * @return The field AST node
+     */
     private FieldNode parseField(Token token, Modifier[] mods) {
         String name = token.expectType(IDENTIFIER).getContent();
         next().expectType(COLON);
@@ -131,6 +174,15 @@ public class Parser {
         return field;
     }
 
+    /**
+     * Parses a method definition.
+     * Accepts the following grammar:
+     * name [":" type] "(" (name ":" type)* ")" "{" method_body "}"
+     * If the type is omitted, it is assumed to be a void method
+     *
+     * @param mods The method's access modifiers
+     * @return The method AST node
+     */
     private MethodNode parseMethod(Modifier[] mods) {
         String name = current.expectType(IDENTIFIER).getContent();
         next(); // consume name
@@ -169,6 +221,11 @@ public class Parser {
         return method;
     }
 
+    /**
+     * Parses a body of code, within a set of braces ("{ }")
+     *
+     * @return The body AST node.
+     */
     private Body parseBody() {
         Body body = new Body();
         next().expectType(L_BRACE);
@@ -197,6 +254,11 @@ public class Parser {
         return body;
     }
 
+    /**
+     * Parses a class's superclass definition
+     *
+     * @return The class's superclass
+     */
     private String parseSuperclass() {
         if (peek().getType() == COLON) {
             next();
@@ -206,6 +268,11 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses the class's implemented interfaces
+     *
+     * @return The class's implemented interfaces
+     */
     private String[] parseInterfaces() {
         if (peek().getType() == PLUS) {
             next();
@@ -230,6 +297,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a local variable definition.
+     * Accepts the following grammar:
+     * name ":" type [= expression]
+     *
+     * @return The variable declaration AST node
+     */
     private VarDeclaration parseLocalVariable() {
         String name = next().expectType(IDENTIFIER).getContent();
         next().expectType(COLON);
@@ -244,6 +318,15 @@ public class Parser {
         return new VarDeclaration(name, type, value);
     }
 
+    /**
+     * Parses an if-statement.
+     * Accepts the following grammar:
+     * "if" condition body
+     * ("else if" condition body)*
+     * [else body]
+     *
+     * @return The if-statement AST node
+     */
     private IfStatement parseIfStatement() {
         Expression condition = parseExpression();
         Body body = parseBody();
@@ -268,6 +351,13 @@ public class Parser {
         return new IfStatement(condition, body, elseIfs, elseBody);
     }
 
+    /**
+     * Parses a while-statement.
+     * Accepts the following grammar:
+     * "while" condition body
+     *
+     * @return The while-statement AST node
+     */
     private WhileStatement parseWhileStatement() {
         Expression condition = parseExpression();
         Body body = parseBody();
@@ -275,10 +365,21 @@ public class Parser {
         return new WhileStatement(condition, body);
     }
 
+    /**
+     * The expression parsing entry point.
+     *
+     * @return An expression
+     */
     public Expression parseExpression() {
         return parseAssignment();
     }
 
+    /**
+     * Parses an assignment expression:
+     * ternary [= expression]
+     *
+     * @return An expression
+     */
     private Expression parseAssignment() {
         Expression left = parseTernary();
 
@@ -293,6 +394,12 @@ public class Parser {
         return left;
     }
 
+    /**
+     * Parses a ternary expression:
+     * logic_or [? expression : expression]
+     *
+     * @return An expression
+     */
     private Expression parseTernary() {
         Expression condition = parseLogicOr();
 
@@ -309,6 +416,12 @@ public class Parser {
         return condition;
     }
 
+    /**
+     * Parses a logical OR expression:
+     * logic_and [|| expression]
+     *
+     * @return An expression
+     */
     private Expression parseLogicOr() {
         Expression left = parseLogicAnd();
 
@@ -322,6 +435,12 @@ public class Parser {
         return left;
     }
 
+    /**
+     * Parses a logical AND expression:
+     * bitwise_or [&& expression]
+     *
+     * @return An expression
+     */
     private Expression parseLogicAnd() {
         Expression left = parseBitOr();
 
@@ -335,6 +454,12 @@ public class Parser {
         return left;
     }
 
+    /**
+     * Parses a bitwise OR expression:
+     * bitwise_xor [| expression]
+     *
+     * @return An expression
+     */
     private Expression parseBitOr() {
         Expression left = parseBitXor();
 
@@ -348,6 +473,12 @@ public class Parser {
         return left;
     }
 
+    /**
+     * Parses a bitwise XOR expression:
+     * bitwise_and [^ expression]
+     *
+     * @return An expression
+     */
     private Expression parseBitXor() {
         Expression left = parseBitAnd();
 
@@ -361,6 +492,12 @@ public class Parser {
         return left;
     }
 
+    /**
+     * Parses a bitwise AND expression:
+     * equality [& expression]
+     *
+     * @return An expression
+     */
     private Expression parseBitAnd() {
         Expression left = parseEq();
 
@@ -374,6 +511,12 @@ public class Parser {
         return left;
     }
 
+    /**
+     * Parses an equality expression:
+     * relational [(eq | ne) expression]
+     *
+     * @return An expression
+     */
     private Expression parseEq() {
         Expression left = parseRelational();
 
@@ -388,6 +531,12 @@ public class Parser {
         return left;
     }
 
+    /**
+     * Parses a relational expression:
+     * bit_shift [(lt | lte | gt | gte | is) expression]
+     *
+     * @return An expression
+     */
     private Expression parseRelational() {
         Expression left = parseShift();
 
@@ -405,6 +554,12 @@ public class Parser {
         return left;
     }
 
+    /**
+     * Parses a bit shift expression:
+     * additive [(sh_l | sh_r | u_sh_r) expression]
+     *
+     * @return An expression
+     */
     private Expression parseShift() {
         Expression left = parseAdditive();
 
@@ -420,6 +575,12 @@ public class Parser {
         return left;
     }
 
+    /**
+     * Parses an additive expression:
+     * multiplicative [(+ | -) expression]
+     *
+     * @return An expression
+     */
     private Expression parseAdditive() {
         Expression left = parseMultiplicative();
 
@@ -435,6 +596,12 @@ public class Parser {
         return left;
     }
 
+    /**
+     * Parses a multiplicative expression:
+     * component [(* | /) expression]
+     *
+     * @return An expression
+     */
     private Expression parseMultiplicative() {
         Expression left = parseComponent();
 
@@ -450,6 +617,12 @@ public class Parser {
         return left;
     }
 
+    /**
+     * Parses an expression component: string, number,
+     * true, false, null, grouping, identifier, method
+     *
+     * @return An expression component
+     */
     private Expression parseComponent() {
         Token token = peek();
 
@@ -488,6 +661,14 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a list of expressions with a given delimiter
+     * and ending token type
+     *
+     * @param delim The delimiter token type
+     * @param end   The ending token type
+     * @return A list of expressions
+     */
     private List<Expression> parseExpressionList(Type delim, Type end) {
         List<Expression> exprs = new ArrayList<>();
 

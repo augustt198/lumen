@@ -20,30 +20,30 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
     static {
         // looks better than map.put(...) x 100
         Object[][] pairs = {
-            {"def",     DEF_KEYWORD             },
-            {"import",  IMPORT_KEYWORD          },
-            {"class",   CLASS_KEYWORD           },
-            {"is",      IS_KEYWORD              },
-            {"var",     VAR_KEYWORD             },
-            {"if",      IF_KEYWORD              },
-            {"else",    ELSE_KEYWORD            },
-            {"while",   WHILE_KEYWORD           },
-            {"stc",     STATIC_KEYWORD          },
-            {"static",  STATIC_KEYWORD          },
+            {"def", DEF_KEYWORD},
+            {"import", IMPORT_KEYWORD},
+            {"class", CLASS_KEYWORD},
+            {"is", IS_KEYWORD},
+            {"var", VAR_KEYWORD},
+            {"if", IF_KEYWORD},
+            {"else", ELSE_KEYWORD},
+            {"while", WHILE_KEYWORD},
+            {"stc", STATIC_KEYWORD},
+            {"static", STATIC_KEYWORD},
 
-            {"pb",      ACC_PUBLIC              },
-            {"public",  ACC_PUBLIC              },
-            {"pv",      ACC_PRIVATE             },
-            {"private", ACC_PRIVATE             },
-            {"pt",      ACC_PROTECTED           },
-            {"protected",       ACC_PROTECTED   },
-            {"pk",              ACC_PACKAGE     },
-            {"package_private", ACC_PACKAGE     },
+            {"pb", ACC_PUBLIC},
+            {"public", ACC_PUBLIC},
+            {"pv", ACC_PRIVATE},
+            {"private", ACC_PRIVATE},
+            {"pt", ACC_PROTECTED},
+            {"protected", ACC_PROTECTED},
+            {"pk", ACC_PACKAGE},
+            {"package_private", ACC_PACKAGE},
 
-            {"true",    TRUE                    },
-            {"false",   FALSE                   },
-            {"null",    NULL                    },
-            {"nil",     NULL                    }
+            {"true", TRUE},
+            {"false", FALSE},
+            {"null", NULL},
+            {"nil", NULL}
         };
         for (Object[] pair : pairs) {
             KEYWORDS.put((String) pair[0], (Type) pair[1]);
@@ -69,7 +69,11 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         this(new InputStreamReader(in));
     }
 
-    // reading methods
+    /**
+     * Read one character from input
+     *
+     * @return The next character's ordinal value, or -1 for EOF
+     */
     private int read() {
         try {
             pos++;
@@ -79,6 +83,11 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         }
     }
 
+    /**
+     * Peeks one character ahead of the current position
+     *
+     * @return The next character's ordinal value, or -1 for EOF
+     */
     private int peek() {
         try {
             reader.mark(1);
@@ -90,6 +99,11 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         }
     }
 
+    /**
+     * Gets the next token from input
+     *
+     * @return The next token
+     */
     public Token nextToken() {
         if (!queued.empty()) return queued.pop();
 
@@ -98,7 +112,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             if (read == -1) return token(EOF);
             char c = (char) read;
 
-            if      (c == '(') return token(L_PAREN);
+            if (c == '(') return token(L_PAREN);
             else if (c == ')') return token(R_PAREN);
             else if (c == '{') return token(L_BRACE);
             else if (c == '}') return token(R_BRACE);
@@ -128,7 +142,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             else if (Chars.isDigit(c)) return nextNumber(c);
             else if (c == '"') return nextString();
 
-            else if (c == ' ' || c == '\r' || c == '\n' || c =='\t') {
+            else if (c == ' ' || c == '\r' || c == '\n' || c == '\t') {
                 continue; // ignore whitespace chars
             } else {
                 build.error("Unexpected character: " + c, this);
@@ -136,12 +150,24 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         }
     }
 
+    /**
+     * Constructs a token with the appropriate position
+     * and given type
+     *
+     * @param type The token's type
+     * @return The new token
+     */
     private Token token(Type type) {
         return new Token(null, pos, pos + 1, type);
     }
 
-    // Gets the next identifier, following this pattern:
-    // [a-zA-Z_]\w*
+    /**
+     * Gets the next String identifier from input,
+     * following this regular expression:
+     * [a-zA-Z_][\w]*
+     *
+     * @return The next String identifier
+     */
     private String ident() {
         StringBuilder sb = new StringBuilder();
 
@@ -160,13 +186,20 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return sb.toString();
     }
 
+    /**
+     * Gets the next token who's string form is an identifier
+     *
+     * @param firstChar The identifier's first character
+     * @return A token with the IDENTIFIER type, or a keyword
+     * token if the identifier is defined in the KEYWORDS map
+     */
     private Token nextIdent(char firstChar) {
         StringBuilder sb = new StringBuilder();
         sb.append(firstChar);
 
         int startPos = pos;
         sb.append(ident());
-        int endPos   = pos;
+        int endPos = pos;
 
         String ident = sb.toString();
 
@@ -182,12 +215,21 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return token;
     }
 
+    /**
+     * Called when a keyword token is read
+     *
+     * @param keyword The keyword token's type
+     */
     private void handleKeyword(Type keyword) {
         if (keyword == IMPORT_KEYWORD) {
             handleImport();
         }
     }
 
+    /**
+     * Called when a token with a IMPORT_KEYWORD
+     * type is read
+     */
     private void handleImport() {
         read(); // consume whitespace
 
@@ -196,7 +238,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         StringBuilder sb = new StringBuilder();
         sb.append(ident());
 
-        while(peek() == '.') {
+        while (peek() == '.') {
             sb.append((char) read());
             sb.append(ident());
         }
@@ -206,12 +248,18 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         queued.push(new Token(importPath, startPos, endPos, IMPORT_PATH));
     }
 
+    /**
+     * Gets the next token in the form of a number
+     *
+     * @param firstDigit The number's first digit
+     * @return A token with the NUMBER type
+     */
     private Token nextNumber(char firstDigit) {
         StringBuilder sb = new StringBuilder();
         sb.append(firstDigit);
 
         int startPos = pos;
-        int endPos   = pos;
+        int endPos = pos;
 
         while (true) {
             int peek = peek();
@@ -230,11 +278,17 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return new Token(sb.toString(), startPos, endPos, NUMBER);
     }
 
+    /**
+     * Gets the next token in the form of a
+     * double-quote (") delimited string.
+     *
+     * @return A token with the STRING type
+     */
     private Token nextString() {
         StringBuilder sb = new StringBuilder();
 
         int startPos = pos;
-        int endPos   = pos;
+        int endPos = pos;
 
         while (true) {
             int read = read();
@@ -251,12 +305,14 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return new Token(sb.toString(), startPos, endPos, STRING);
     }
 
-    /*
-    Precondition: last read char was '='
-
-    Differentiates the following tokens:
-    EQ      "==" (equality operator)
-    ASSIGN  "="  (assignment operator)
+    /**
+     * Precondition: last read char was '='
+     * <p>
+     * Differentiates the following tokens:
+     * EQ      "==" (equality operator)
+     * ASSIGN  "="  (assignment operator)
+     *
+     * @return The next EQ or ASSIGN type token
      */
     private Token nextEqOrAssign() {
         if (peek() == '=') { // "=="
@@ -266,14 +322,16 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return token(ASSIGN);
     }
 
-    /*
-    Precondition: last read char was '>'
-
-    Differentiates the following tokens:
-    GT      ">"   (greater than)
-    GTE     ">="  (greater than or equal to)
-    SH_R    ">>"  (right bitshift)
-    U_SH_R  ">>>" (unsigned right bitshift)
+    /**
+     * Precondition: last read char was '>'
+     * <p>
+     * Differentiates the following tokens:
+     * GT      ">"   (greater than)
+     * GTE     ">="  (greater than or equal to)
+     * SH_R    ">>"  (right bitshift)
+     * U_SH_R  ">>>" (unsigned right bitshift)
+     *
+     * @return The next GT or GTE or SH_R or U_SH_R type token
      */
     private Token nextGtOrGteOrShift() {
         Type ty;
@@ -294,13 +352,15 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return token(ty);
     }
 
-    /*
-    Precondition: last read char was '<'
-
-    Differentiates the following tokens:
-    LT   "<"  (less than)
-    LTE  "<=" (less than or equal to)
-    SH_L "<<" (left bitshift)
+    /**
+     * Precondition: last read char was '<'
+     * <p>
+     * Differentiates the following tokens:
+     * LT   "<"  (less than)
+     * LTE  "<=" (less than or equal to)
+     * SH_L "<<" (left bitshift)
+     *
+     * @return The next LT or LTE or SH_L type token
      */
     private Token nextLtOrLteOrShift() {
         Type ty;
@@ -316,12 +376,14 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return token(ty);
     }
 
-    /*
-    Precondition: last read char was '|'
-
-    Differentiates the following tokens:
-    LOGIC_OR  "||" (logical OR)
-    BIT_OR    "|"  (bitwise OR)
+    /**
+     * Precondition: last read char was '|'
+     * <p>
+     * Differentiates the following tokens:
+     * LOGIC_OR  "||" (logical OR)
+     * BIT_OR    "|"  (bitwise OR)
+     *
+     * @return The next LOGIC_OR or BIT_OR type token
      */
     private Token nextOr() {
         if (peek() == '|') {
@@ -331,12 +393,14 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return token(BIT_OR);
     }
 
-    /*
-    Precondition: last read char was '&'
-
-    Differentiates the following tokens:
-    LOGIC_AND  "&&" (logical AND)
-    BIT_AND    "&"  (bitwise AND)
+    /**
+     * Precondition: last read char was '&'
+     * <p>
+     * Differentiates the following tokens:
+     * LOGIC_AND  "&&" (logical AND)
+     * BIT_AND    "&"  (bitwise AND)
+     *
+     * @return The next LOGIC_AND or BIT_AND type token
      */
     private Token nextAnd() {
         if (peek() == '&') {
@@ -346,12 +410,14 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return token(BIT_AND);
     }
 
-    /*
-    Precondition: last read char was '!'
-
-    Differentiates the following tokens:
-    NEG  "!"  (negate)
-    NE   "!=" (not equal to)
+    /**
+     * Precondition: last read char was '!'
+     * <p>
+     * Differentiates the following tokens:
+     * NEG  "!"  (negate)
+     * NE   "!=" (not equal to)
+     *
+     * @return The next NEG or NE type token
      */
     private Token nextNegOrNe() {
         if (peek() == '=') {
@@ -361,10 +427,17 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return token(NEG);
     }
 
+    /**
+     * Iterates over all tokens returned by
+     * this Lexer until EOF is reached
+     *
+     * @return The token iterator
+     */
     @Override
     public Iterator<Token> iterator() {
         return new Iterator<Token>() {
             boolean done = false;
+
             @Override
             public boolean hasNext() {
                 return !done;
@@ -379,12 +452,21 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         };
     }
 
-    // Gets the current location
+    /**
+     * The current reading position
+     *
+     * @return The current reading position
+     */
     @Override
     public int getStart() {
         return pos;
     }
 
+    /**
+     * The current reading position plus one
+     *
+     * @returnThe current reading position plus one
+     */
     @Override
     public int getEnd() {
         return pos + 1;
