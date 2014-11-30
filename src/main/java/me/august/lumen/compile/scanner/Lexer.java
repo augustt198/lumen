@@ -1,6 +1,9 @@
 package me.august.lumen.compile.scanner;
 
 import me.august.lumen.common.Chars;
+import me.august.lumen.compile.Driver;
+import me.august.lumen.compile.codegen.BuildContext;
+import me.august.lumen.compile.error.SourcePositionProvider;
 
 import java.io.*;
 import java.util.HashMap;
@@ -10,7 +13,7 @@ import java.util.Stack;
 
 import static me.august.lumen.compile.scanner.Type.*;
 
-public class Lexer implements Iterable<Token> {
+public class Lexer implements Iterable<Token>, SourcePositionProvider {
 
     private static final Map<String, Type> KEYWORDS = new HashMap<>();
 
@@ -49,11 +52,13 @@ public class Lexer implements Iterable<Token> {
 
     private Reader reader;
     private int pos;
+    private BuildContext build;
 
     private Stack<Token> queued = new Stack<>();
 
     public Lexer(Reader reader) {
         this.reader = reader;
+        this.build = new Driver.CompileBuildContext();
     }
 
     public Lexer(String src) {
@@ -126,7 +131,7 @@ public class Lexer implements Iterable<Token> {
             else if (c == ' ' || c == '\r' || c == '\n' || c =='\t') {
                 continue; // ignore whitespace chars
             } else {
-                throw new RuntimeException("Unexpected character: " + c);
+                build.error("Unexpected character: " + c, this);
             }
         }
     }
@@ -372,5 +377,16 @@ public class Lexer implements Iterable<Token> {
                 return next;
             }
         };
+    }
+
+    // Gets the current location
+    @Override
+    public int getStart() {
+        return pos;
+    }
+
+    @Override
+    public int getEnd() {
+        return pos + 1;
     }
 }

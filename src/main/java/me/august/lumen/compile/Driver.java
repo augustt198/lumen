@@ -2,6 +2,7 @@ package me.august.lumen.compile;
 
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.error.SourceException;
+import me.august.lumen.compile.error.SourcePositionProvider;
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
@@ -52,6 +53,14 @@ public class Driver {
         @Override
         public List<SourceException> errors() {
             return errors;
+        }
+
+        @Override
+        public void error(String msg, SourcePositionProvider src) {
+            SourceException ex = new SourceException(msg);
+            ex.beginPos(src.getStart()).endPos(src.getEnd());
+
+            errors.add(ex);
         }
 
         @Override

@@ -397,15 +397,7 @@ public class Parser {
             next(); // consume
 
             Expression right = parseExpression();
-            Op op;
-            switch (peek) {
-                case LT: op = Op.LT; break;
-                case GT: op = Op.GT; break;
-                case LTE: op = Op.LTE; break;
-                case GTE: op = Op.GTE; break;
-                case IS_KEYWORD: op = Op.IS; break;
-                default: op = null;
-            }
+            Op op = peek == IS_KEYWORD ? Op.IS : Op.valueOf(peek.name());
 
             return new RelExpr(left, right, op);
         }
