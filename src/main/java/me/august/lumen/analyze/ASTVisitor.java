@@ -6,21 +6,21 @@ import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
 
-public interface ASTVisitor {
+public abstract class ASTVisitor {
 
-    void visitProgram(ProgramNode program);
-    default void visitProgramEnd(ProgramNode program) {}
+    public void visitProgram(ProgramNode program) {}
+    public void visitProgramEnd(ProgramNode program) {}
 
-    void visitClass(ClassNode cls);
-    default void visitClassEnd(ClassNode cls) {};
+    public void visitClass(ClassNode cls) {}
+    public void visitClassEnd(ClassNode cls) {}
 
-    void visitField(FieldNode field);
-    default void visitFieldEnd(FieldNode field) {}
+    public void visitField(FieldNode field) {}
+    public void visitFieldEnd(FieldNode field) {}
 
-    void visitMethod(MethodNode method);
-    default void visitMethodEnd() {}
+    public void visitMethod(MethodNode method) {}
+    public void visitMethodEnd() {}
 
-    void visitCodeBlock(CodeBlock code);
-    default void visitCodeBlockEnd(CodeBlock code) {}
+    public void visitCodeBlock(CodeBlock code) {}
+    public void visitCodeBlockEnd(CodeBlock code) {}
 
 }

@@ -645,7 +645,6 @@ public class Parser {
             next();
             Expression expr = parseExpression();
             next().expectType(R_PAREN);
-
             return expr;
         } else if (token.getType() == Type.IDENTIFIER) {
             next();
@@ -656,6 +655,7 @@ public class Parser {
                 next(); // consume ')'
                 return new MethodCallExpr(name, parseExpressionList(Type.COMMA, Type.R_PAREN));
             }
+
         } else {
             throw new RuntimeException("Unexpected token: " + token);
         }
