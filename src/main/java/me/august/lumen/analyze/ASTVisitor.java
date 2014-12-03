@@ -25,6 +25,5 @@ public abstract class ASTVisitor {
     public void visitBodyEnd(Body body) {}
 
     public void visitVar(VarDeclaration var) {}
-    public void visitVarEnd(VarDeclaration var) {}
 
 }

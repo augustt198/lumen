@@ -5,11 +5,13 @@ import me.august.lumen.analyze.var.LocalVariable;
 import me.august.lumen.analyze.var.Variable;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.ClassNode;
-import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.code.Body;
+import me.august.lumen.compile.parser.ast.code.VarDeclaration;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 public class LumenVisitor extends ASTVisitor {
     public static class Scope {
@@ -62,6 +64,12 @@ public class LumenVisitor extends ASTVisitor {
     @Override
     public void visitClassEnd(ClassNode cls) {
         scopes.pop();
+    }
+
+    @Override
+    public void visitVar(VarDeclaration var) {
+        Scope scope = scopes.lastElement();
+        scope.addVariable(var.getName(), new LocalVariable(nextLocalIndex()));
     }
 
     /**
