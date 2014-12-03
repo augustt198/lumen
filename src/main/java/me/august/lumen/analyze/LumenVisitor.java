@@ -5,7 +5,9 @@ import me.august.lumen.analyze.var.LocalVariable;
 import me.august.lumen.analyze.var.Variable;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.ClassNode;
+import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.FieldNode;
+import me.august.lumen.compile.parser.ast.code.Body;
 
 import java.util.*;
 
@@ -25,6 +27,7 @@ public class LumenVisitor extends ASTVisitor {
 
     Stack<Scope> scopes = new Stack<>();
     BuildContext build;
+    private String className;
 
     public LumenVisitor(BuildContext build) {
         this.build = build;
@@ -33,18 +36,28 @@ public class LumenVisitor extends ASTVisitor {
     @Override
     public void visitClass(ClassNode cls) {
         scopes.push(new Scope(cls.getName()));
+        className = cls.getName();
     }
 
     @Override
     public void visitField(FieldNode field) {
         Scope scope = scopes.lastElement();
         scope.addVariable(field.getName(), new ClassVariable(
-            scope.className,
+            className,
             field.getName(),
             field.getType()
         ));
     }
 
+    @Override
+    public void visitBody(Body body) {
+        scopes.push(new Scope(className));
+    }
+
+    @Override
+    public void visitBodyEnd(Body body) {
+        scopes.pop();
+    }
 
     @Override
     public void visitClassEnd(ClassNode cls) {

@@ -1,9 +1,10 @@
 package me.august.lumen.analyze;
 
 import me.august.lumen.compile.parser.ast.ClassNode;
-import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
+import me.august.lumen.compile.parser.ast.code.Body;
+import me.august.lumen.compile.parser.ast.code.VarDeclaration;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
 
 public abstract class ASTVisitor {
@@ -20,7 +21,10 @@ public abstract class ASTVisitor {
     public void visitMethod(MethodNode method) {}
     public void visitMethodEnd() {}
 
-    public void visitCodeBlock(CodeBlock code) {}
-    public void visitCodeBlockEnd(CodeBlock code) {}
+    public void visitBody(Body body) {}
+    public void visitBodyEnd(Body body) {}
+
+    public void visitVar(VarDeclaration var) {}
+    public void visitVarEnd(VarDeclaration var) {}
 
 }
