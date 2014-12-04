@@ -1,11 +1,13 @@
 package me.august.lumen.compile.parser.ast;
 
+import me.august.lumen.analyze.ASTVisitor;
+import me.august.lumen.analyze.VisitorConsumer;
 import me.august.lumen.compile.resolve.impl.NameResolver;
 import me.august.lumen.compile.resolve.lookup.DependencyManager;
 
 import java.util.Arrays;
 
-public class ProgramNode {
+public class ProgramNode implements VisitorConsumer {
 
     ImportNode[] imports;
     ClassNode classNode;
@@ -38,6 +40,13 @@ public class ProgramNode {
     private void resolveTypes() {
         NameResolver resolver = new NameResolver(new DependencyManager(), imports);
         // TODO continue
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visitProgram(this);
+        classNode.accept(visitor);
+        visitor.visitProgramEnd(this);
     }
 
     @Override

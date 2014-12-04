@@ -8,6 +8,7 @@ import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.code.Body;
 import me.august.lumen.compile.parser.ast.code.VarDeclaration;
+import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class LumenVisitor extends ASTVisitor {
 
     Stack<Scope> scopes = new Stack<>();
     BuildContext build;
-    private String className;
+    String className;
 
     public LumenVisitor(BuildContext build) {
         this.build = build;
@@ -69,7 +70,13 @@ public class LumenVisitor extends ASTVisitor {
     @Override
     public void visitVar(VarDeclaration var) {
         Scope scope = scopes.lastElement();
+
         scope.addVariable(var.getName(), new LocalVariable(nextLocalIndex()));
+    }
+
+    @Override
+    public void visitIdentifier(IdentExpr expr) {
+        expr.setRef(getVariable(expr.getIdentifier()));
     }
 
     /**
@@ -100,10 +107,18 @@ public class LumenVisitor extends ASTVisitor {
 
         if (max > -1) return max + 1;
 
-        if (max < 0 && stackPos >= 0) {
+        if (max < 0 && stackPos > 0) {
             return nextLocalIndex(--stackPos);
         } else {
             return 1;
         }
+    }
+
+    public Variable getVariable(String name) {
+        for (int i = scopes.size() - 1; i >= 0; i--) {
+            Variable var = scopes.get(i).vars.get(name);
+            if (var != null) return var;
+        }
+        return null;
     }
 }

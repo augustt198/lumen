@@ -1,8 +1,12 @@
 package me.august.lumen.compile.parser.ast.expr;
 
+import me.august.lumen.analyze.var.Variable;
+
 public class IdentExpr extends TerminalExpression {
 
-    String identifier;
+    private String identifier;
+
+    private Variable ref;
 
     public IdentExpr(String identifier) {
         this.identifier = identifier;
@@ -11,6 +15,18 @@ public class IdentExpr extends TerminalExpression {
     @Override
     public boolean isConstant() {
         return false;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public Variable getRef() {
+        return ref;
+    }
+
+    public void setRef(Variable ref) {
+        this.ref = ref;
     }
 
     @Override

@@ -1,12 +1,14 @@
 package me.august.lumen.compile.parser.ast.expr;
 
+import me.august.lumen.analyze.ASTVisitor;
+import me.august.lumen.analyze.VisitorConsumer;
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.code.Body;
 
 import java.util.*;
 
-public class MethodNode {
+public class MethodNode implements VisitorConsumer {
 
     private String name;
     private Modifier[] modifiers;
@@ -20,6 +22,13 @@ public class MethodNode {
         this.name = name;
         this.returnType = returnType;
         this.modifiers = modifiers;
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visitMethod(this);
+        body.accept(visitor);
+        visitor.visitMethodEnd(this);
     }
 
     public Map<String, String> getParameters() {
