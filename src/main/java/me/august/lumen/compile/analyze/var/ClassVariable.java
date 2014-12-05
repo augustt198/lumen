@@ -1,4 +1,4 @@
-package me.august.lumen.analyze.var;
+package me.august.lumen.compile.analyze.var;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;

@@ -1,8 +1,9 @@
 package me.august.lumen.analyze;
 
-import me.august.lumen.analyze.var.ClassVariable;
-import me.august.lumen.analyze.var.LocalVariable;
-import me.august.lumen.analyze.var.Variable;
+import me.august.lumen.compile.analyze.LumenVisitor;
+import me.august.lumen.compile.analyze.var.ClassVariable;
+import me.august.lumen.compile.analyze.var.LocalVariable;
+import me.august.lumen.compile.analyze.var.Variable;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.ImportNode;

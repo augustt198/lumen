@@ -1,9 +1,8 @@
 package me.august.lumen.compile.parser.ast.expr;
 
-import me.august.lumen.analyze.ASTVisitor;
-import me.august.lumen.analyze.VisitorConsumer;
+import me.august.lumen.compile.analyze.ASTVisitor;
+import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.common.Modifier;
-import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.code.Body;
 
 import java.util.*;

@@ -1,4 +1,4 @@
-package me.august.lumen.analyze;
+package me.august.lumen.compile.analyze;
 
 import java.util.function.Consumer;
 

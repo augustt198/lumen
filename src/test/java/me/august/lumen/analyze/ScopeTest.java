@@ -1,11 +1,10 @@
 package me.august.lumen.analyze;
 
-import me.august.lumen.analyze.var.LocalVariable;
-import me.august.lumen.analyze.var.Variable;
+import me.august.lumen.compile.analyze.LumenVisitor;
+import me.august.lumen.compile.analyze.var.LocalVariable;
+import me.august.lumen.compile.analyze.var.Variable;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static me.august.lumen.analyze.LumenVisitor.Scope;
 
 public class ScopeTest {
 
@@ -13,11 +12,11 @@ public class ScopeTest {
     public void testNextIndex() {
         LumenVisitor visitor = new LumenVisitor(null);
 
-        Scope lower = visitor.scopes.push(new Scope(null));
+        LumenVisitor.Scope lower = visitor.scopes.push(new LumenVisitor.Scope(null));
         lower.addVariable("a", new LocalVariable(1));
         lower.addVariable("b", new LocalVariable(2));
 
-        Scope higher = visitor.scopes.push(new Scope(null));
+        LumenVisitor.Scope higher = visitor.scopes.push(new LumenVisitor.Scope(null));
 
         Assert.assertEquals("Expected next index of 3", 3, visitor.nextLocalIndex());
 
@@ -31,10 +30,10 @@ public class ScopeTest {
     public void testVarLookup() {
         LumenVisitor visitor = new LumenVisitor(null);
 
-        Scope lower = visitor.scopes.push(new Scope(null));
+        LumenVisitor.Scope lower = visitor.scopes.push(new LumenVisitor.Scope(null));
         lower.addVariable("foo", new LocalVariable(1));
 
-        Scope higher = visitor.scopes.push(new Scope(null));
+        LumenVisitor.Scope higher = visitor.scopes.push(new LumenVisitor.Scope(null));
         higher.addVariable("bar", new LocalVariable(2));
 
         Variable var = visitor.getVariable("foo");

@@ -1,6 +1,6 @@
 package me.august.lumen.compile.parser.ast.expr;
 
-import me.august.lumen.analyze.var.Variable;
+import me.august.lumen.compile.analyze.var.Variable;
 
 public class IdentExpr extends TerminalExpression {
 

@@ -1,7 +1,7 @@
 package me.august.lumen.compile.parser.ast;
 
-import me.august.lumen.analyze.ASTVisitor;
-import me.august.lumen.analyze.VisitorConsumer;
+import me.august.lumen.compile.analyze.ASTVisitor;
+import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.ClassCodeGen;

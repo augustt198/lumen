@@ -1,4 +1,4 @@
-package me.august.lumen.analyze;
+package me.august.lumen.compile.analyze;
 
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;

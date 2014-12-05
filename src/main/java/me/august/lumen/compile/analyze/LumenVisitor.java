@@ -1,8 +1,8 @@
-package me.august.lumen.analyze;
+package me.august.lumen.compile.analyze;
 
-import me.august.lumen.analyze.var.ClassVariable;
-import me.august.lumen.analyze.var.LocalVariable;
-import me.august.lumen.analyze.var.Variable;
+import me.august.lumen.compile.analyze.var.ClassVariable;
+import me.august.lumen.compile.analyze.var.LocalVariable;
+import me.august.lumen.compile.analyze.var.Variable;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
@@ -28,7 +28,7 @@ public class LumenVisitor extends ASTVisitor {
         }
     }
 
-    Stack<Scope> scopes = new Stack<>();
+    public Stack<Scope> scopes = new Stack<>();
     BuildContext build;
     String className;
 
