@@ -5,16 +5,15 @@ import me.august.lumen.compile.parser.ast.expr.Expression;
 
 import java.util.Arrays;
 
-public class FieldNode {
+public class FieldNode extends Typed {
 
     private String name;
-    private String type;
     private Modifier[] modifiers;
     private Expression defaultValue;
 
     public FieldNode(String name, String type, Modifier... modifiers) {
+        super(type);
         this.name = name;
-        this.type = type;
         this.modifiers = modifiers;
     }
 
@@ -28,10 +27,6 @@ public class FieldNode {
 
     public String getName() {
         return name;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public Modifier[] getModifiers() {

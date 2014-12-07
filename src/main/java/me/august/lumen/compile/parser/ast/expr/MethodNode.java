@@ -3,23 +3,23 @@ package me.august.lumen.compile.parser.ast.expr;
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.common.Modifier;
+import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.code.Body;
 
 import java.util.*;
 
-public class MethodNode implements VisitorConsumer {
+public class MethodNode extends Typed implements VisitorConsumer {
 
     private String name;
     private Modifier[] modifiers;
-    private String returnType;
 
     private Map<String, String> parameters = new HashMap<>();
 
     private Body body;
 
     public MethodNode(String name, String returnType, Modifier... modifiers) {
+        super(returnType);
         this.name = name;
-        this.returnType = returnType;
         this.modifiers = modifiers;
     }
 
@@ -54,14 +54,6 @@ public class MethodNode implements VisitorConsumer {
         this.modifiers = modifiers;
     }
 
-    public String getReturnType() {
-        return returnType;
-    }
-
-    public void setReturnType(String returnType) {
-        this.returnType = returnType;
-    }
-
     public Body getBody() {
         return body;
     }
@@ -80,7 +72,7 @@ public class MethodNode implements VisitorConsumer {
             "parameters=" + parameters +
             ", name='" + name + '\'' +
             ", modifiers=" + Arrays.toString(modifiers) +
-            ", returnType='" + returnType + '\'' +
+            ", type='" + type + '\'' +
             ", body=" + body +
             '}';
     }
