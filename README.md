@@ -21,8 +21,8 @@ pv class Example : Superclass +(Interface, AnotherInterface) {
 
 
 #### To Do
-- [ ] Finish field parsing
-- [ ] Method parsing
+- [x] Finish field parsing (done)
+- [ ] Method parsing (doing)
 - [ ] Semantic analysis
 - [ ] Type checker
 - [ ] Bytecode generation
