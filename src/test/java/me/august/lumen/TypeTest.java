@@ -1,5 +1,6 @@
 package me.august.lumen;
 
+import me.august.lumen.common.BytecodeUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
@@ -11,8 +12,8 @@ public class TypeTest implements Opcodes {
     public void test() {
         Type type = Type.getType(String.class);
 
-        Assert.assertEquals("Expected ASTORE opcode", type.getOpcode(ISTORE), ASTORE);
-        Assert.assertEquals("Expected ALOAD opcode", type.getOpcode(ISTORE), ASTORE);
+        Assert.assertEquals("Expected ASTORE opcode", BytecodeUtil.storeInstruction(type), ASTORE);
+        Assert.assertEquals("Expected ALOAD opcode", BytecodeUtil.loadInstruction(type), ALOAD);
     }
 
 }

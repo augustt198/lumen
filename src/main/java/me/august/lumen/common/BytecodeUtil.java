@@ -1,5 +1,8 @@
 package me.august.lumen.common;
 
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,5 +62,13 @@ public final class BytecodeUtil {
                     return 'L' + cls.getName().replace('.', '/') + ';';
                 }
         }
+    }
+
+    public static int storeInstruction(Type type) {
+        return type.getOpcode(Opcodes.ISTORE);
+    }
+
+    public static int loadInstruction(Type type) {
+        return type.getOpcode(Opcodes.ILOAD);
     }
 }
