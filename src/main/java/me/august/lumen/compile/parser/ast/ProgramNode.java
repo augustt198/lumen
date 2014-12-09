@@ -38,7 +38,7 @@ public class ProgramNode implements VisitorConsumer {
     }
 
     private void resolveTypes() {
-        NameResolver resolver = new NameResolver(new DependencyManager(), imports);
+        NameResolver resolver = new NameResolver(imports);
         // TODO continue
     }
 
