@@ -3,10 +3,51 @@ package me.august.lumen.common;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class BytecodeUtil {
+
+    private static final Map<String, Integer> OPCODES  = new HashMap<>();
+    private static final Map<String, Integer> ACC_MODS = new HashMap<>();
+
+    static {
+        initOpcodeTable();
+        initAccessTable();
+    }
+
+    private static final int ASM_OPCODE_FIELDS_START_INDEX = 60;
+    private static final int ASM_OPCODE_FIELDS_END_INDEX   = 216;
+
+    private static void initOpcodeTable() {
+        int start = ASM_OPCODE_FIELDS_START_INDEX;
+        int end   = ASM_OPCODE_FIELDS_END_INDEX;
+
+        for (int i = start; i <= end; i++) {
+            Field field = Opcodes.class.getFields()[i];
+            try {
+                OPCODES.put(field.getName(), field.getInt(null));
+            } catch (IllegalAccessException ignored) {}
+        }
+    }
+
+    private static final int ASM_ACC_FIELDS_START_INDEX = 10;
+    private static final int ASM_ACC_FIELDS_END_INDEX   = 29;
+
+    private static void initAccessTable() {
+        int start = ASM_ACC_FIELDS_START_INDEX;
+        int end   = ASM_ACC_FIELDS_END_INDEX;
+
+        for (int i = start; i <= end; i++) {
+            Field field = Opcodes.class.getFields()[i];
+            try {
+                ACC_MODS.put(field.getName(), field.getInt(null));
+            } catch (IllegalAccessException ignored) {}
+        }
+    }
 
     private BytecodeUtil() {}
 
@@ -70,5 +111,13 @@ public final class BytecodeUtil {
 
     public static int loadInstruction(Type type) {
         return type.getOpcode(Opcodes.ILOAD);
+    }
+
+    public static int fromOpcodeName(String name) {
+        return OPCODES.getOrDefault(name, -1);
+    }
+
+    public static int fromAccName(String name) {
+        return ACC_MODS.getOrDefault(name, -1);
     }
 }
