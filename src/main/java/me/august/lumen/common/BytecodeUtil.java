@@ -120,4 +120,20 @@ public final class BytecodeUtil {
     public static int fromAccName(String name) {
         return ACC_MODS.getOrDefault(name, -1);
     }
+
+    public static Type fromNamedType(String string) {
+        switch (string) {
+            case "int":     return Type.INT_TYPE;
+            case "bool":
+            case "boolean": return Type.BOOLEAN_TYPE;
+            case "byte":    return Type.BYTE_TYPE;
+            case "float":   return Type.FLOAT_TYPE;
+            case "double":  return Type.DOUBLE_TYPE;
+            case "long":    return Type.LONG_TYPE;
+            case "char":    return Type.CHAR_TYPE;
+            case "short":   return Type.SHORT_TYPE;
+            case "void":    return Type.VOID_TYPE;
+            default:        return Type.getType(string);
+        }
+    }
 }
