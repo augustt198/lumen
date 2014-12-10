@@ -1,11 +1,14 @@
 package me.august.lumen.compile;
 
+import me.august.lumen.compile.analyze.LumenVisitor;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.error.SourceException;
 import me.august.lumen.compile.error.SourcePositionProvider;
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
+import me.august.lumen.compile.resolve.LumenTypeVisitor;
+import me.august.lumen.compile.resolve.impl.NameResolver;
 import me.august.lumen.compile.scanner.Lexer;
 import org.objectweb.asm.ClassWriter;
 
@@ -16,6 +19,7 @@ import java.util.List;
 public class Driver {
 
     Reader reader;
+    private CompileBuildContext context = new CompileBuildContext();
 
     public Driver(Reader reader) {
         this.reader = reader;
@@ -25,19 +29,28 @@ public class Driver {
         return new Lexer(reader);
     }
 
-    public Parser phase2Parsing(Lexer lexer) {
-        return new Parser(lexer);
+    public ProgramNode phase2Parsing(Lexer lexer) {
+        return new Parser(lexer).parseMain();
     }
 
-    public ProgramNode phase3Resolving(Parser parser) {
-        ProgramNode program = parser.parseMain();
+    public ProgramNode phase3Resolving(ProgramNode program) {
+        NameResolver resolver = new NameResolver(program.getImports());
+        LumenTypeVisitor typeVisitor = new LumenTypeVisitor(resolver, context);
+        program.accept(typeVisitor);
 
         return program;
     }
 
-    public byte[] phase4Bytecode(ClassNode cls) {
+    public ProgramNode phase4Analysis(ProgramNode program) {
+        LumenVisitor visitor = new LumenVisitor(context);
+        program.accept(visitor);
+
+        return program;
+    }
+
+    public byte[] phase5Bytecode(ProgramNode program) {
         ClassWriter writer = new ClassWriter(0);
-        cls.generate(writer, new CompileBuildContext());
+        program.getClassNode().generate(writer, context);
 
         return writer.toByteArray();
     }

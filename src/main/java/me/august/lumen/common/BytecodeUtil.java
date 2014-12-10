@@ -133,7 +133,7 @@ public final class BytecodeUtil {
             case "char":    return Type.CHAR_TYPE;
             case "short":   return Type.SHORT_TYPE;
             case "void":    return Type.VOID_TYPE;
-            default:        return Type.getType(string);
+            default:        return Type.getType("L" + string.replace('.', '/') + ";");
         }
     }
 }

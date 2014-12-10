@@ -1,14 +1,21 @@
 package me.august.lumen.compile.parser.ast.expr;
 
+import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.common.Modifier;
+import me.august.lumen.compile.codegen.BuildContext;
+import me.august.lumen.compile.codegen.ClassCodeGen;
 import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.code.Body;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 import java.util.*;
 
-public class MethodNode extends Typed implements VisitorConsumer {
+public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
 
     private String name;
     private Modifier[] modifiers;
@@ -28,6 +35,24 @@ public class MethodNode extends Typed implements VisitorConsumer {
         visitor.visitMethod(this);
         body.accept(visitor);
         visitor.visitMethodEnd(this);
+    }
+
+    @Override
+    public void generate(ClassVisitor visitor, BuildContext context) {
+        Type returnType   = BytecodeUtil.fromNamedType(getResolvedType());
+        Type[] paramTypes = parameters.values().stream().map(BytecodeUtil::fromNamedType).toArray(Type[]::new);
+
+        MethodVisitor method = visitor.visitMethod(
+            Modifier.compose(modifiers), name, // access modifier
+            Type.getMethodType(returnType, paramTypes).getDescriptor(), // method descriptor
+            null, null // signature (generics), exceptions
+        );
+
+        method.visitCode();
+        body.generate(method, context);
+        method.visitInsn(Opcodes.RETURN);
+        method.visitMaxs(1, 2); // TODO fix this...
+        method.visitEnd();
     }
 
     public Map<String, String> getParameters() {

@@ -71,7 +71,9 @@ public class LumenVisitor extends ASTVisitor {
     public void visitVar(VarDeclaration var) {
         Scope scope = scopes.lastElement();
 
-        scope.addVariable(var.getName(), new LocalVariable(nextLocalIndex()));
+        LocalVariable ref = new LocalVariable(nextLocalIndex());
+        scope.addVariable(var.getName(), ref);
+        var.setRef(ref);
     }
 
     @Override

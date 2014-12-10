@@ -1,11 +1,14 @@
 package me.august.lumen.compile.parser.ast;
 
 import me.august.lumen.common.Modifier;
+import me.august.lumen.compile.codegen.BuildContext;
+import me.august.lumen.compile.codegen.ClassCodeGen;
 import me.august.lumen.compile.parser.ast.expr.Expression;
+import org.objectweb.asm.ClassVisitor;
 
 import java.util.Arrays;
 
-public class FieldNode extends Typed {
+public class FieldNode extends Typed implements ClassCodeGen {
 
     private String name;
     private Modifier[] modifiers;
@@ -31,6 +34,12 @@ public class FieldNode extends Typed {
 
     public Modifier[] getModifiers() {
         return modifiers;
+    }
+
+    @Override
+    public void generate(ClassVisitor visitor, BuildContext context) {
+        // `null, null` represents `signature (generics), value`
+        visitor.visitField(Modifier.compose(modifiers), getName(), getResolvedType(), null, null);
     }
 
     @Override

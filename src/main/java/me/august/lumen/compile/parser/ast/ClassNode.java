@@ -40,15 +40,9 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
             interfaces
         );
 
-        for (FieldNode field : fields) {
-            visitor.visitField(
-                Modifier.compose(field.getModifiers()),
-                field.getName(),
-                field.getType(),
-                null,
-                null
-            );
-        }
+        for (FieldNode field : fields) field.generate(visitor, context);
+
+        for (MethodNode method : methods) method.generate(visitor, context);
     }
 
     @Override

@@ -16,46 +16,29 @@ import java.nio.file.Paths;
 public class Main {
 
     private static final String SRC =
-        "class Thing : Hi + (Interface) {\n" +
-            "field: String\n" +
-            "def foo: String (bar: qux) {\n" +
-                "2 * 4 / 7\n" +
+        "class Foo {\n" +
+            "def foo: String () {\n" +
+                "var theVar: String = \"Hi\""+
             "}\n" +
         "}";
-
-    private static final String EXPR =
-        "foo(bar(1 + 3))";
 
     public static void main(String[] args) throws Exception {
         Reader reader = new StringReader(SRC);
         Driver driver = new Driver(reader);
 
         Lexer lexer         = driver.phase1Scanning();
-        ProgramNode program = driver.phase2Parsing(lexer).parseMain();
+        ProgramNode program = driver.phase2Parsing(lexer);
 
-        System.out.println(program);
-        saveBytecode(program, args[0]);
+        driver.phase3Resolving(program);
+        driver.phase4Analysis (program);
 
-        testExpr();
+        byte[] bytecode = driver.phase5Bytecode(program);
+
+        saveBytecode(bytecode, args[0]);
     }
 
-    private static void testExpr() {
-        Reader reader = new StringReader(EXPR);
-        Driver driver = new Driver(reader);
-
-        Lexer lexer = driver.phase1Scanning();
-
-        Expression expr = driver.phase2Parsing(lexer).parseExpression();
-        System.out.println(expr);
-    }
-
-    private static void saveBytecode(ProgramNode node, String path) throws IOException {
-        BuildContext context = new Driver.CompileBuildContext();
-        ClassWriter writer   = new ClassWriter(0);
-
-        node.getClassNode().generate(writer, context);
-
-        Files.write(Paths.get(path), writer.toByteArray());
+    private static void saveBytecode(byte[] bytecode, String path) throws IOException {
+        Files.write(Paths.get(path), bytecode);
     }
 
 }

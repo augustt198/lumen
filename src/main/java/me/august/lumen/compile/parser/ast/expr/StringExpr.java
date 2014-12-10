@@ -1,5 +1,8 @@
 package me.august.lumen.compile.parser.ast.expr;
 
+import me.august.lumen.compile.codegen.BuildContext;
+import org.objectweb.asm.MethodVisitor;
+
 public class StringExpr extends TerminalExpression {
 
     private String string;
@@ -18,5 +21,11 @@ public class StringExpr extends TerminalExpression {
     @Override
     public boolean isConstant() {
         return true;
+    }
+
+    @Override
+    public void generate(MethodVisitor visitor, BuildContext context) {
+        // load `string` constant
+        visitor.visitLdcInsn(string);
     }
 }

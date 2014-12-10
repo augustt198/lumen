@@ -2,8 +2,6 @@ package me.august.lumen.compile.resolve.impl;
 
 import me.august.lumen.compile.parser.ast.ImportNode;
 import me.august.lumen.compile.resolve.QualifiedNameResolver;
-import me.august.lumen.compile.resolve.data.ClassData;
-import me.august.lumen.compile.resolve.lookup.DependencyManager;
 
 public class NameResolver implements QualifiedNameResolver {
 
@@ -20,6 +18,12 @@ public class NameResolver implements QualifiedNameResolver {
             if (impt.getPath().endsWith(simpleName)) {
                 fullName = impt.getPath();
             }
+        }
+
+        if (fullName == null) {
+            try {
+                fullName = Class.forName("java.lang." + simpleName).getName();
+            } catch (ClassNotFoundException ignored) {}
         }
         return fullName;
     }
