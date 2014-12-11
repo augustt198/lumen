@@ -192,7 +192,7 @@ public class Parser {
             type = next().expectType(IDENTIFIER).getContent();
             next(); // consume type
         } else {
-            type = "V";
+            type = "void";
         }
 
         current.expectType(L_PAREN);

@@ -17,8 +17,8 @@ public class Main {
 
     private static final String SRC =
         "class Foo {\n" +
-            "def foo: String () {\n" +
-                "var theVar: String = \"Hi\""+
+            "def foo() {\n" +
+                "var s: String = \"Hi\"\n"+
             "}\n" +
         "}";
 

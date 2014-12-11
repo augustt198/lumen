@@ -55,6 +55,11 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
         method.visitEnd();
     }
 
+    @Override
+    public void setResolvedType(String resolvedType) {
+        super.setResolvedType(resolvedType == null ? "void" : resolvedType);
+    }
+
     public Map<String, String> getParameters() {
         return parameters;
     }
