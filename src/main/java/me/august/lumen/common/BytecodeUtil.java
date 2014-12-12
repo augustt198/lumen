@@ -1,5 +1,6 @@
 package me.august.lumen.common;
 
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
@@ -9,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class BytecodeUtil {
+public final class BytecodeUtil implements Opcodes {
 
     private static final Map<String, Integer> OPCODES  = new HashMap<>();
     private static final Map<String, Integer> ACC_MODS = new HashMap<>();
@@ -134,6 +135,33 @@ public final class BytecodeUtil {
             case "short":   return Type.SHORT_TYPE;
             case "void":    return Type.VOID_TYPE;
             default:        return Type.getType("L" + string.replace('.', '/') + ";");
+        }
+    }
+
+    public static void pushInt(MethodVisitor method, int num) {
+        // we can use a iconst_<i>
+        if (num >= -1 && num <= 5) {
+            int opcode;
+            switch (num) {
+                case -1: opcode = ICONST_M1; break;
+                case  0: opcode = ICONST_0;  break;
+                case  1: opcode = ICONST_1;  break;
+                case  2: opcode = ICONST_2;  break;
+                case  3: opcode = ICONST_3;  break;
+                case  4: opcode = ICONST_4;  break;
+                case  5: opcode = ICONST_5;  break;
+                default: opcode = -1;
+            }
+            method.visitInsn(opcode);
+        // in byte range, use bipush
+        } else if (num >= Byte.MIN_VALUE && num <= Byte.MAX_VALUE) {
+            method.visitIntInsn(BIPUSH, num);
+        // in short range, use sipush
+        } else if (num >= Short.MIN_VALUE && num <= Short.MAX_VALUE) {
+            method.visitIntInsn(SIPUSH, num);
+        // load constant
+        } else {
+            method.visitLdcInsn(num);
         }
     }
 }

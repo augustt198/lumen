@@ -1,5 +1,6 @@
 package me.august.lumen.compile.parser.ast.expr;
 
+import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.codegen.BuildContext;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -22,7 +23,7 @@ public class NumExpr extends TerminalExpression {
     // TODO make it work for other numeric types
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
-        visitor.visitIntInsn(Opcodes.SIPUSH, (int) value);
+        BytecodeUtil.pushInt(visitor, (int) value);
     }
 
     @Override
