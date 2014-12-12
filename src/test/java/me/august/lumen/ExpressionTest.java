@@ -4,7 +4,7 @@ import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.NumExpr;
-import me.august.lumen.compile.parser.ast.expr.eval.TernaryExpr;
+import me.august.lumen.compile.parser.ast.expr.TernaryExpr;
 import me.august.lumen.compile.scanner.Lexer;
 import org.junit.Assert;
 import org.junit.Test;

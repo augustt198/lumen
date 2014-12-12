@@ -7,7 +7,7 @@ import me.august.lumen.compile.parser.ast.code.IfStatement;
 import me.august.lumen.compile.parser.ast.code.VarDeclaration;
 import me.august.lumen.compile.parser.ast.code.WhileStatement;
 import me.august.lumen.compile.parser.ast.expr.*;
-import me.august.lumen.compile.parser.ast.expr.eval.TernaryExpr;
+import me.august.lumen.compile.parser.ast.expr.TernaryExpr;
 import me.august.lumen.compile.scanner.Lexer;
 import me.august.lumen.compile.scanner.Op;
 import me.august.lumen.compile.scanner.Token;
