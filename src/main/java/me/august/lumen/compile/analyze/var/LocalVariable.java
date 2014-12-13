@@ -19,12 +19,12 @@ public class LocalVariable implements Variable, Opcodes {
 
     @Override
     public void generateGetCode(MethodVisitor m) {
-        m.visitVarInsn(ALOAD, index);
+        m.visitVarInsn(ILOAD, index); // TODO add types
     }
 
     @Override
     public void generateSetCode(MethodVisitor m, Consumer<MethodVisitor> insn) {
         insn.accept(m);
-        m.visitVarInsn(ASTORE, index);
+        m.visitVarInsn(ISTORE, index); // TODO add types
     }
 }

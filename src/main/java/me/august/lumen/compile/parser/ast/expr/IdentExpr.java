@@ -1,6 +1,8 @@
 package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.compile.analyze.var.Variable;
+import me.august.lumen.compile.codegen.BuildContext;
+import org.objectweb.asm.MethodVisitor;
 
 public class IdentExpr extends TerminalExpression {
 
@@ -27,6 +29,11 @@ public class IdentExpr extends TerminalExpression {
 
     public void setRef(Variable ref) {
         this.ref = ref;
+    }
+
+    @Override
+    public void generate(MethodVisitor visitor, BuildContext context) {
+        ref.generateGetCode(visitor);
     }
 
     @Override

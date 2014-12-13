@@ -56,6 +56,5 @@ public class VarDeclaration extends Typed implements CodeBlock {
         int index = ref.getIndex();
         // store expression at index
         visitor.visitVarInsn(BytecodeUtil.storeInstruction(type), index);
-        int opcode = BytecodeUtil.storeInstruction(type);
     }
 }

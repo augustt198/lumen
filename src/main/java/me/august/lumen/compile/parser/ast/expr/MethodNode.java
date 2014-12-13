@@ -51,7 +51,7 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
         method.visitCode();
         body.generate(method, context);
         method.visitInsn(Opcodes.RETURN);
-        method.visitMaxs(1, 2); // TODO fix this...
+
         method.visitEnd();
     }
 

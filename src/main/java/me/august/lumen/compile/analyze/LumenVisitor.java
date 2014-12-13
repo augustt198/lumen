@@ -78,7 +78,8 @@ public class LumenVisitor extends ASTVisitor {
 
     @Override
     public void visitIdentifier(IdentExpr expr) {
-        expr.setRef(getVariable(expr.getIdentifier()));
+        Variable var = getVariable(expr.getIdentifier());
+        expr.setRef(var);
     }
 
     /**

@@ -17,6 +17,11 @@ public interface Expression extends CodeBlock, VisitorConsumer {
         throw new UnsupportedOperationException();
     }
 
+    // for evaluating constant expressions
+    default void evaluate() {
+        if (!isConstant()) throw new UnsupportedOperationException("This expression is not constant");
+    }
+
     default void accept(ASTVisitor visitor) {
         if (this instanceof IdentExpr) {
             visitor.visitIdentifier((IdentExpr) this);

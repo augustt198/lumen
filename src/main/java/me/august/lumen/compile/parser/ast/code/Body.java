@@ -46,7 +46,9 @@ public class Body implements CodeBlock, VisitorConsumer {
         visitor.visitBody(this);
         for (CodeBlock code : children) {
             if (code instanceof VarDeclaration) {
-                visitor.visitVar((VarDeclaration) code);
+                VarDeclaration var = (VarDeclaration) code;
+                visitor.visitVar(var);
+                if (var.getDefaultValue() != null) var.getDefaultValue().accept(visitor);
             } else if (code instanceof Body) {
                 ((Body) code).accept(visitor);
             } else if (code instanceof Expression) {
