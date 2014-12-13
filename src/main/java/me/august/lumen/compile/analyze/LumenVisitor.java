@@ -1,5 +1,6 @@
 package me.august.lumen.compile.analyze;
 
+import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.analyze.var.Variable;
@@ -9,6 +10,7 @@ import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.code.Body;
 import me.august.lumen.compile.parser.ast.code.VarDeclaration;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
+import org.objectweb.asm.Type;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,10 +47,12 @@ public class LumenVisitor extends ASTVisitor {
     @Override
     public void visitField(FieldNode field) {
         Scope scope = scopes.lastElement();
+
+        Type type = BytecodeUtil.fromNamedType(field.getResolvedType());
         scope.addVariable(field.getName(), new ClassVariable(
             className,
             field.getName(),
-            field.getType()
+            type
         ));
     }
 
@@ -71,7 +75,8 @@ public class LumenVisitor extends ASTVisitor {
     public void visitVar(VarDeclaration var) {
         Scope scope = scopes.lastElement();
 
-        LocalVariable ref = new LocalVariable(nextLocalIndex());
+        Type type = BytecodeUtil.fromNamedType(var.getResolvedType());
+        LocalVariable ref = new LocalVariable(nextLocalIndex(), type);
         scope.addVariable(var.getName(), ref);
         var.setRef(ref);
     }

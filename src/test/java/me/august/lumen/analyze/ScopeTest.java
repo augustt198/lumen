@@ -13,15 +13,15 @@ public class ScopeTest {
         LumenVisitor visitor = new LumenVisitor(null);
 
         LumenVisitor.Scope lower = visitor.scopes.push(new LumenVisitor.Scope(null));
-        lower.addVariable("a", new LocalVariable(1));
-        lower.addVariable("b", new LocalVariable(2));
+        lower.addVariable("a", new LocalVariable(1, null));
+        lower.addVariable("b", new LocalVariable(2, null));
 
         LumenVisitor.Scope higher = visitor.scopes.push(new LumenVisitor.Scope(null));
 
         Assert.assertEquals("Expected next index of 3", 3, visitor.nextLocalIndex());
 
-        higher.addVariable("c", new LocalVariable(3));
-        higher.addVariable("d", new LocalVariable(4));
+        higher.addVariable("c", new LocalVariable(3, null));
+        higher.addVariable("d", new LocalVariable(4, null));
 
         Assert.assertEquals("Expected next index of 5", 5, visitor.nextLocalIndex());
     }
@@ -31,10 +31,10 @@ public class ScopeTest {
         LumenVisitor visitor = new LumenVisitor(null);
 
         LumenVisitor.Scope lower = visitor.scopes.push(new LumenVisitor.Scope(null));
-        lower.addVariable("foo", new LocalVariable(1));
+        lower.addVariable("foo", new LocalVariable(1, null));
 
         LumenVisitor.Scope higher = visitor.scopes.push(new LumenVisitor.Scope(null));
-        higher.addVariable("bar", new LocalVariable(2));
+        higher.addVariable("bar", new LocalVariable(2, null));
 
         Variable var = visitor.getVariable("foo");
         Assert.assertTrue("Expected local variable named 'foo'", var instanceof LocalVariable);
