@@ -8,19 +8,11 @@ A WIP tiny programming language for the JVM.
 Not much... yet.
 
 **Source**
-```
-class Example : Superclass +(Interface, AnotherInterface) {
-    pv stringField: String
-    
-    pb def foo() {
-        var hello: String = "Hello, world!"
-    }
-}
-```
+![](http://i.imgur.com/CDVLnc9.png)
 
 **Generated <code><strong>class</strong></code> file** (decompiled in IntelliJ)
 
-![](http://i.imgur.com/mRJZR5l.png)
+![](http://i.imgur.com/Kjzz3RU.png)
 
 
 #### To Do
