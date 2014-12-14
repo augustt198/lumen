@@ -1,11 +1,10 @@
 package me.august.lumen.compile;
 
-import me.august.lumen.compile.analyze.LumenVisitor;
+import me.august.lumen.compile.analyze.VariableVisitor;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.error.SourceException;
 import me.august.lumen.compile.error.SourcePositionProvider;
 import me.august.lumen.compile.parser.Parser;
-import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.resolve.LumenTypeVisitor;
 import me.august.lumen.compile.resolve.impl.NameResolver;
@@ -42,7 +41,7 @@ public class Driver {
     }
 
     public ProgramNode phase4Analysis(ProgramNode program) {
-        LumenVisitor visitor = new LumenVisitor(context);
+        VariableVisitor visitor = new VariableVisitor(context);
         program.accept(visitor);
 
         return program;

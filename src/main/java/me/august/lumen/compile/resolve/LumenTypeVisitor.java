@@ -1,7 +1,6 @@
 package me.august.lumen.compile.resolve;
 
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.resolve.impl.NameResolver;
 
 public class LumenTypeVisitor extends TypeVisitor {
@@ -15,8 +14,7 @@ public class LumenTypeVisitor extends TypeVisitor {
     }
 
     @Override
-    public void visitType(Typed node) {
-        String resolved = resolver.getQualifiedName(node.getType());
-        node.setResolvedType(resolved);
+    public String resolveType(String simple) {
+        return resolver.getQualifiedName(simple);
     }
 }

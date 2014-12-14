@@ -1,6 +1,6 @@
 package me.august.lumen.analyze;
 
-import me.august.lumen.compile.analyze.LumenVisitor;
+import me.august.lumen.compile.analyze.VariableVisitor;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.analyze.var.Variable;
@@ -51,7 +51,7 @@ public class VariableResolutionTest {
 
     @Test
     public void testVariableResolution() {
-        LumenVisitor visitor = new LumenVisitor(null);
+        VariableVisitor visitor = new VariableVisitor(null);
         PROGRAM.accept(visitor);
 
         Variable var = IDENT_EXPR.getRef();

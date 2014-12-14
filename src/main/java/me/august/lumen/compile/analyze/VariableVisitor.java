@@ -10,13 +10,14 @@ import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.code.Body;
 import me.august.lumen.compile.parser.ast.code.VarDeclaration;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
+import me.august.lumen.compile.parser.ast.expr.MethodNode;
 import org.objectweb.asm.Type;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-public class LumenVisitor extends ASTVisitor {
+public class VariableVisitor extends ASTVisitor {
     public static class Scope {
         Map<String, Variable> vars = new HashMap<>();
         String className;
@@ -31,10 +32,15 @@ public class LumenVisitor extends ASTVisitor {
     }
 
     public Stack<Scope> scopes = new Stack<>();
+
+    // name-variable pairs that have yet to be added
+    // to a scope. Currently used for adding method
+    // parameters to the method body that follows.
+    Map<String, Variable> pending = new HashMap<>();
     BuildContext build;
     String className;
 
-    public LumenVisitor(BuildContext build) {
+    public VariableVisitor(BuildContext build) {
         this.build = build;
     }
 
@@ -57,8 +63,25 @@ public class LumenVisitor extends ASTVisitor {
     }
 
     @Override
+    public void visitMethod(MethodNode method) {
+        super.visitMethod(method);
+
+        // local variable index
+        int idx = 0;
+        for (Map.Entry<String, String> entry : method.getParameters().entrySet()) {
+            idx++;
+            Type type = BytecodeUtil.fromNamedType(entry.getValue());
+            pending.put(entry.getKey(), new LocalVariable(idx, type));
+        }
+    }
+
+    @Override
     public void visitBody(Body body) {
-        scopes.push(new Scope(className));
+        Scope scope = new Scope(className);
+        scopes.push(scope);
+        for (String name : pending.keySet()) {
+            scope.addVariable(name, pending.remove(name));
+        }
     }
 
     @Override
