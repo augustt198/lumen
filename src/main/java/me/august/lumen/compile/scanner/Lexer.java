@@ -142,6 +142,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             else if (Chars.isDigit(c)) return nextNumber(c);
             else if (c == '"') return nextString();
 
+            else if (c == '#') consumeComment();
             else if (c == ' ' || c == '\r' || c == '\n' || c == '\t') {
                 continue; // ignore whitespace chars
             } else {
@@ -425,6 +426,10 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             return token(NE);
         }
         return token(NEG);
+    }
+
+    private void consumeComment() {
+        while (read() != '\n');
     }
 
     /**
