@@ -8,6 +8,10 @@ import me.august.lumen.compile.parser.ast.code.VarDeclaration;
 import me.august.lumen.compile.parser.ast.code.WhileStatement;
 import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.parser.ast.expr.TernaryExpr;
+import me.august.lumen.compile.parser.ast.expr.owned.ClassExpr;
+import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
+import me.august.lumen.compile.parser.ast.expr.owned.OwnedField;
+import me.august.lumen.compile.parser.ast.expr.owned.OwnedMethod;
 import me.august.lumen.compile.scanner.Lexer;
 import me.august.lumen.compile.scanner.Op;
 import me.august.lumen.compile.scanner.Token;
@@ -648,18 +652,49 @@ public class Parser {
             next().expectType(R_PAREN);
             return expr;
         } else if (token.getType() == Type.IDENTIFIER) {
-            next();
-            String name = token.getContent();
-            if (peek().getType() != L_PAREN) { // not a method
-                return new IdentExpr(name);
-            } else {
-                next(); // consume ')'
-                return new MethodCallExpr(name, parseExpressionList(Type.COMMA, Type.R_PAREN));
-            }
-
+            return parseIdentSequence(null);
         } else {
             throw new RuntimeException("Unexpected token: " + token);
         }
+    }
+
+
+    /**
+     * Parses a sequence of connected identifiers.
+     * Examples:
+     * foo.bar.qux
+     * foo().bar().qux
+     * foo::bar().qux
+     *
+     * @param owner The sequence's last owner
+     * @return Parsed expression
+     */
+    private Expression parseIdentSequence(OwnedExpr owner) {
+        String str = next().expectType(Type.IDENTIFIER).getContent();
+
+        Type peek = peek().getType();
+
+        OwnedExpr currentExpr;
+        if (peek == Type.L_PAREN) {
+            next(); // consume '('
+            List<Expression> params = parseExpressionList(Type.COMMA, Type.R_PAREN);
+            currentExpr = new OwnedMethod(str, params, owner);
+        } else {
+            currentExpr = owner == null ? new IdentExpr(str) : new OwnedField(str, owner);
+        }
+
+        peek = peek().getType();
+        if (peek == Type.DOT) {
+            next(); // consume '.'
+
+            return parseIdentSequence(currentExpr);
+        } else if (peek == Type.SEP) {
+            next(); // consume '::'
+
+            if (currentExpr instanceof OwnedMethod) throw new RuntimeException("Tried to use separator on method");
+            return parseIdentSequence(new ClassExpr(str));
+        }
+        return currentExpr;
     }
 
     /**

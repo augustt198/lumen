@@ -4,51 +4,54 @@ import me.august.lumen.common.Modifier;
 
 public enum Type {
 
-    L_PAREN,
-    R_PAREN,
+    L_PAREN,    // (
+    R_PAREN,    // )
 
-    L_BRACE,
-    R_BRACE,
+    L_BRACE,    // {
+    R_BRACE,    // }
 
-    L_BRACKET,
-    R_BRACKET,
+    L_BRACKET,  // [
+    R_BRACKET,  // ]
 
-    COMMA,
-    COLON,
+    COMMA,      // ,
+    DOT,        // .
+    COLON,      // :
 
-    QUESTION,
+    SEP,        // ::
+
+    QUESTION,   // ?
 
     // =========
     // operators
     // =========
 
-    NEG, // ! (negate)
+    NEG,        // !
 
-    LOGIC_OR,
-    LOGIC_AND,
+    LOGIC_OR,   // ||
+    LOGIC_AND,  // &&
 
-    BIT_OR,
-    BIT_XOR,
-    BIT_AND,
+    BIT_OR,     // |
+    BIT_XOR,    // ^
+    BIT_AND,    // &
 
-    EQ,
-    NE,
+    EQ,         // ==
+    NE,         // !=
 
-    LT,
-    GT,
-    LTE,
-    GTE,
+    LT,         // <
+    GT,         // >
+    LTE,        // <=
+    GTE,        // >=
 
-    SH_L,   // <<
-    SH_R,   // >>
-    U_SH_R, // >>>
+    SH_L,       // <<
+    SH_R,       // >>
+    U_SH_R,     // >>>
 
-    PLUS,
-    MIN,
-    MULT,
-    DIV,
+    PLUS,       // +
+    MIN,        // -
+    MULT,       // *
+    DIV,        // /
 
-    ASSIGN,
+    ASSIGN,     // =
 
     // literals
     NUMBER,

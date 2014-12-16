@@ -120,7 +120,8 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             else if (c == ']') return token(R_BRACKET);
 
             else if (c == ',') return token(COMMA);
-            else if (c == ':') return token(COLON);
+            else if (c == '.') return token(DOT);
+            else if (c == ':') return nextColonOrSep();
 
             else if (c == '+') return token(PLUS);
             else if (c == '-') return token(MIN);
@@ -428,7 +429,26 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return token(NEG);
     }
 
+    /**
+     * Precondition: last read char was ':'
+     * <p>
+     * Differentiates the following tokens:
+     * COLON  ":"
+     * SEP    "::"
+     *
+     * @return The next COLON or SEP type token
+     */
+    private Token nextColonOrSep() {
+        if (peek() == ':') {
+            read(); // consume ':'
+            return token(SEP);
+        }
+        return token(COLON);
+    }
+
     private void consumeComment() {
+        // read until we hit a newline
+        // noinspection StatementWithEmptyBody
         while (read() != '\n');
     }
 

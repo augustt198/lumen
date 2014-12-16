@@ -9,9 +9,13 @@ import org.objectweb.asm.MethodVisitor;
 
 public interface Expression extends CodeBlock, VisitorConsumer {
 
-    Expression[] getChildren();
-    Op getOp();
-    boolean isConstant();
+    default Op getOp() {
+        return null;
+    }
+
+    default boolean isConstant() {
+        return false;
+    }
 
     default void generate(MethodVisitor visitor, BuildContext context) {
         throw new UnsupportedOperationException();
@@ -39,6 +43,10 @@ public interface Expression extends CodeBlock, VisitorConsumer {
                 child.accept(visitor);
             }
         }
+    }
+
+    default Expression[] getChildren() {
+        return new Expression[]{};
     }
 
 }

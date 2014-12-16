@@ -2,9 +2,10 @@ package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.compile.analyze.var.Variable;
 import me.august.lumen.compile.codegen.BuildContext;
+import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
 import org.objectweb.asm.MethodVisitor;
 
-public class IdentExpr extends TerminalExpression {
+public class IdentExpr extends TerminalExpression implements OwnedExpr {
 
     private String identifier;
 
