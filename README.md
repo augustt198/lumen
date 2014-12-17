@@ -1,5 +1,7 @@
 # lumen
 
+![](https://travis-ci.org/augustt198/lumen.svg?branch=master)
+
 A WIP tiny programming language for the JVM.
 
 
