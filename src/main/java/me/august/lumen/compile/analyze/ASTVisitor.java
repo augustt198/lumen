@@ -3,8 +3,8 @@ package me.august.lumen.compile.analyze;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
-import me.august.lumen.compile.parser.ast.code.Body;
-import me.august.lumen.compile.parser.ast.code.VarDeclaration;
+import me.august.lumen.compile.parser.ast.stmt.Body;
+import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
 
@@ -24,7 +24,7 @@ public abstract class ASTVisitor {
     public void visitBody(Body body) {}
     public void visitBodyEnd(Body body) {}
 
-    public void visitVar(VarDeclaration var) {}
+    public void visitVar(VarStmt var) {}
 
     public void visitIdentifier(IdentExpr expr) {}
 

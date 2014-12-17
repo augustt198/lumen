@@ -8,8 +8,8 @@ import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.ImportNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
-import me.august.lumen.compile.parser.ast.code.Body;
-import me.august.lumen.compile.parser.ast.code.VarDeclaration;
+import me.august.lumen.compile.parser.ast.stmt.Body;
+import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
 import org.junit.Assert;
@@ -40,7 +40,7 @@ public class VariableResolutionTest {
         MethodNode method = new MethodNode("foo", "void");
 
         Body body = new Body();
-        body.addCode(new VarDeclaration("the_var", "boolean"));
+        body.addCode(new VarStmt("the_var", "boolean"));
         body.addCode(IDENT_EXPR = new IdentExpr("the_var"));
         body.addCode(FIELD_IDENT_EXPR = new IdentExpr("field"));
 

@@ -7,8 +7,8 @@ import me.august.lumen.compile.analyze.var.Variable;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
-import me.august.lumen.compile.parser.ast.code.Body;
-import me.august.lumen.compile.parser.ast.code.VarDeclaration;
+import me.august.lumen.compile.parser.ast.stmt.Body;
+import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
 import org.objectweb.asm.Type;
@@ -95,7 +95,7 @@ public class VariableVisitor extends ASTVisitor {
     }
 
     @Override
-    public void visitVar(VarDeclaration var) {
+    public void visitVar(VarStmt var) {
         Scope scope = scopes.lastElement();
 
         Type type = BytecodeUtil.fromNamedType(var.getResolvedType());

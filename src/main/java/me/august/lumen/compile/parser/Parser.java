@@ -2,10 +2,10 @@ package me.august.lumen.compile.parser;
 
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.parser.ast.*;
-import me.august.lumen.compile.parser.ast.code.Body;
-import me.august.lumen.compile.parser.ast.code.IfStatement;
-import me.august.lumen.compile.parser.ast.code.VarDeclaration;
-import me.august.lumen.compile.parser.ast.code.WhileStatement;
+import me.august.lumen.compile.parser.ast.stmt.Body;
+import me.august.lumen.compile.parser.ast.stmt.IfStmt;
+import me.august.lumen.compile.parser.ast.stmt.VarStmt;
+import me.august.lumen.compile.parser.ast.stmt.WhileStmt;
 import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.parser.ast.expr.TernaryExpr;
 import me.august.lumen.compile.parser.ast.expr.owned.ClassExpr;
@@ -308,7 +308,7 @@ public class Parser {
      *
      * @return The variable declaration AST node
      */
-    private VarDeclaration parseLocalVariable() {
+    private VarStmt parseLocalVariable() {
         String name = next().expectType(IDENTIFIER).getContent();
         next().expectType(COLON);
         String type = next().expectType(IDENTIFIER).getContent();
@@ -319,7 +319,7 @@ public class Parser {
             value = parseExpression();
         }
 
-        return new VarDeclaration(name, type, value);
+        return new VarStmt(name, type, value);
     }
 
     /**
@@ -331,18 +331,18 @@ public class Parser {
      *
      * @return The if-statement AST node
      */
-    private IfStatement parseIfStatement() {
+    private IfStmt parseIfStatement() {
         Expression condition = parseExpression();
         Body body = parseBody();
 
-        List<IfStatement.ElseIf> elseIfs = new ArrayList<>();
+        List<IfStmt.ElseIf> elseIfs = new ArrayList<>();
         Body elseBody = null;
 
         while (peek().getType() == ELSE_KEYWORD) {
             next(); // consume 'else'
             if (peek().getType() == IF_KEYWORD) {
                 next(); // consume 'if'
-                IfStatement.ElseIf elseIf = new IfStatement.ElseIf(
+                IfStmt.ElseIf elseIf = new IfStmt.ElseIf(
                     parseExpression(), parseBody()
                 );
                 elseIfs.add(elseIf);
@@ -352,7 +352,7 @@ public class Parser {
             }
         }
 
-        return new IfStatement(condition, body, elseIfs, elseBody);
+        return new IfStmt(condition, body, elseIfs, elseBody);
     }
 
     /**
@@ -362,11 +362,11 @@ public class Parser {
      *
      * @return The while-statement AST node
      */
-    private WhileStatement parseWhileStatement() {
+    private WhileStmt parseWhileStatement() {
         Expression condition = parseExpression();
         Body body = parseBody();
 
-        return new WhileStatement(condition, body);
+        return new WhileStmt(condition, body);
     }
 
     /**

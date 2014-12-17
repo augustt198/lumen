@@ -3,7 +3,7 @@ package me.august.lumen.compile.resolve;
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.Typed;
-import me.august.lumen.compile.parser.ast.code.VarDeclaration;
+import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
 
 import java.util.Map;
@@ -20,7 +20,7 @@ public abstract class TypeVisitor extends ASTVisitor {
     }
 
     @Override
-    public void visitVar(VarDeclaration var) {
+    public void visitVar(VarStmt var) {
         visitType(var);
     }
 

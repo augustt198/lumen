@@ -1,4 +1,4 @@
-package me.august.lumen.compile.parser.ast.code;
+package me.august.lumen.compile.parser.ast.stmt;
 
 import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.analyze.var.LocalVariable;
@@ -9,18 +9,18 @@ import me.august.lumen.compile.parser.ast.expr.Expression;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-public class VarDeclaration extends Typed implements CodeBlock {
+public class VarStmt extends Typed implements CodeBlock {
 
     private String name;
     private Expression defaultValue;
 
     private LocalVariable ref;
 
-    public VarDeclaration(String name, String type) {
+    public VarStmt(String name, String type) {
         this(name, type, null);
     }
 
-    public VarDeclaration(String name, String type, Expression defaultValue) {
+    public VarStmt(String name, String type, Expression defaultValue) {
         super(type);
         this.name = name;
         this.defaultValue = defaultValue;

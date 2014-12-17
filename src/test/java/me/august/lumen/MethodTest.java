@@ -3,9 +3,9 @@ package me.august.lumen;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.ProgramNode;
-import me.august.lumen.compile.parser.ast.code.IfStatement;
-import me.august.lumen.compile.parser.ast.code.VarDeclaration;
-import me.august.lumen.compile.parser.ast.code.WhileStatement;
+import me.august.lumen.compile.parser.ast.stmt.IfStmt;
+import me.august.lumen.compile.parser.ast.stmt.VarStmt;
+import me.august.lumen.compile.parser.ast.stmt.WhileStmt;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
 import org.junit.Test;
 
@@ -28,9 +28,9 @@ public class MethodTest {
         assertEquals("Expected one code block", method.getBody().getChildren().size(), 1);
 
         CodeBlock code = method.getBody().getChildren().get(0);
-        assertTrue("Expected code to be a variable declaration", code instanceof VarDeclaration);
+        assertTrue("Expected code to be a variable declaration", code instanceof VarStmt);
 
-        VarDeclaration var = (VarDeclaration) code;
+        VarStmt var = (VarStmt) code;
         assertEquals("Expected variable name to be 'bar'", "bar", var.getName());
         assertEquals("Expected variable type to be 'String'", "String", var.getType());
         assertTrue("Expected variable to have default value", var.getDefaultValue() != null);
@@ -49,12 +49,12 @@ public class MethodTest {
 
     private void testIfStatement(MethodNode method, int idx) {
         CodeBlock code = method.getBody().getChildren().get(idx);
-        assertTrue("Expected if statement", code instanceof IfStatement);
+        assertTrue("Expected if statement", code instanceof IfStmt);
     }
 
     private void testWhileStatement(MethodNode method, int idx) {
         CodeBlock code = method.getBody().getChildren().get(idx);
-        assertTrue("Expected while statement", code instanceof WhileStatement);
+        assertTrue("Expected while statement", code instanceof WhileStmt);
     }
 
 }

@@ -7,7 +7,7 @@ import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.ClassCodeGen;
 import me.august.lumen.compile.parser.ast.Typed;
-import me.august.lumen.compile.parser.ast.code.Body;
+import me.august.lumen.compile.parser.ast.stmt.Body;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;

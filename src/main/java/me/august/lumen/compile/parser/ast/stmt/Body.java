@@ -1,4 +1,4 @@
-package me.august.lumen.compile.parser.ast.code;
+package me.august.lumen.compile.parser.ast.stmt;
 
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
@@ -45,8 +45,8 @@ public class Body implements CodeBlock, VisitorConsumer {
     public void accept(ASTVisitor visitor) {
         visitor.visitBody(this);
         for (CodeBlock code : children) {
-            if (code instanceof VarDeclaration) {
-                VarDeclaration var = (VarDeclaration) code;
+            if (code instanceof VarStmt) {
+                VarStmt var = (VarStmt) code;
                 visitor.visitVar(var);
                 if (var.getDefaultValue() != null) var.getDefaultValue().accept(visitor);
             } else if (code instanceof Body) {
