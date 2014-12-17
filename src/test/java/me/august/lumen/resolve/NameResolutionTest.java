@@ -1,10 +1,10 @@
 package me.august.lumen.resolve;
 
-import junit.framework.Assert;
 import me.august.lumen.compile.parser.ast.ImportNode;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.resolve.LumenTypeVisitor;
 import me.august.lumen.compile.resolve.impl.NameResolver;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class NameResolutionTest {

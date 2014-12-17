@@ -1,10 +1,7 @@
 package me.august.lumen;
 
 import me.august.lumen.compile.parser.Parser;
-import me.august.lumen.compile.parser.ast.expr.Expression;
-import me.august.lumen.compile.parser.ast.expr.IdentExpr;
-import me.august.lumen.compile.parser.ast.expr.NumExpr;
-import me.august.lumen.compile.parser.ast.expr.TernaryExpr;
+import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.scanner.Lexer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,6 +45,40 @@ public class ExpressionTest {
         Assert.assertEquals(ternary.getCondition(), new IdentExpr("foo"));
         Assert.assertEquals(ternary.getTrueExpr(), new IdentExpr("bar"));
         Assert.assertEquals(ternary.getFalseExpr(), new IdentExpr("baz"));
+    }
+
+    @Test
+    public void testStaticFieldExpression() {
+        Expression expr = parseExpression("Foo::bar");
+
+        Assert.assertTrue(expr instanceof StaticField);
+
+        StaticField field = (StaticField) expr;
+        Assert.assertEquals("Foo", field.getClassName());
+        Assert.assertEquals("bar", field.getFieldName());
+    }
+
+    @Test
+    public void testStaticMethodExpression() {
+        Expression expr = parseExpression("Foo::bar()");
+
+        Assert.assertTrue(expr instanceof StaticMethodCall);
+
+        StaticMethodCall method = (StaticMethodCall) expr;
+        Assert.assertEquals("Foo", method.getClassName());
+        Assert.assertEquals("bar", method.getMethodName());
+        Assert.assertTrue(method.getParameters().isEmpty());
+    }
+
+    @Test
+    public void testOwnedExpressions() {
+        Expression expr;
+
+        expr = parseExpression("foo.bar.qux");
+        Assert.assertTrue(expr instanceof IdentExpr);
+
+        expr = parseExpression("foo.bar.qux()");
+        Assert.assertTrue(expr instanceof MethodCallExpr);
     }
 
     private Expression parseExpression(String src) {
