@@ -8,11 +8,17 @@ import org.objectweb.asm.MethodVisitor;
 public class IdentExpr extends TerminalExpression implements OwnedExpr {
 
     private String identifier;
+    private Expression owner;
 
     private Variable ref;
 
     public IdentExpr(String identifier) {
         this.identifier = identifier;
+    }
+
+    public IdentExpr(String identifier, Expression owner) {
+        this.identifier = identifier;
+        this.owner = owner;
     }
 
     @Override
@@ -38,6 +44,11 @@ public class IdentExpr extends TerminalExpression implements OwnedExpr {
     }
 
     @Override
+    public Expression getOwner() {
+        return owner;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -58,6 +69,8 @@ public class IdentExpr extends TerminalExpression implements OwnedExpr {
     public String toString() {
         return "IdentExpr{" +
             "identifier='" + identifier + '\'' +
+            ", owner=" + owner +
+            ", ref=" + ref +
             '}';
     }
 }

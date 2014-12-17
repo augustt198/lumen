@@ -631,70 +631,78 @@ public class Parser {
     private Expression parseComponent() {
         Token token = peek();
 
+        Expression expr;
         if (token.getType() == Type.STRING) {
             next();
-            return new StringExpr(token.getContent());
+            expr =  new StringExpr(token.getContent());
         } else if (token.getType() == Type.NUMBER) {
             next();
-            return new NumExpr(Double.parseDouble(token.getContent()));
+            expr = new NumExpr(Double.parseDouble(token.getContent()));
         } else if (token.getType() == Type.TRUE) {
             next();
-            return new TrueExpr();
+            expr = new TrueExpr();
         } else if (token.getType() == Type.FALSE) {
             next();
-            return new FalseExpr();
+            expr =  new FalseExpr();
         } else if (token.getType() == Type.NULL) {
             next();
-            return new NullExpr();
+            expr = new NullExpr();
         } else if (token.getType() == Type.L_PAREN) {
             next();
-            Expression expr = parseExpression();
+            expr = parseExpression();
             next().expectType(R_PAREN);
-            return expr;
         } else if (token.getType() == Type.IDENTIFIER) {
-            return parseIdentSequence(null);
+            next();
+            String ident = token.getContent();
+
+            // separated with '::'
+            if (peek().getType() == Type.SEP) {
+                next(); // consume '::'
+                String memberName = next().expectType(Type.IDENTIFIER).getContent();
+                if (peek().getType() == Type.L_PAREN) {
+                    next();
+                    List<Expression> params = parseExpressionList(Type.COMMA, Type.R_PAREN);
+                    expr = new StaticMethodCall(ident, memberName, params);
+                } else {
+                    expr = new StaticField(ident, memberName);
+                }
+            } else {
+                expr = identOrMethod(ident);
+            }
         } else {
             throw new RuntimeException("Unexpected token: " + token);
         }
+
+        while (peek().getType() == Type.DOT) {
+            next(); // consume '.'
+            expr = parseMember(expr);
+        }
+
+        return expr;
     }
 
+    private Expression parseMember(Expression owner) {
+        String ident = next().expectType(Type.IDENTIFIER).getContent();
 
-    /**
-     * Parses a sequence of connected identifiers.
-     * Examples:
-     * foo.bar.qux
-     * foo().bar().qux
-     * foo::bar().qux
-     *
-     * @param owner The sequence's last owner
-     * @return Parsed expression
-     */
-    private Expression parseIdentSequence(OwnedExpr owner) {
-        String str = next().expectType(Type.IDENTIFIER).getContent();
-
-        Type peek = peek().getType();
-
-        OwnedExpr currentExpr;
-        if (peek == Type.L_PAREN) {
+        if (peek().getType() == Type.L_PAREN) {
             next(); // consume '('
             List<Expression> params = parseExpressionList(Type.COMMA, Type.R_PAREN);
-            currentExpr = new OwnedMethod(str, params, owner);
+            return new MethodCallExpr(ident, params, owner);
         } else {
-            currentExpr = owner == null ? new IdentExpr(str) : new OwnedField(str, owner);
+            return new IdentExpr(ident, owner);
         }
+    }
 
-        peek = peek().getType();
-        if (peek == Type.DOT) {
-            next(); // consume '.'
+    private Expression identOrMethod(String ident) {
+        Expression expr;
 
-            return parseIdentSequence(currentExpr);
-        } else if (peek == Type.SEP) {
-            next(); // consume '::'
-
-            if (currentExpr instanceof OwnedMethod) throw new RuntimeException("Tried to use separator on method");
-            return parseIdentSequence(new ClassExpr(str));
+        if (peek().getType() == Type.L_PAREN) {
+            next(); // consume '('
+            List<Expression> params = parseExpressionList(Type.COMMA, Type.R_PAREN);
+            return new MethodCallExpr(ident, params);
+        } else {
+            return new IdentExpr(ident);
         }
-        return currentExpr;
     }
 
     /**
