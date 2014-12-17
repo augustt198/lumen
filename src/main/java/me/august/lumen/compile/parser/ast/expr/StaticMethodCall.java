@@ -1,8 +1,10 @@
 package me.august.lumen.compile.parser.ast.expr;
 
+import me.august.lumen.compile.parser.ast.Typed;
+
 import java.util.List;
 
-public class StaticMethodCall implements Expression {
+public class StaticMethodCall extends Typed implements Expression {
 
     private String className;
     private String methodName;
@@ -10,6 +12,7 @@ public class StaticMethodCall implements Expression {
     private List<Expression> parameters;
 
     public StaticMethodCall(String className, String methodName, List<Expression> parameters) {
+        super(className);
         this.className = className;
         this.methodName = methodName;
         this.parameters = parameters;

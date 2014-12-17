@@ -110,6 +110,7 @@ public enum Type {
             case ACC_PRIVATE:   return Modifier.PRIVATE;
             case ACC_PROTECTED: return Modifier.PRIVATE;
             case ACC_PACKAGE:   return Modifier.PACKAGE_PRIVATE;
+            case STATIC_KEYWORD:return Modifier.STATIC;
             default:            return null;
         }
     }
