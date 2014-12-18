@@ -4,6 +4,8 @@ import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.CodeBlock;
+import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
+import me.august.lumen.compile.parser.ast.expr.owned.OwnedField;
 import me.august.lumen.compile.scanner.Op;
 import org.objectweb.asm.MethodVisitor;
 
@@ -27,8 +29,22 @@ public interface Expression extends CodeBlock, VisitorConsumer {
     }
 
     default void accept(ASTVisitor visitor) {
+        if (this instanceof OwnedExpr) {
+            OwnedExpr owned = (OwnedExpr) this;
+            if (owned.getOwner() != null) {
+                ((OwnedExpr) this).getTail().accept(visitor);
+                return;
+            }
+        }
+
         if (this instanceof IdentExpr) {
             visitor.visitIdentifier((IdentExpr) this);
+            return;
+        } else if (this instanceof StaticField) {
+            visitor.visitStaticField((StaticField) this);
+            return;
+        } else if (this instanceof StaticMethodCall) {
+            visitor.visitStaticMethodCall((StaticMethodCall) this);
             return;
         }
 

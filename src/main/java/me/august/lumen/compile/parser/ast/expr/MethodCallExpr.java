@@ -1,6 +1,9 @@
 package me.august.lumen.compile.parser.ast.expr;
 
+import jdk.internal.org.objectweb.asm.Opcodes;
+import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
+import org.objectweb.asm.MethodVisitor;
 
 import java.util.List;
 
@@ -29,6 +32,25 @@ public class MethodCallExpr extends TerminalExpression implements OwnedExpr {
     @Override
     public boolean isConstant() {
         return false;
+    }
+
+    @Override
+    public void generate(MethodVisitor visitor, BuildContext context) {
+        if (getOwner() != null) getOwner().generate(visitor, context);
+
+        // load actual arguments
+        for (Expression expr : params) expr.generate(visitor, context);
+
+        visitor.visitMethodInsn(
+            Opcodes.INVOKEVIRTUAL,
+            // TODO fix null param (class in which method is found)
+            null,
+            identifier,
+            // TODO ew. We need more information about the method!
+            "()V",
+            // TODO actually detect interfaces
+            false
+        );
     }
 
     @Override
