@@ -12,6 +12,8 @@ import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
+import me.august.lumen.compile.resolve.LumenTypeVisitor;
+import me.august.lumen.compile.resolve.impl.NameResolver;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -47,6 +49,8 @@ public class VariableResolutionTest {
         method.setBody(body);
 
         cls.getMethods().add(method);
+
+        PROGRAM.accept(new LumenTypeVisitor(new NameResolver(), null));
     }
 
     @Test

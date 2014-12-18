@@ -16,7 +16,7 @@ public abstract class TypeVisitor extends ASTVisitor {
     protected abstract String resolveType(String simple);
 
     public void visitType(Typed type) {
-        type.setResolvedType(type.getType());
+        type.setResolvedType(resolveType(type.getType()));
     }
 
     @Override
