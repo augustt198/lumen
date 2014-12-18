@@ -3,7 +3,6 @@ package me.august.lumen.compile.parser.ast;
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.resolve.impl.NameResolver;
-import me.august.lumen.compile.resolve.lookup.DependencyManager;
 
 import java.util.Arrays;
 

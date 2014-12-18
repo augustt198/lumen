@@ -1,9 +1,9 @@
 package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.common.BytecodeUtil;
+import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
-import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.ClassCodeGen;
 import me.august.lumen.compile.parser.ast.Typed;
@@ -13,7 +13,9 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
 

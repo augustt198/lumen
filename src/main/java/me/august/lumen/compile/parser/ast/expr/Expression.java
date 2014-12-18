@@ -5,7 +5,6 @@ import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
-import me.august.lumen.compile.parser.ast.expr.owned.OwnedField;
 import me.august.lumen.compile.scanner.Op;
 import org.objectweb.asm.MethodVisitor;
 

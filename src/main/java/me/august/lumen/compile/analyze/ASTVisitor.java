@@ -3,12 +3,12 @@ package me.august.lumen.compile.analyze;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
+import me.august.lumen.compile.parser.ast.expr.IdentExpr;
+import me.august.lumen.compile.parser.ast.expr.MethodNode;
 import me.august.lumen.compile.parser.ast.expr.StaticField;
 import me.august.lumen.compile.parser.ast.expr.StaticMethodCall;
 import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
-import me.august.lumen.compile.parser.ast.expr.IdentExpr;
-import me.august.lumen.compile.parser.ast.expr.MethodNode;
 
 public abstract class ASTVisitor {
 

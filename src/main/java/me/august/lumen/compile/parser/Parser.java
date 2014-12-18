@@ -2,16 +2,11 @@ package me.august.lumen.compile.parser;
 
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.parser.ast.*;
+import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.parser.ast.stmt.IfStmt;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.parser.ast.stmt.WhileStmt;
-import me.august.lumen.compile.parser.ast.expr.*;
-import me.august.lumen.compile.parser.ast.expr.TernaryExpr;
-import me.august.lumen.compile.parser.ast.expr.owned.ClassExpr;
-import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
-import me.august.lumen.compile.parser.ast.expr.owned.OwnedField;
-import me.august.lumen.compile.parser.ast.expr.owned.OwnedMethod;
 import me.august.lumen.compile.scanner.Lexer;
 import me.august.lumen.compile.scanner.Op;
 import me.august.lumen.compile.scanner.Token;

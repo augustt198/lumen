@@ -1,8 +1,8 @@
 package me.august.lumen.compile.analyze.var;
 
 import me.august.lumen.common.BytecodeUtil;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import java.util.function.Consumer;
