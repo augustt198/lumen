@@ -12,6 +12,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Skeletal representation of a Java class.
+ *
+ * Stores class version, methods, fields,
+ * super class, and implemented interfaces.
+ */
 public class ClassData extends BaseData {
 
     int version;
@@ -89,6 +95,22 @@ public class ClassData extends BaseData {
 
     public String[] getInterfaces() {
         return interfaces;
+    }
+
+    public FieldData getField(String name) {
+        for (FieldData field : fields) {
+            if (field.getName().equals(name)) return field;
+        }
+        return null;
+    }
+
+    public List<MethodData> getMethods(String name) {
+        List<MethodData> found = new ArrayList<>();
+        for (MethodData method : methods) {
+            if (method.getName().equals(name)) found.add(method);
+        }
+
+        return found;
     }
 
     private static class ClassAnalyzer extends ClassVisitor {
