@@ -1,6 +1,6 @@
 # lumen
 
-![](https://travis-ci.org/augustt198/lumen.svg?branch=master)
+[![Travis CI Badge](https://travis-ci.org/augustt198/lumen.svg?branch=master)](https://travis-ci.org/augustt198/lumen)
 
 A WIP tiny programming language for the JVM.
 
@@ -17,9 +17,4 @@ Not much... yet.
 ![](http://i.imgur.com/Kjzz3RU.png)
 
 
-#### To Do
-- [x] Finish field parsing (done)
-- [ ] Method parsing (doing)
-- [ ] Semantic analysis
-- [ ] Type checker
-- [ ] Bytecode generation
+#### [Trello Board](https://trello.com/b/CHPN7kR1/lumen)
