@@ -7,6 +7,7 @@ import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
 import me.august.lumen.compile.scanner.Op;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Type;
 
 public interface Expression extends CodeBlock, VisitorConsumer {
 
@@ -62,6 +63,10 @@ public interface Expression extends CodeBlock, VisitorConsumer {
 
     default Expression[] getChildren() {
         return new Expression[]{};
+    }
+
+    default Type expressionType() {
+        return Type.VOID_TYPE;
     }
 
 }
