@@ -14,7 +14,7 @@ public interface OwnedExpr extends Expression {
         Expression expr = getOwner();
         if (expr == null) return this;
 
-        while (expr instanceof OwnedExpr) {
+        while (expr instanceof OwnedExpr && ((OwnedExpr) expr).getOwner() != null) {
             expr = ((OwnedExpr) expr).getTail();
         }
 
