@@ -1,9 +1,9 @@
 package me.august.lumen.compile.parser.ast.expr;
 
-import jdk.internal.org.objectweb.asm.Opcodes;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 import java.util.List;
 
