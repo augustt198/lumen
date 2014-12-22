@@ -5,7 +5,7 @@ import org.objectweb.asm.Type;
 
 import java.util.function.Consumer;
 
-public interface Variable {
+public interface VariableReference {
 
     Type getType();
     void generateGetCode(MethodVisitor m);

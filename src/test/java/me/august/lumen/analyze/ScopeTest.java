@@ -2,7 +2,7 @@ package me.august.lumen.analyze;
 
 import me.august.lumen.compile.analyze.VariableVisitor;
 import me.august.lumen.compile.analyze.var.LocalVariable;
-import me.august.lumen.compile.analyze.var.Variable;
+import me.august.lumen.compile.analyze.var.VariableReference;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ public class ScopeTest {
         VariableVisitor.Scope higher = visitor.scopes.push(new VariableVisitor.Scope(null));
         higher.addVariable("bar", new LocalVariable(2, null));
 
-        Variable var = visitor.getVariable("foo");
+        VariableReference var = visitor.getVariable("foo");
         Assert.assertTrue("Expected local variable named 'foo'", var instanceof LocalVariable);
         LocalVariable local = (LocalVariable) var;
         Assert.assertEquals(local.getIndex(), 1);

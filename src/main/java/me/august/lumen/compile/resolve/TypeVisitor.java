@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * A common visitor pattern for all AST nodes associated with a type.
  */
-public abstract class TypeVisitor extends ASTVisitor {
+public abstract class TypeVisitor implements ASTVisitor {
 
     protected abstract String resolveType(String simple);
 
@@ -39,15 +39,5 @@ public abstract class TypeVisitor extends ASTVisitor {
             String resolved = resolveType(entry.getValue());
             method.getParameters().put(entry.getKey(), resolved);
         }
-    }
-
-    @Override
-    public void visitStaticField(StaticField sf) {
-        visitType(sf);
-    }
-
-    @Override
-    public void visitStaticMethodCall(StaticMethodCall smc) {
-        visitType(smc);
     }
 }

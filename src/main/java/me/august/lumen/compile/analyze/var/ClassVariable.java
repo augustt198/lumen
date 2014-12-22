@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 // Massively simplified - will only get/set fields
 // of `this` (current Object)
-public class ClassVariable implements Variable, Opcodes {
+public class ClassVariable implements VariableReference, Opcodes {
 
     String cls;
     private String name;

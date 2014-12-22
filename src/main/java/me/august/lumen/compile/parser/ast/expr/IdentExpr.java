@@ -1,6 +1,6 @@
 package me.august.lumen.compile.parser.ast.expr;
 
-import me.august.lumen.compile.analyze.var.Variable;
+import me.august.lumen.compile.analyze.var.VariableReference;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
 import org.objectweb.asm.MethodVisitor;
@@ -10,7 +10,7 @@ public class IdentExpr extends TerminalExpression implements OwnedExpr {
     private String identifier;
     private Expression owner;
 
-    private Variable ref;
+    private VariableReference ref;
 
     public IdentExpr(String identifier) {
         this.identifier = identifier;
@@ -30,11 +30,11 @@ public class IdentExpr extends TerminalExpression implements OwnedExpr {
         return identifier;
     }
 
-    public Variable getRef() {
+    public VariableReference getRef() {
         return ref;
     }
 
-    public void setRef(Variable ref) {
+    public void setRef(VariableReference ref) {
         this.ref = ref;
     }
 

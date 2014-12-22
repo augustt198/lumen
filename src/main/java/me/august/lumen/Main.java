@@ -1,5 +1,6 @@
 package me.august.lumen;
 
+
 import me.august.lumen.compile.CompileCommandLine;
 
 public class Main {

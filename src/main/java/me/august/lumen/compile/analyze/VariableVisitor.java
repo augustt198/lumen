@@ -3,12 +3,14 @@ package me.august.lumen.compile.analyze;
 import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
-import me.august.lumen.compile.analyze.var.Variable;
+import me.august.lumen.compile.analyze.var.VariableReference;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
+import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
+import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
 import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import org.objectweb.asm.Type;
@@ -17,16 +19,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-public class VariableVisitor extends ASTVisitor {
+public class VariableVisitor implements ASTVisitor {
     public static class Scope {
-        Map<String, Variable> vars = new HashMap<>();
+        Map<String, VariableReference> vars = new HashMap<>();
         String className;
 
         public Scope(String className) {
             this.className = className;
         }
 
-        public void addVariable(String name, Variable var) {
+        public void addVariable(String name, VariableReference var) {
             vars.put(name, var);
         }
     }
@@ -36,7 +38,7 @@ public class VariableVisitor extends ASTVisitor {
     // name-variable pairs that have yet to be added
     // to a scope. Currently used for adding method
     // parameters to the method body that follows.
-    Map<String, Variable> pending = new HashMap<>();
+    Map<String, VariableReference> pending = new HashMap<>();
     BuildContext build;
     String className;
 
@@ -64,8 +66,6 @@ public class VariableVisitor extends ASTVisitor {
 
     @Override
     public void visitMethod(MethodNode method) {
-        super.visitMethod(method);
-
         // local variable index
         int idx = 0;
         for (Map.Entry<String, String> entry : method.getParameters().entrySet()) {
@@ -105,8 +105,20 @@ public class VariableVisitor extends ASTVisitor {
     }
 
     @Override
-    public void visitIdentifier(IdentExpr expr) {
-        Variable var = getVariable(expr.getIdentifier());
+    public void visitExpression(Expression expr) {
+        if (expr instanceof IdentExpr) {
+            handleIdent((IdentExpr) expr);
+        } else if (expr instanceof OwnedExpr) {
+            OwnedExpr owned = (OwnedExpr) expr;
+            Expression tail = owned.getTail();
+            if (tail instanceof IdentExpr) {
+                handleIdent((IdentExpr) tail);
+            }
+        }
+    }
+
+    private void handleIdent(IdentExpr expr) {
+        VariableReference var = getVariable(expr.getIdentifier());
         expr.setRef(var);
     }
 
@@ -129,7 +141,7 @@ public class VariableVisitor extends ASTVisitor {
 
         int max = -1;
 
-        for (Variable var : scope.vars.values()) {
+        for (VariableReference var : scope.vars.values()) {
             if (var instanceof LocalVariable) {
                 LocalVariable local = (LocalVariable) var;
                 if (local.getIndex() > max) max = local.getIndex();
@@ -145,9 +157,9 @@ public class VariableVisitor extends ASTVisitor {
         }
     }
 
-    public Variable getVariable(String name) {
+    public VariableReference getVariable(String name) {
         for (int i = scopes.size() - 1; i >= 0; i--) {
-            Variable var = scopes.get(i).vars.get(name);
+            VariableReference var = scopes.get(i).vars.get(name);
             if (var != null) return var;
         }
         return null;

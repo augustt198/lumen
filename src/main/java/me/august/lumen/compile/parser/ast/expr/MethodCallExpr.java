@@ -1,9 +1,9 @@
 package me.august.lumen.compile.parser.ast.expr;
 
+import me.august.lumen.compile.analyze.method.MethodReference;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 
 import java.util.List;
 
@@ -14,6 +14,8 @@ public class MethodCallExpr extends TerminalExpression implements OwnedExpr {
 
     private Expression owner;
 
+    private MethodReference ref;
+
     public MethodCallExpr(String identifier, List<Expression> params) {
         this(identifier, params, null);
     }
@@ -22,6 +24,22 @@ public class MethodCallExpr extends TerminalExpression implements OwnedExpr {
         this.identifier = identifier;
         this.params = params;
         this.owner = owner;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public List<Expression> getParams() {
+        return params;
+    }
+
+    public MethodReference getRef() {
+        return ref;
+    }
+
+    public void setRef(MethodReference ref) {
+        this.ref = ref;
     }
 
     @Override
@@ -41,16 +59,7 @@ public class MethodCallExpr extends TerminalExpression implements OwnedExpr {
         // load actual arguments
         for (Expression expr : params) expr.generate(visitor, context);
 
-        visitor.visitMethodInsn(
-            Opcodes.INVOKEVIRTUAL,
-            // TODO fix null param (class in which method is found)
-            null,
-            identifier,
-            // TODO ew. We need more information about the method!
-            "()V",
-            // TODO actually detect interfaces
-            false
-        );
+        ref.generate(visitor, context);
     }
 
     @Override

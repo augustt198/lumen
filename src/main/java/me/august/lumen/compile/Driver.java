@@ -8,6 +8,7 @@ import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.resolve.LumenTypeVisitor;
 import me.august.lumen.compile.resolve.impl.NameResolver;
+import me.august.lumen.compile.resolve.lookup.DependencyManager;
 import me.august.lumen.compile.scanner.Lexer;
 import org.objectweb.asm.ClassWriter;
 
@@ -34,7 +35,8 @@ public class Driver {
 
     public ProgramNode phase3Resolving(ProgramNode program) {
         NameResolver resolver = new NameResolver(program.getImports());
-        LumenTypeVisitor typeVisitor = new LumenTypeVisitor(resolver, context);
+        DependencyManager deps = new DependencyManager();
+        LumenTypeVisitor typeVisitor = new LumenTypeVisitor(resolver, deps, context);
         program.accept(typeVisitor);
 
         return program;

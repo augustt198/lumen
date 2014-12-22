@@ -12,6 +12,8 @@ public class StaticField extends Typed implements Expression {
     private String className;
     private String fieldName;
 
+    private Type type;
+
     public StaticField(String className, String fieldName) {
         super(className);
         this.className = className;
@@ -26,6 +28,15 @@ public class StaticField extends Typed implements Expression {
         return fieldName;
     }
 
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    @Override
+    public Type expressionType() {
+        return type;
+    }
+
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
         Type type = BytecodeUtil.fromNamedType(getResolvedType());
@@ -33,8 +44,7 @@ public class StaticField extends Typed implements Expression {
             Opcodes.GETSTATIC,
             type.getInternalName(),
             fieldName,
-            // TODO fix null param (resolve field type)
-            null
+            type.getDescriptor()
         );
     }
 }

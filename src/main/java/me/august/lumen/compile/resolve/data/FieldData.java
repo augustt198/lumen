@@ -1,17 +1,18 @@
 package me.august.lumen.compile.resolve.data;
 
 import me.august.lumen.common.Modifier;
+import org.objectweb.asm.Type;
 
 public class FieldData extends BaseData {
 
-    String type;
+    private Type type;
 
-    public FieldData(String name, String type, Modifier... modifiers) {
+    public FieldData(String name, Type type, Modifier... modifiers) {
         super(name, modifiers);
         this.type = type;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 

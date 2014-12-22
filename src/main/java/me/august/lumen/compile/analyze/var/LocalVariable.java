@@ -7,7 +7,7 @@ import org.objectweb.asm.Type;
 
 import java.util.function.Consumer;
 
-public class LocalVariable implements Variable, Opcodes {
+public class LocalVariable implements VariableReference, Opcodes {
 
     private int index;
     private Type type;

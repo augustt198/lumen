@@ -9,6 +9,10 @@ public class DependencyManager implements ClassLookup {
 
     List<ClassLookup> sources = new ArrayList<>();
 
+    public DependencyManager() {
+        sources.add(new BuiltinClassLookup());
+    }
+
     public void addSource(ClassLookup lookup) {
         sources.add(lookup);
     }
