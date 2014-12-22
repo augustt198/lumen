@@ -1,6 +1,7 @@
 package me.august.lumen.compile.resolve;
 
 import me.august.lumen.compile.analyze.ASTVisitor;
+import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
@@ -37,5 +38,10 @@ public abstract class TypeVisitor implements ASTVisitor {
             String resolved = resolveType(entry.getValue());
             method.getParameters().put(entry.getKey(), resolved);
         }
+    }
+
+    @Override
+    public void visitClass(ClassNode cls) {
+        cls.setSuperClass(resolveType(cls.getSuperClass()));
     }
 }

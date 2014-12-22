@@ -27,7 +27,8 @@ public class NameResolver implements QualifiedNameResolver {
 
     @Override
     public String getQualifiedName(String simpleName) {
-        if (keywordTypes.contains(simpleName)) return simpleName;
+        if (keywordTypes.contains(simpleName) || isAlreadyQualified(simpleName))
+            return simpleName;
 
         String fullName = null;
         for (ImportNode impt : imports) {
@@ -42,5 +43,15 @@ public class NameResolver implements QualifiedNameResolver {
             } catch (ClassNotFoundException ignored) {}
         }
         return fullName;
+    }
+
+    // TODO add support for external classes
+    private boolean isAlreadyQualified(String name) {
+        try {
+            Class.forName(name);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 }
