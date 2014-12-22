@@ -106,11 +106,8 @@ public class VariableVisitor implements ASTVisitor {
 
     @Override
     public void visitExpression(Expression expr) {
-        if (expr instanceof IdentExpr) {
-            handleIdent((IdentExpr) expr);
-        } else if (expr instanceof OwnedExpr) {
-            OwnedExpr owned = (OwnedExpr) expr;
-            Expression tail = owned.getTail();
+        if (expr instanceof OwnedExpr) {
+            Expression tail = ((OwnedExpr) expr).getTail();
             if (tail instanceof IdentExpr) {
                 handleIdent((IdentExpr) tail);
             }

@@ -29,36 +29,14 @@ public interface Expression extends CodeBlock, VisitorConsumer {
     }
 
     default void accept(ASTVisitor visitor) {
-        if (this instanceof OwnedExpr) {
-            OwnedExpr owned = (OwnedExpr) this;
-            if (owned.getOwner() != null) {
-                ((OwnedExpr) this).getTail().accept(visitor);
-                return;
-            }
-        }
-
-        if (this instanceof IdentExpr) {
-            visitor.visitIdentifier((IdentExpr) this);
-            return;
-        } else if (this instanceof StaticField) {
-            visitor.visitStaticField((StaticField) this);
-            return;
-        } else if (this instanceof StaticMethodCall) {
-            visitor.visitStaticMethodCall((StaticMethodCall) this);
-            return;
-        }
-
-        Expression[] children = getChildren();
-        if (children == null || children.length == 0) return;
-
-        for (Expression child : children) {
-            if (child == null) continue;
-            if (child instanceof IdentExpr) {
-                visitor.visitIdentifier((IdentExpr) child);
-            } else {
+        if (getChildren() != null) {
+            for (Expression child : getChildren()) {
+                if (child == null) continue;
                 child.accept(visitor);
             }
         }
+
+        visitor.visitExpression(this);
     }
 
     default Expression[] getChildren() {
@@ -68,5 +46,7 @@ public interface Expression extends CodeBlock, VisitorConsumer {
     default Type expressionType() {
         return Type.VOID_TYPE;
     }
+
+
 
 }

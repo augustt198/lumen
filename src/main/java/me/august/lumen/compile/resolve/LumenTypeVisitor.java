@@ -74,6 +74,7 @@ public class LumenTypeVisitor extends TypeVisitor {
             if (method == null)
                 throw new RuntimeException("Unknown method for types: " + methodName);
 
+            call.setReturnType(method.getReturnType());
             Type methodType = methodType(method.getReturnType(), call.getParameters());
 
             call.setRef((v, c) -> {
@@ -84,8 +85,10 @@ public class LumenTypeVisitor extends TypeVisitor {
                     methodType.getDescriptor(),
                     false
                 );
-                if (method.getReturnType().getSort() != Type.VOID)
-                    v.visitInsn(Opcodes.POP);
+                // We don't have enough information to do this.
+                // (we could be setting a variable/field)
+                // if (method.getReturnType().getSort() != Type.VOID)
+                //    v.visitInsn(Opcodes.POP);
             });
         }
 

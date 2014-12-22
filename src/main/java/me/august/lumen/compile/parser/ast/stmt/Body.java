@@ -52,7 +52,7 @@ public class Body implements CodeBlock, VisitorConsumer {
             } else if (code instanceof Body) {
                 ((Body) code).accept(visitor);
             } else if (code instanceof Expression) {
-                visitor.visitExpression((Expression) code);
+                ((Expression) code).accept(visitor);
             }
         }
         visitor.visitBodyEnd(this);
