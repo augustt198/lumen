@@ -56,6 +56,23 @@ public class Parser {
     }
 
     /**
+     * If the next token type (obtained via the peek()
+     * method) is equal to the given token type, the
+     * token is read and true is returned. Otherwise,
+     * false is returned.
+     *
+     * @param tokenType The token type to accept
+     * @return Whether or not the next token is of type tokenType
+     */
+    private boolean accept(Type tokenType) {
+        if (peek().getType() == tokenType) {
+            next();
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * The main parsing entry point.
      * Accepts the following grammar:
      * (import | class)*
@@ -162,9 +179,7 @@ public class Parser {
 
         Expression defaultValue = null;
         // field has default value
-        if (peek().getType() == Type.ASSIGN) {
-            next(); // consume
-
+        if (accept(ASSIGN)) {
             defaultValue = parseExpression();
         }
 
@@ -259,8 +274,7 @@ public class Parser {
      * @return The class's superclass
      */
     private String parseSuperclass() {
-        if (peek().getType() == COLON) {
-            next();
+        if (accept(COLON)) {
             return next().expectType(IDENTIFIER, "Expected superclass identifier").getContent();
         } else {
             return OBJECT_CLASS_NAME;
@@ -273,8 +287,7 @@ public class Parser {
      * @return The class's implemented interfaces
      */
     private String[] parseInterfaces() {
-        if (peek().getType() == PLUS) {
-            next();
+        if (accept(PLUS)) {
             List<String> interfaces = new ArrayList<>();
 
             next().expectType(L_PAREN);
@@ -309,8 +322,7 @@ public class Parser {
         String type = next().expectType(IDENTIFIER).getContent();
 
         Expression value = null;
-        if (peek().getType() == ASSIGN) {
-            next(); // consume '='
+        if (accept(ASSIGN)) {
             value = parseExpression();
         }
 
@@ -333,10 +345,8 @@ public class Parser {
         List<IfStmt.ElseIf> elseIfs = new ArrayList<>();
         Body elseBody = null;
 
-        while (peek().getType() == ELSE_KEYWORD) {
-            next(); // consume 'else'
-            if (peek().getType() == IF_KEYWORD) {
-                next(); // consume 'if'
+        while (accept(ELSE_KEYWORD)) {
+            if (accept(IF_KEYWORD)) {
                 IfStmt.ElseIf elseIf = new IfStmt.ElseIf(
                     parseExpression(), parseBody()
                 );
@@ -382,8 +392,7 @@ public class Parser {
     private Expression parseAssignment() {
         Expression left = parseTernary();
 
-        if (peek().getType() == Type.ASSIGN) {
-            next(); // consume '='
+        if (accept(ASSIGN)) {
             if (!(left instanceof IdentExpr))
                 throw new RuntimeException("Left hand expression must be an identifier");
             Expression right = parseExpression();
@@ -403,9 +412,7 @@ public class Parser {
     private Expression parseTernary() {
         Expression condition = parseLogicOr();
 
-        if (peek().getType() == Type.QUESTION) {
-            next(); // consume '?'
-
+        if (accept(QUESTION)) {
             Expression trueExpr = parseExpression();
             next().expectType(Type.COLON);
             Expression falseExpr = parseExpression();
@@ -425,9 +432,7 @@ public class Parser {
     private Expression parseLogicOr() {
         Expression left = parseLogicAnd();
 
-        if (peek().getType() == Type.LOGIC_OR) {
-            next(); // consume LOGIC_OR token
-
+        if (accept(LOGIC_OR)) {
             Expression right = parseExpression();
             return new OrExpr(left, right);
         }
@@ -444,9 +449,7 @@ public class Parser {
     private Expression parseLogicAnd() {
         Expression left = parseBitOr();
 
-        if (peek().getType() == Type.LOGIC_AND) {
-            next(); // consume LOGIC_OR token
-
+        if (accept(LOGIC_AND)) {
             Expression right = parseExpression();
             return new AndExpr(left, right);
         }
@@ -463,9 +466,7 @@ public class Parser {
     private Expression parseBitOr() {
         Expression left = parseBitXor();
 
-        if (peek().getType() == Type.BIT_OR) {
-            next(); // consume BIT_OR token
-
+        if (accept(BIT_OR)) {
             Expression right = parseExpression();
             return new BitOrExpr(left, right);
         }
@@ -482,9 +483,7 @@ public class Parser {
     private Expression parseBitXor() {
         Expression left = parseBitAnd();
 
-        if (peek().getType() == Type.BIT_XOR) {
-            next(); // consume BIT_XOR token
-
+        if (accept(BIT_XOR)) {
             Expression right = parseExpression();
             return new BitXorExpr(left, right);
         }
@@ -501,9 +500,7 @@ public class Parser {
     private Expression parseBitAnd() {
         Expression left = parseEq();
 
-        if (peek().getType() == Type.BIT_AND) {
-            next(); // consume BIT_AND token
-
+        if (accept(BIT_AND)) {
             Expression right = parseExpression();
             return new BitAndExpr(left, right);
         }
@@ -657,13 +654,11 @@ public class Parser {
             String ident = token.getContent();
 
             // separated with '::'
-            if (peek().getType() == Type.SEP) {
-                next(); // consume '::'
+            if (accept(SEP)) {
                 String memberName = next().expectType(Type.IDENTIFIER).getContent();
 
                 // create a either a static field or static method call
-                if (peek().getType() == Type.L_PAREN) {
-                    next();
+                if (accept(L_PAREN)) {
                     List<Expression> params = parseExpressionList(Type.COMMA, Type.R_PAREN);
                     expr = new StaticMethodCall(ident, memberName, params);
                 } else {
@@ -677,8 +672,7 @@ public class Parser {
             throw new RuntimeException("Unexpected token: " + token);
         }
 
-        while (peek().getType() == Type.DOT) {
-            next(); // consume '.'
+        while (accept(DOT)) {
             expr = parseMember(expr);
         }
 
@@ -694,8 +688,7 @@ public class Parser {
     private Expression parseMember(Expression owner) {
         String ident = next().expectType(Type.IDENTIFIER).getContent();
 
-        if (peek().getType() == Type.L_PAREN) {
-            next(); // consume '('
+        if (accept(L_PAREN)) {
             List<Expression> params = parseExpressionList(Type.COMMA, Type.R_PAREN);
             return new MethodCallExpr(ident, params, owner);
         } else {
@@ -714,13 +707,16 @@ public class Parser {
      * @return A method call or identifier expression
      */
     private Expression identOrMethod(String ident) {
-        if (peek().getType() == Type.L_PAREN) {
-            next(); // consume '('
-            List<Expression> params = parseExpressionList(Type.COMMA, Type.R_PAREN);
+        if (accept(L_PAREN)) {
+            List<Expression> params = parseExpressionList(Type.COMMA, R_PAREN);
             return new MethodCallExpr(ident, params);
         } else {
             return new IdentExpr(ident);
         }
+    }
+
+    private List<Expression> parseExpressionList() {
+        return parseExpressionList(COMMA, R_PAREN);
     }
 
     /**
@@ -736,9 +732,7 @@ public class Parser {
 
         while (peek().getType() != end) {
             exprs.add(parseExpression());
-            if (peek().getType() == delim) {
-                next();
-            }
+            accept(delim);
         }
         next().expectType(end);
 
