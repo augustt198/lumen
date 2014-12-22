@@ -7,3 +7,7 @@ target/
 
 # Build stuff
 out/
+
+# Operating System
+.DS_Store
+Thumbs.db
