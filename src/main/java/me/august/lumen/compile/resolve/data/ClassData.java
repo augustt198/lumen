@@ -12,6 +12,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Skeletal representation of a Java class.
+ *
+ * Stores class version, methods, fields,
+ * super class, and implemented interfaces.
+ */
 public class ClassData extends BaseData {
 
     int version;
@@ -44,10 +50,10 @@ public class ClassData extends BaseData {
         data.interfaces = interfaces;
 
         for (Method method : cls.getDeclaredMethods()) {
-            String returnType = BytecodeUtil.toType(method.getReturnType());
-            String[] paramsTypes = new String[method.getParameterCount()];
+            Type returnType = Type.getType(method.getReturnType());
+            Type[] paramsTypes = new Type[method.getParameterCount()];
             for (int i = 0; i < paramsTypes.length; i++) {
-                paramsTypes[i] = BytecodeUtil.toType(method.getParameterTypes()[i]);
+                paramsTypes[i] = Type.getType(method.getParameterTypes()[i]);
             }
             Modifier[] mods = Modifier.fromAccess(method.getModifiers());
             MethodData methodData = new MethodData(method.getName(), returnType, paramsTypes, mods);
@@ -57,7 +63,8 @@ public class ClassData extends BaseData {
 
         for (Field field : cls.getDeclaredFields()) {
             Modifier[] mods = Modifier.fromAccess(field.getModifiers());
-            FieldData fieldData = new FieldData(field.getName(), field.getType().toString(), mods);
+            Type type = Type.getType(field.getType());
+            FieldData fieldData = new FieldData(field.getName(), type, mods);
 
             data.getFields().add(fieldData);
         }
@@ -91,6 +98,22 @@ public class ClassData extends BaseData {
         return interfaces;
     }
 
+    public FieldData getField(String name) {
+        for (FieldData field : fields) {
+            if (field.getName().equals(name)) return field;
+        }
+        return null;
+    }
+
+    public List<MethodData> getMethods(String name) {
+        List<MethodData> found = new ArrayList<>();
+        for (MethodData method : methods) {
+            if (method.getName().equals(name)) found.add(method);
+        }
+
+        return found;
+    }
+
     private static class ClassAnalyzer extends ClassVisitor {
         ClassData classData;
 
@@ -110,12 +133,16 @@ public class ClassData extends BaseData {
         @Override
         public MethodVisitor visitMethod(int access, String name, String desc, String sig, String[] exs) {
             String[] parts = desc.split("\\)"); // ["(params...", returnType]
-            String returnType = parts[1];
+            Type returnType = Type.getType(parts[1]);
 
             // remove first char '('
             String[] params = BytecodeUtil.splitTypes(parts[0].substring(1, parts[0].length()));
+            Type[] types = new Type[params.length];
+            for (int i = 0; i < types.length; i++) {
+                types[i] = Type.getType(params[i]);
+            }
 
-            MethodData method = new MethodData(name, returnType, params, Modifier.fromAccess(access));
+            MethodData method = new MethodData(name, returnType, types, Modifier.fromAccess(access));
             classData.methods.add(method);
 
             return super.visitMethod(access, name, desc, sig, exs);
@@ -123,7 +150,8 @@ public class ClassData extends BaseData {
 
         @Override
         public FieldVisitor visitField(int access, String name, String desc, String sig, Object val) {
-            FieldData field = new FieldData(name, desc, Modifier.fromAccess(access));
+            Type type = Type.getType(desc);
+            FieldData field = new FieldData(name, type, Modifier.fromAccess(access));
             classData.fields.add(field);
             return super.visitField(access, name, desc, sig, val);
         }

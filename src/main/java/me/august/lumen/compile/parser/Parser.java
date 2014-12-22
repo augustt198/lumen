@@ -2,16 +2,11 @@ package me.august.lumen.compile.parser;
 
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.parser.ast.*;
+import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.parser.ast.stmt.IfStmt;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.parser.ast.stmt.WhileStmt;
-import me.august.lumen.compile.parser.ast.expr.*;
-import me.august.lumen.compile.parser.ast.expr.TernaryExpr;
-import me.august.lumen.compile.parser.ast.expr.owned.ClassExpr;
-import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
-import me.august.lumen.compile.parser.ast.expr.owned.OwnedField;
-import me.august.lumen.compile.parser.ast.expr.owned.OwnedMethod;
 import me.august.lumen.compile.scanner.Lexer;
 import me.august.lumen.compile.scanner.Op;
 import me.august.lumen.compile.scanner.Token;
@@ -634,20 +629,26 @@ public class Parser {
         Expression expr;
         if (token.getType() == Type.STRING) {
             next();
+            // set expression to a string literal
             expr =  new StringExpr(token.getContent());
         } else if (token.getType() == Type.NUMBER) {
             next();
+            // set expression to a numeric literal
             expr = new NumExpr(Double.parseDouble(token.getContent()));
         } else if (token.getType() == Type.TRUE) {
             next();
+            // set expression to `true`
             expr = new TrueExpr();
         } else if (token.getType() == Type.FALSE) {
             next();
+            // set expression to `false`
             expr =  new FalseExpr();
         } else if (token.getType() == Type.NULL) {
             next();
+            // set expression to `null`
             expr = new NullExpr();
         } else if (token.getType() == Type.L_PAREN) {
+            // parse a grouped expression within parens
             next();
             expr = parseExpression();
             next().expectType(R_PAREN);
@@ -659,6 +660,8 @@ public class Parser {
             if (peek().getType() == Type.SEP) {
                 next(); // consume '::'
                 String memberName = next().expectType(Type.IDENTIFIER).getContent();
+
+                // create a either a static field or static method call
                 if (peek().getType() == Type.L_PAREN) {
                     next();
                     List<Expression> params = parseExpressionList(Type.COMMA, Type.R_PAREN);
@@ -666,6 +669,7 @@ public class Parser {
                 } else {
                     expr = new StaticField(ident, memberName);
                 }
+            // parse as a normal identifier or method
             } else {
                 expr = identOrMethod(ident);
             }
@@ -681,6 +685,12 @@ public class Parser {
         return expr;
     }
 
+    /**
+     * Parses a member of the given expression (owner).
+     * A member is either a field or method call.
+     * @param owner The given expression
+     * @return A method call or identifier expression belonging to `owner`
+     */
     private Expression parseMember(Expression owner) {
         String ident = next().expectType(Type.IDENTIFIER).getContent();
 
@@ -693,9 +703,17 @@ public class Parser {
         }
     }
 
+    /**
+     * Gets an identifier expression, or method call
+     * expression depending on the syntax used. Assumes
+     * the IDENTIFIER token has already been read. If
+     * the next token is a left paren, a MethodCallExpr
+     * is returned. Otherwise, an IdentExpr is returned.
+     *
+     * @param ident The identifier token content
+     * @return A method call or identifier expression
+     */
     private Expression identOrMethod(String ident) {
-        Expression expr;
-
         if (peek().getType() == Type.L_PAREN) {
             next(); // consume '('
             List<Expression> params = parseExpressionList(Type.COMMA, Type.R_PAREN);

@@ -6,6 +6,7 @@ import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.scanner.Op;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Type;
 
 public interface Expression extends CodeBlock, VisitorConsumer {
 
@@ -27,26 +28,24 @@ public interface Expression extends CodeBlock, VisitorConsumer {
     }
 
     default void accept(ASTVisitor visitor) {
-        if (this instanceof IdentExpr) {
-            visitor.visitIdentifier((IdentExpr) this);
-            return;
-        }
-
-        Expression[] children = getChildren();
-        if (children == null || children.length == 0) return;
-
-        for (Expression child : children) {
-            if (child == null) continue;
-            if (child instanceof IdentExpr) {
-                visitor.visitIdentifier((IdentExpr) child);
-            } else {
+        if (getChildren() != null) {
+            for (Expression child : getChildren()) {
+                if (child == null) continue;
                 child.accept(visitor);
             }
         }
+
+        visitor.visitExpression(this);
     }
 
     default Expression[] getChildren() {
         return new Expression[]{};
     }
+
+    default Type expressionType() {
+        return Type.VOID_TYPE;
+    }
+
+
 
 }

@@ -3,15 +3,15 @@ package me.august.lumen.compile.resolve;
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.Typed;
-import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
+import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 
 import java.util.Map;
 
 /**
  * A common visitor pattern for all AST nodes associated with a type.
  */
-public abstract class TypeVisitor extends ASTVisitor {
+public abstract class TypeVisitor implements ASTVisitor {
 
     protected abstract String resolveType(String simple);
 
@@ -38,5 +38,4 @@ public abstract class TypeVisitor extends ASTVisitor {
             method.getParameters().put(entry.getKey(), resolved);
         }
     }
-
 }

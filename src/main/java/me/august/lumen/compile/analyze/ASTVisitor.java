@@ -3,29 +3,52 @@ package me.august.lumen.compile.analyze;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
+import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
-import me.august.lumen.compile.parser.ast.expr.IdentExpr;
-import me.august.lumen.compile.parser.ast.expr.MethodNode;
 
-public abstract class ASTVisitor {
+/**
+ * Visitor pattern used for traversing the AST.
+ *
+ * Methods must be invoked in this order:
+ * visitProgram
+ *   visitClass
+ *     (
+ *        visitField |
+ *        visitMethod (
+ *           (visitBody ... visitBodyEnd | visitVar | visitExpression)*
+ *        )*
+ *     )*
+ *   visitClassEnd
+ * visitProgramEnd
+ */
+public interface ASTVisitor {
 
-    public void visitProgram(ProgramNode program) {}
-    public void visitProgramEnd(ProgramNode program) {}
+    default void visitProgram(ProgramNode program) {}
+    default void visitProgramEnd(ProgramNode program) {}
 
-    public void visitClass(ClassNode cls) {}
-    public void visitClassEnd(ClassNode cls) {}
+    default void visitClass(ClassNode cls) {}
+    default void visitClassEnd(ClassNode cls) {}
 
-    public void visitField(FieldNode field) {}
+    default void visitField(FieldNode field) {}
 
-    public void visitMethod(MethodNode method) {}
-    public void visitMethodEnd(MethodNode method) {}
+    default void visitMethod(MethodNode method) {}
+    default void visitMethodEnd(MethodNode method) {}
 
-    public void visitBody(Body body) {}
-    public void visitBodyEnd(Body body) {}
+    default void visitBody(Body body) {}
+    default void visitBodyEnd(Body body) {}
 
-    public void visitVar(VarStmt var) {}
+    default void visitVar(VarStmt var) {}
 
-    public void visitIdentifier(IdentExpr expr) {}
+    default void visitExpression(Expression expr) {}
+
+    @Deprecated
+    default void visitIdentifier(IdentExpr expr) {}
+
+    @Deprecated
+    default void visitStaticField(StaticField sf) {}
+
+    @Deprecated
+    default void visitStaticMethodCall(StaticMethodCall sf) {}
 
 }

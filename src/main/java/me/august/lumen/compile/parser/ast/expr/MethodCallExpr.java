@@ -1,6 +1,9 @@
 package me.august.lumen.compile.parser.ast.expr;
 
+import me.august.lumen.compile.analyze.method.MethodReference;
+import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
+import org.objectweb.asm.MethodVisitor;
 
 import java.util.List;
 
@@ -10,6 +13,8 @@ public class MethodCallExpr extends TerminalExpression implements OwnedExpr {
     private List<Expression> params;
 
     private Expression owner;
+
+    private MethodReference ref;
 
     public MethodCallExpr(String identifier, List<Expression> params) {
         this(identifier, params, null);
@@ -21,6 +26,22 @@ public class MethodCallExpr extends TerminalExpression implements OwnedExpr {
         this.owner = owner;
     }
 
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public List<Expression> getParams() {
+        return params;
+    }
+
+    public MethodReference getRef() {
+        return ref;
+    }
+
+    public void setRef(MethodReference ref) {
+        this.ref = ref;
+    }
+
     @Override
     public Expression getOwner() {
         return owner;
@@ -29,6 +50,16 @@ public class MethodCallExpr extends TerminalExpression implements OwnedExpr {
     @Override
     public boolean isConstant() {
         return false;
+    }
+
+    @Override
+    public void generate(MethodVisitor visitor, BuildContext context) {
+        if (getOwner() != null) getOwner().generate(visitor, context);
+
+        // load actual arguments
+        for (Expression expr : params) expr.generate(visitor, context);
+
+        ref.generate(visitor, context);
     }
 
     @Override

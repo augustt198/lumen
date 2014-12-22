@@ -2,6 +2,7 @@ package me.august.lumen;
 
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.expr.*;
+import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
 import me.august.lumen.compile.scanner.Lexer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -74,11 +75,13 @@ public class ExpressionTest {
     public void testOwnedExpressions() {
         Expression expr;
 
-        expr = parseExpression("foo.bar.qux");
+        expr = parseExpression("foo().bar.qux");
         Assert.assertTrue(expr instanceof IdentExpr);
+        Assert.assertTrue(((OwnedExpr) expr).getTail() instanceof MethodCallExpr);
 
         expr = parseExpression("foo.bar.qux()");
         Assert.assertTrue(expr instanceof MethodCallExpr);
+        Assert.assertTrue(((OwnedExpr) expr).getTail() instanceof IdentExpr);
     }
 
     private Expression parseExpression(String src) {

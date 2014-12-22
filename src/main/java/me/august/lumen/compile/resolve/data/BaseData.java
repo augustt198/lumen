@@ -19,4 +19,5 @@ public class BaseData {
     public Modifier[] getModifiers() {
         return modifiers;
     }
+
 }

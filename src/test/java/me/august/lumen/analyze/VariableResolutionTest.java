@@ -3,17 +3,18 @@ package me.august.lumen.analyze;
 import me.august.lumen.compile.analyze.VariableVisitor;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
-import me.august.lumen.compile.analyze.var.Variable;
+import me.august.lumen.compile.analyze.var.VariableReference;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.ImportNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
-import me.august.lumen.compile.parser.ast.stmt.Body;
-import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
+import me.august.lumen.compile.parser.ast.stmt.Body;
+import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.resolve.LumenTypeVisitor;
 import me.august.lumen.compile.resolve.impl.NameResolver;
+import me.august.lumen.compile.resolve.lookup.DependencyManager;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,7 +51,7 @@ public class VariableResolutionTest {
 
         cls.getMethods().add(method);
 
-        PROGRAM.accept(new LumenTypeVisitor(new NameResolver(), null));
+        PROGRAM.accept(new LumenTypeVisitor(new NameResolver(), new DependencyManager(), null));
     }
 
     @Test
@@ -58,7 +59,7 @@ public class VariableResolutionTest {
         VariableVisitor visitor = new VariableVisitor(null);
         PROGRAM.accept(visitor);
 
-        Variable var = IDENT_EXPR.getRef();
+        VariableReference var = IDENT_EXPR.getRef();
         Assert.assertTrue("Expected identifier to be local", var instanceof LocalVariable);
         Assert.assertEquals("Expected local variable to be at index 1", 1, ((LocalVariable) var).getIndex());
 
