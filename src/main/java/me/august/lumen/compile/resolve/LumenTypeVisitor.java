@@ -16,21 +16,15 @@ import org.objectweb.asm.Type;
 
 import java.util.List;
 
-public class LumenTypeVisitor extends TypeVisitor {
+public class LumenTypeVisitor extends ResolvingVisitor {
 
-    private NameResolver resolver;
     private DependencyManager deps;
     private BuildContext build;
 
     public LumenTypeVisitor(NameResolver resolver, DependencyManager deps, BuildContext build) {
-        this.resolver = resolver;
+        super(resolver);
         this.deps = deps;
         this.build = build;
-    }
-
-    @Override
-    public String resolveType(String simple) {
-        return resolver.getQualifiedName(simple);
     }
 
     @Override
