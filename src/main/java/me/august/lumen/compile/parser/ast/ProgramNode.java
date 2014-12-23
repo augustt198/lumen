@@ -32,15 +32,6 @@ public class ProgramNode implements VisitorConsumer {
         this.classNode = classNode;
     }
 
-    private void resolve() {
-        resolveTypes();
-    }
-
-    private void resolveTypes() {
-        NameResolver resolver = new NameResolver(imports);
-        // TODO continue
-    }
-
     @Override
     public void accept(ASTVisitor visitor) {
         visitor.visitProgram(this);

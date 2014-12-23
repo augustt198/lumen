@@ -92,4 +92,8 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
     public String[] getInterfaces() {
         return interfaces;
     }
+
+    public void setSuperClass(String superClass) {
+        this.superClass = superClass;
+    }
 }

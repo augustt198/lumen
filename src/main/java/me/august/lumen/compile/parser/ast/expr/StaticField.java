@@ -39,10 +39,9 @@ public class StaticField extends Typed implements Expression {
 
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
-        Type type = BytecodeUtil.fromNamedType(getResolvedType());
         visitor.visitFieldInsn(
             Opcodes.GETSTATIC,
-            type.getInternalName(),
+            getResolvedType(),
             fieldName,
             type.getDescriptor()
         );

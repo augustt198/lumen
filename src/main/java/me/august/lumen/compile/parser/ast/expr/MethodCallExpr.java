@@ -63,6 +63,11 @@ public class MethodCallExpr extends TerminalExpression implements OwnedExpr {
     }
 
     @Override
+    public Expression[] getChildren() {
+        return params.toArray(new Expression[params.size()]);
+    }
+
+    @Override
     public String toString() {
         return "MethodCallExpr{" +
             "identifier='" + identifier + '\'' +
