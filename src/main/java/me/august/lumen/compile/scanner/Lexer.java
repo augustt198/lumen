@@ -99,6 +99,18 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         }
     }
 
+    private void mark(int n) {
+        try {
+            reader.mark(n);
+        } catch (IOException ignored) {}
+    }
+
+    private void reset() {
+        try {
+            reader.reset();
+        } catch (IOException ignored) {}
+    }
+
     /**
      * Gets the next token from input
      *
@@ -123,8 +135,8 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             else if (c == '.') return token(DOT);
             else if (c == ':') return nextColonOrSep();
 
-            else if (c == '+') return token(PLUS);
-            else if (c == '-') return token(MIN);
+            else if (c == '+') return nextPlusOrNumber();
+            else if (c == '-') return nextMinOrNumber();
             else if (c == '*') return token(MULT);
             else if (c == '/') return token(DIV);
 
@@ -140,7 +152,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             else if (c == '=') return nextEqOrAssign();
 
             else if (Chars.isAlpha(c)) return nextIdent(c);
-            else if (Chars.isDigit(c)) return nextNumber(c);
+            else if (Chars.isDigit(c)) return nextNumber(c, false);
             else if (c == '"') return nextString();
 
             else if (c == '#') consumeComment();
@@ -250,18 +262,40 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         queued.push(new Token(importPath, startPos, endPos, IMPORT_PATH));
     }
 
+    private Token nextMinOrNumber() {
+        if (Character.isDigit(peek())) {
+            return nextNumber((char) read(), true);
+        } else {
+            return token(MIN);
+        }
+    }
+
+    private Token nextPlusOrNumber() {
+        if (Character.isDigit(peek())) {
+            return nextNumber((char) read(), false);
+        } else {
+            return token(PLUS);
+        }
+    }
+
     /**
      * Gets the next token in the form of a number
      *
      * @param firstDigit The number's first digit
      * @return A token with the NUMBER type
      */
-    private Token nextNumber(char firstDigit) {
+    private Token nextNumber(char firstDigit, boolean neg) {
+        NumericPrefix prefix = readPrefix(firstDigit);
         StringBuilder sb = new StringBuilder();
+
+        if (neg) sb.append('-');
         sb.append(firstDigit);
 
         int startPos = pos;
         int endPos = pos;
+
+        // has decimal point
+        boolean hasDP = false;
 
         while (true) {
             int peek = peek();
@@ -269,6 +303,15 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             char c = (char) peek;
 
             if (Chars.isDigit(c) || c == '.') {
+                if (c == '.') {
+                    if (hasDP)
+                        // TODO proper exception handling
+                        throw new RuntimeException("Already has decimal point");
+                    if (prefix != NumericPrefix.NONE)
+                        // TODO proper exception handling
+                        throw new RuntimeException("Unexpected prefix and decimal point combination");
+                    hasDP = true;
+                }
                 sb.append(c);
                 read();
                 endPos++;
@@ -277,7 +320,62 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             }
         }
 
-        return new Token(sb.toString(), startPos, endPos, NUMBER);
+        boolean hasExp = false;
+        StringBuilder exp = null;
+
+        if (peek() == 'e') {
+            endPos++;
+            hasExp = true;
+            exp = new StringBuilder();
+            read(); // consume 'e'
+            while (Character.isDigit(peek())) {
+                endPos++;
+                exp.append((char) read());
+            }
+        }
+
+        Number val;
+        if (!hasDP) {
+            long temp = Long.parseLong(sb.toString());
+            temp = prefix.convertBase(temp);
+            if (temp > Integer.MAX_VALUE || temp < Integer.MIN_VALUE) {
+                val = temp;
+            } else {
+                val = (int) temp;
+            }
+        } else {
+            if (hasExp) sb.append(exp);
+            double temp = Double.parseDouble(sb.toString());
+            if (temp > Float.MAX_VALUE || temp < Float.MIN_VALUE) {
+                val = temp;
+            } else {
+                val = (float) temp;
+            }
+        }
+
+        return new NumberToken(val, startPos, endPos);
+    }
+
+    private NumericPrefix readPrefix(char first) {
+        mark(1);
+        String s = String.valueOf(first) + (char) read();
+        NumericPrefix prefix;
+        switch (s) {
+            case "0x": case "0X":
+                prefix = NumericPrefix.HEX;
+                break;
+            case "0b":case "0B":
+                prefix = NumericPrefix.BIN;
+                break;
+            default:
+                if (s.charAt(0) == '0' && Character.isDigit(s.charAt(1))) {
+                    prefix = NumericPrefix.OCT;
+                    reset();
+                } else {
+                    prefix = NumericPrefix.NONE;
+                }
+        }
+        return prefix;
     }
 
     /**
@@ -495,5 +593,19 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
     @Override
     public int getEnd() {
         return pos + 1;
+    }
+
+    private enum NumericPrefix {
+        HEX(16), OCT(8), BIN(2), NONE(10);
+
+        private int radix;
+        NumericPrefix(int radix) {
+            this.radix = radix;
+        }
+
+        public long convertBase(long n) {
+            if (this == NONE) return n;
+            return Long.valueOf(Long.toString(n, radix));
+        }
     }
 }

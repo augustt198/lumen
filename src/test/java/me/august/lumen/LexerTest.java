@@ -44,4 +44,11 @@ public class LexerTest {
         }
     }
 
+    @Test
+    public void testNumericLiterals() {
+        for (String src : new String[]{"0x10", "010", "0b10"}) {
+            new Lexer(src).nextToken();
+        }
+    }
+
 }
