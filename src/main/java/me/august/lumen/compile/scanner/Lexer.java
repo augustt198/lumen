@@ -262,6 +262,10 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         queued.push(new Token(importPath, startPos, endPos, IMPORT_PATH));
     }
 
+    /**
+     * The next MIN token or negative NUMBER token.
+     * @return A MIN or NUMBER token.
+     */
     private Token nextMinOrNumber() {
         if (Character.isDigit(peek())) {
             return nextNumber((char) read(), true);
@@ -270,6 +274,10 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         }
     }
 
+    /**
+     * The next PLUS token or positive NUMBER token.
+     * @return A PLUS or NUMBER token.
+     */
     private Token nextPlusOrNumber() {
         if (Character.isDigit(peek())) {
             return nextNumber((char) read(), false);
@@ -365,6 +373,16 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return new NumberToken(val, startPos, endPos);
     }
 
+    /**
+     * Reads a numeric prefix:
+     * 0x, 0X:   HEX
+     * 0b, 0B:   BIN
+     * 0[digit]: OCT
+     * else:     NONE
+     *
+     * @param first The first character
+     * @return The next numeric prefix
+     */
     private NumericPrefix readPrefix(char first) {
         mark(2);
         String s = String.valueOf(first) + (char) read();
@@ -389,6 +407,15 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return prefix;
     }
 
+    /**
+     * Reads a numeric suffix:
+     * l, L: LONG
+     * f, F: FLOAT
+     * d, D: DOUBLE
+     * else: NONE
+     *
+     * @return The next numeric suffix
+     */
     private NumericSuffix readSuffix() {
         int chr = Character.toUpperCase(peek());
         switch (chr) {
@@ -565,8 +592,10 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         return token(COLON);
     }
 
+    /**
+     * Reads characters until a newline ('\n') is reached
+     */
     private void consumeComment() {
-        // read until we hit a newline
         // noinspection StatementWithEmptyBody
         while (read() != '\n');
     }
@@ -609,13 +638,21 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
     /**
      * The current reading position plus one
      *
-     * @returnThe current reading position plus one
+     * @return The current reading position plus one
      */
     @Override
     public int getEnd() {
         return pos + 1;
     }
 
+    /**
+     * Represents a numerical prefix. Modifies
+     * the base of the following number.
+     * HEX:  hexadecimal, base 16
+     * OCT:  octal, base 8
+     * BIN:  binary, base 2
+     * NONE: no prefix (decimal, base 10)
+     */
     private enum NumericPrefix {
         HEX(16), OCT(8), BIN(2), NONE(10);
 

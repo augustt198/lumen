@@ -659,7 +659,7 @@ public class Parser {
 
                 // create a either a static field or static method call
                 if (accept(L_PAREN)) {
-                    List<Expression> params = parseExpressionList(Type.COMMA, Type.R_PAREN);
+                    List<Expression> params = parseExpressionList();
                     expr = new StaticMethodCall(ident, memberName, params);
                 } else {
                     expr = new StaticField(ident, memberName);
@@ -689,7 +689,7 @@ public class Parser {
         String ident = next().expectType(Type.IDENTIFIER).getContent();
 
         if (accept(L_PAREN)) {
-            List<Expression> params = parseExpressionList(Type.COMMA, Type.R_PAREN);
+            List<Expression> params = parseExpressionList();
             return new MethodCallExpr(ident, params, owner);
         } else {
             return new IdentExpr(ident, owner);
@@ -708,7 +708,7 @@ public class Parser {
      */
     private Expression identOrMethod(String ident) {
         if (accept(L_PAREN)) {
-            List<Expression> params = parseExpressionList(Type.COMMA, R_PAREN);
+            List<Expression> params = parseExpressionList();
             return new MethodCallExpr(ident, params);
         } else {
             return new IdentExpr(ident);
