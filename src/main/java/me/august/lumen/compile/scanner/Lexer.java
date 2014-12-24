@@ -284,12 +284,15 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
      * @param firstDigit The number's first digit
      * @return A token with the NUMBER type
      */
+    // TODO possibly refactor this mega-method
     private Token nextNumber(char firstDigit, boolean neg) {
+        // read prefix
         NumericPrefix prefix = readPrefix(firstDigit);
         StringBuilder sb = new StringBuilder();
 
         if (neg) sb.append('-');
-        sb.append(firstDigit);
+        if (prefix != NumericPrefix.HEX && prefix != NumericPrefix.BIN)
+            sb.append(firstDigit);
 
         int startPos = pos;
         int endPos = pos;
@@ -320,13 +323,14 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             }
         }
 
+        // Read exponent
         boolean hasExp = false;
         StringBuilder exp = null;
 
-        if (peek() == 'e') {
+        if (peek() == 'e' || peek() == 'E') {
             endPos++;
             hasExp = true;
-            exp = new StringBuilder();
+            exp = new StringBuilder("e");
             read(); // consume 'e'
             while (Character.isDigit(peek())) {
                 endPos++;
@@ -334,19 +338,24 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             }
         }
 
-        Number val;
+        NumericSuffix suffix = readSuffix();
+
+        Number val = null;
         if (!hasDP) {
             long temp = Long.parseLong(sb.toString());
             temp = prefix.convertBase(temp);
-            if (temp > Integer.MAX_VALUE || temp < Integer.MIN_VALUE) {
+            if (temp > Integer.MAX_VALUE || temp < Integer.MIN_VALUE || suffix == NumericSuffix.LONG) {
                 val = temp;
+            } else if (suffix == NumericSuffix.FLOAT || suffix == NumericSuffix.DOUBLE) {
+                hasDP = true;
             } else {
                 val = (int) temp;
             }
-        } else {
+        }
+        if (hasDP) {
             if (hasExp) sb.append(exp);
             double temp = Double.parseDouble(sb.toString());
-            if (temp > Float.MAX_VALUE || temp < Float.MIN_VALUE) {
+            if (temp > Float.MAX_VALUE || temp < Float.MIN_VALUE || suffix == NumericSuffix.DOUBLE) {
                 val = temp;
             } else {
                 val = (float) temp;
@@ -357,25 +366,37 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
     }
 
     private NumericPrefix readPrefix(char first) {
-        mark(1);
+        mark(2);
         String s = String.valueOf(first) + (char) read();
         NumericPrefix prefix;
         switch (s) {
             case "0x": case "0X":
                 prefix = NumericPrefix.HEX;
+                reset(); read();
                 break;
             case "0b":case "0B":
                 prefix = NumericPrefix.BIN;
+                reset(); read();
                 break;
             default:
                 if (s.charAt(0) == '0' && Character.isDigit(s.charAt(1))) {
                     prefix = NumericPrefix.OCT;
-                    reset();
                 } else {
                     prefix = NumericPrefix.NONE;
                 }
+                reset();
         }
         return prefix;
+    }
+
+    private NumericSuffix readSuffix() {
+        int chr = Character.toUpperCase(peek());
+        switch (chr) {
+            case 'L': return NumericSuffix.LONG;
+            case 'F': return NumericSuffix.FLOAT;
+            case 'D': return NumericSuffix.DOUBLE;
+            default : return NumericSuffix.NONE;
+        }
     }
 
     /**
@@ -605,7 +626,11 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
 
         public long convertBase(long n) {
             if (this == NONE) return n;
-            return Long.valueOf(Long.toString(n, radix));
+            return Long.valueOf(Long.toString(n), radix);
         }
+    }
+
+    private enum NumericSuffix {
+        LONG, FLOAT, DOUBLE, NONE
     }
 }

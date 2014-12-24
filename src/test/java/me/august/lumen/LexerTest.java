@@ -1,6 +1,8 @@
 package me.august.lumen;
 
 import me.august.lumen.compile.scanner.Lexer;
+import me.august.lumen.compile.scanner.NumberToken;
+import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.Type;
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,8 +48,17 @@ public class LexerTest {
 
     @Test
     public void testNumericLiterals() {
-        for (String src : new String[]{"0x10", "010", "0b10"}) {
-            new Lexer(src).nextToken();
+        String[] literals = new String[]{"0x10", "010", "0b10", "1.0e10", "1L"};
+        Class[] expectedClasses = new Class[]{
+            Integer.class, Integer.class, Integer.class, Float.class, Long.class
+        };
+
+        for (int i = 0; i < literals.length; i++) {
+            Token token = new Lexer(literals[i]).nextToken();
+
+            Assert.assertTrue(token instanceof NumberToken);
+            NumberToken numToken = (NumberToken) token;
+            Assert.assertEquals(numToken.getNumberType(), expectedClasses[i]);
         }
     }
 

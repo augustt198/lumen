@@ -12,4 +12,16 @@ public class NumberToken extends Token {
     public Number getValue() {
         return value;
     }
+
+    public Class<? extends Number> getNumberType() {
+        return value.getClass();
+    }
+
+    @Override
+    public String toString() {
+        return "NumberToken{" +
+            "value=" + value +
+            ", type=" + value.getClass().getSimpleName() +
+            '}';
+    }
 }
