@@ -164,4 +164,77 @@ public final class BytecodeUtil implements Opcodes {
             method.visitLdcInsn(num);
         }
     }
+
+    public static void pushDouble(MethodVisitor method, double num) {
+        if (num == 0) {
+            method.visitInsn(DCONST_0);
+        } else if (num == 1) {
+            method.visitInsn(DCONST_1);
+        } else {
+            method.visitLdcInsn(num);
+        }
+    }
+
+    public static Type numberType(Class<? extends Number> cls) {
+        switch (cls.getSimpleName()) {
+            case "Float":   return Type.FLOAT_TYPE;
+            case "Double":  return Type.DOUBLE_TYPE;
+            case "Integer": return Type.INT_TYPE;
+            case "Long":    return Type.LONG_TYPE;
+            case "Short":   return Type.SHORT_TYPE;
+            case "Byte":    return Type.BYTE_TYPE;
+            default:        return null;
+        }
+    }
+
+    public static int castNumberOpcode(Type orig, Type target) {
+        switch (orig.getSort()) {
+            case Type.INT:
+                switch (target.getSort()) {
+                    case Type.BYTE:   return I2B;
+                    case Type.CHAR:   return I2C;
+                    case Type.DOUBLE: return I2D;
+                    case Type.FLOAT:  return I2F;
+                    case Type.LONG:   return I2L;
+                    case Type.SHORT:  return I2S;
+                    default:          return -1;
+                }
+            case Type.LONG:
+                switch (target.getSort()) {
+                    case Type.DOUBLE: return L2D;
+                    case Type.FLOAT:  return L2F;
+                    case Type.INT:    return L2I;
+                    default:          return -1;
+                }
+            case Type.FLOAT:
+                switch (target.getSort()) {
+                    case Type.DOUBLE: return F2D;
+                    case Type.INT:    return F2I;
+                    case Type.LONG:   return F2L;
+                    default:          return -1;
+                }
+            case Type.DOUBLE:
+                switch (target.getSort()) {
+                    case Type.FLOAT: return D2F;
+                    case Type.INT:   return D2I;
+                    case Type.LONG:  return D2L;
+                    default:         return -1;
+                }
+        }
+        return -1;
+    }
+
+    // byte, char, short, int, long, float, double
+    private static final String PRIMITIVE_ORDER = "BCSIJFD";
+
+    public static boolean canWidenTo(Type orig, Type target) {
+        // orig is not in the char-double range
+        if (orig.getSort() < Type.CHAR || orig.getSort() > Type.DOUBLE)
+            return false;
+        // target is not in the char-double range
+        if (target.getSort() < Type.CHAR || target.getSort() > Type.DOUBLE)
+            return false;
+
+        return PRIMITIVE_ORDER.indexOf(orig.getDescriptor()) <= PRIMITIVE_ORDER.indexOf(target.getDescriptor());
+    }
 }
