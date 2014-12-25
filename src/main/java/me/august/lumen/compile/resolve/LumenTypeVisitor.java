@@ -71,19 +71,9 @@ public class LumenTypeVisitor extends ResolvingVisitor {
             call.setReturnType(method.getReturnType());
             Type methodType = methodType(method.getReturnType(), call.getParameters());
 
-            call.setRef((v, c) -> {
-                v.visitMethodInsn(
-                    Opcodes.INVOKESTATIC,
-                    call.getResolvedType(),
-                    methodName,
-                    methodType.getDescriptor(),
-                    false
-                );
-                // We don't have enough information to do this.
-                // (we could be setting a variable/field)
-                // if (method.getReturnType().getSort() != Type.VOID)
-                //    v.visitInsn(Opcodes.POP);
-            });
+            call.setRef(new MethodReference.Static(
+                call.getResolvedType(), methodName, methodType
+            ));
         }
 
     }
@@ -124,7 +114,7 @@ public class LumenTypeVisitor extends ResolvingVisitor {
         if (method == null) throw new RuntimeException("Unknown method for types");
 
         Type methodType = methodType(method.getReturnType(), call.getParams());
-        call.setRef(new MethodReference(className, methodName, methodType));
+        call.setRef(new MethodReference.Instance(className, methodName, methodType));
     }
 
     public static MethodData methodForTypes(List<MethodData> candidates, List<Expression> args) {
