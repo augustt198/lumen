@@ -2,15 +2,16 @@ package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.codegen.BuildContext;
+import me.august.lumen.compile.scanner.StringToken;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 public class StringExpr extends TerminalExpression {
 
     private String string;
-    private char quoteType;
+    private StringToken.QuoteType quoteType;
 
-    public StringExpr(String string, char quoteType) {
+    public StringExpr(String string, StringToken.QuoteType quoteType) {
         this.string = string;
         this.quoteType = quoteType;
     }
@@ -19,6 +20,7 @@ public class StringExpr extends TerminalExpression {
     public String toString() {
         return "StringExpr{" +
             "string='" + string + '\'' +
+            ", quoteType=" + quoteType.name() +
             '}';
     }
 
@@ -28,7 +30,7 @@ public class StringExpr extends TerminalExpression {
     }
 
     public boolean canBeChar() {
-        return string.length() == 1 && quoteType == '\'';
+        return string.length() == 1 && quoteType.equals(StringToken.QuoteType.SINGLE);
     }
 
     @Override

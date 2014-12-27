@@ -455,7 +455,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             }
         }
 
-        return new StringToken(sb.toString(), quote, startPos, endPos);
+        return new StringToken(sb.toString(), (quote == '"' ? StringToken.QuoteType.DOUBLE : StringToken.QuoteType.SINGLE), startPos, endPos);
     }
 
     /**

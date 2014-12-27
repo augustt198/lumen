@@ -2,13 +2,13 @@ package me.august.lumen.compile.scanner;
 
 public class StringToken extends Token {
 
-    private char quoteType;
+    private QuoteType quoteType;
 
-    public StringToken(String content, char quoteType, int start, int end) {
+    public StringToken(String content, QuoteType quoteType, int start, int end) {
         super(content, start, end, Type.STRING);
     }
 
-    public char getQuoteType() {
+    public QuoteType getQuoteType() {
         return quoteType;
     }
 
@@ -16,8 +16,14 @@ public class StringToken extends Token {
     public String toString() {
         return "StringToken{" +
                 "value=" + getContent() +
-                ", quoteType=" + (quoteType == '"' ? "double" : "single") +
+                ", quoteType=" + quoteType.name() +
                 '}';
+    }
+
+    public static enum QuoteType {
+
+        SINGLE, DOUBLE
+
     }
 
 }
