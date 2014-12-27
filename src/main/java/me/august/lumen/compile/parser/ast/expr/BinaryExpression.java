@@ -1,25 +1,13 @@
 package me.august.lumen.compile.parser.ast.expr;
 
-import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.scanner.Op;
-import org.objectweb.asm.MethodVisitor;
-
 public abstract class BinaryExpression implements Expression {
 
     protected Expression left;
     protected Expression right;
 
-    protected Op op;
-
-    public BinaryExpression(Expression left, Expression right, Op op) {
+    public BinaryExpression(Expression left, Expression right) {
         this.left   = left;
         this.right  = right;
-        this.op     = op;
-    }
-
-    @Override
-    public Op getOp() {
-        return op;
     }
 
     @Override
@@ -42,10 +30,9 @@ public abstract class BinaryExpression implements Expression {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
+        return "BinaryExpression{" +
             "left=" + left +
             ", right=" + right +
-            ", op=" + op +
             '}';
     }
 }

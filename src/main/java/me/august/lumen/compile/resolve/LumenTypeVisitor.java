@@ -11,7 +11,6 @@ import me.august.lumen.compile.resolve.data.FieldData;
 import me.august.lumen.compile.resolve.data.MethodData;
 import me.august.lumen.compile.resolve.impl.NameResolver;
 import me.august.lumen.compile.resolve.lookup.DependencyManager;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import java.util.List;

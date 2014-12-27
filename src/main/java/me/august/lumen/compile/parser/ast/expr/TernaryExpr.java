@@ -1,7 +1,5 @@
 package me.august.lumen.compile.parser.ast.expr;
 
-import me.august.lumen.compile.scanner.Op;
-
 public class TernaryExpr implements Expression {
 
     private Expression condition;
@@ -30,11 +28,6 @@ public class TernaryExpr implements Expression {
     @Override
     public Expression[] getChildren() {
         return new Expression[]{condition, trueExpr, falseExpr};
-    }
-
-    @Override
-    public Op getOp() {
-        return null;
     }
 
     @Override

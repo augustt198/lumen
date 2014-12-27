@@ -1,7 +1,6 @@
 package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.scanner.Op;
 import org.objectweb.asm.MethodVisitor;
 
 public class AssignmentExpr extends BinaryExpression {
@@ -10,7 +9,7 @@ public class AssignmentExpr extends BinaryExpression {
     IdentExpr left;
 
     public AssignmentExpr(IdentExpr left, Expression right) {
-        super(left, right, Op.ASSIGN);
+        super(left, right);
         this.left = left;
     }
 

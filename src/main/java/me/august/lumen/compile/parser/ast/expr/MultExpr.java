@@ -1,10 +1,15 @@
 package me.august.lumen.compile.parser.ast.expr;
 
-import me.august.lumen.compile.scanner.Op;
-
 public class MultExpr extends BinaryExpression {
 
+    public enum Op {
+        MULT, DIV, REM
+    }
+
+    private Op op;
+
     public MultExpr(Expression left, Expression right, Op op) {
-        super(left, right, op);
+        super(left, right);
+        this.op = op;
     }
 }

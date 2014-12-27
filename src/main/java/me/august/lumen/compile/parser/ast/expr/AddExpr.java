@@ -2,16 +2,21 @@ package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.scanner.Op;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 public class AddExpr extends BinaryExpression {
 
+    public enum Op {
+        ADD, SUB
+    }
+
     private Type type;
+    private Op op;
 
     public AddExpr(Expression left, Expression right, Op op) {
-        super(left, right, op);
+        super(left, right);
+        this.op = op;
     }
 
     @Override
@@ -67,4 +72,6 @@ public class AddExpr extends BinaryExpression {
 
         visitor.visitInsn(opcode);
     }
+
+
 }

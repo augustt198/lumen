@@ -7,7 +7,10 @@ import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.parser.ast.stmt.IfStmt;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.parser.ast.stmt.WhileStmt;
-import me.august.lumen.compile.scanner.*;
+import me.august.lumen.compile.scanner.Lexer;
+import me.august.lumen.compile.scanner.NumberToken;
+import me.august.lumen.compile.scanner.Token;
+import me.august.lumen.compile.scanner.Type;
 
 import java.util.*;
 
@@ -519,7 +522,8 @@ public class Parser {
             next(); // consume EQ or NE token
 
             Expression right = parseExpression();
-            return new EqExpr(left, right, peek == Type.EQ ? Op.EQ : Op.NE);
+            EqExpr.Op op = peek == Type.EQ ? EqExpr.Op.EQ : EqExpr.Op.NE;
+            return new EqExpr(left, right, op);
         }
 
         return left;
@@ -540,7 +544,7 @@ public class Parser {
             next(); // consume
 
             Expression right = parseExpression();
-            Op op = peek == IS_KEYWORD ? Op.IS : Op.valueOf(peek.name());
+            RelExpr.Op op = peek == IS_KEYWORD ? RelExpr.Op.IS : RelExpr.Op.valueOf(peek.name());
 
             return new RelExpr(left, right, op);
         }
@@ -561,7 +565,7 @@ public class Parser {
         if (peek == Type.SH_L || peek == Type.SH_R || peek == Type.U_SH_R) {
             next();
             Expression right = parseExpression();
-            Op op = Op.valueOf(peek.name());
+            ShiftExpr.Op op = ShiftExpr.Op.valueOf(peek.name());
 
             return new ShiftExpr(left, right, op);
         }
@@ -582,7 +586,7 @@ public class Parser {
         if (peek == Type.PLUS || peek == Type.MIN) {
             next();
             Expression right = parseExpression();
-            Op op = peek == Type.PLUS ? Op.ADD : Op.SUB;
+            AddExpr.Op op = peek == Type.PLUS ? AddExpr.Op.ADD : AddExpr.Op.SUB;
 
             return new AddExpr(left, right, op);
         }
@@ -603,7 +607,7 @@ public class Parser {
         if (peek == Type.MULT || peek == Type.DIV) {
             next();
             Expression right = parseExpression();
-            Op op = peek == Type.MULT ? Op.MUL : Op.DIV;
+            MultExpr.Op op = peek == Type.MULT ? MultExpr.Op.MULT : MultExpr.Op.DIV;
 
             return new MultExpr(left, right, op);
         }
