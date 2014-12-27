@@ -8,9 +8,11 @@ import org.objectweb.asm.Type;
 public class StringExpr extends TerminalExpression {
 
     private String string;
+    private char quoteType;
 
-    public StringExpr(String string) {
+    public StringExpr(String string, char quoteType) {
         this.string = string;
+        this.quoteType = quoteType;
     }
 
     @Override
@@ -23,6 +25,10 @@ public class StringExpr extends TerminalExpression {
     @Override
     public boolean isConstant() {
         return true;
+    }
+
+    public boolean canBeChar() {
+        return string.length() == 1 && quoteType == '\'';
     }
 
     @Override

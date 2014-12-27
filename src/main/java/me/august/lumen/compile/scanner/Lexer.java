@@ -158,7 +158,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
 
             else if (Chars.isAlpha(c)) return nextIdent(c);
             else if (Chars.isDigit(c)) return nextNumber(c, false);
-            else if (c == '"') return nextString();
+            else if (c == '"' || c == '\'') return nextString(c);
 
             else if (c == '#') consumeComment();
             else if (c == ' ' || c == '\r' || c == '\n' || c == '\t') {
@@ -433,11 +433,11 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
 
     /**
      * Gets the next token in the form of a
-     * double-quote (") delimited string.
+     * double-quote (") or single-quote (') delimited string.
      *
      * @return A token with the STRING type
      */
-    private Token nextString() {
+    private Token nextString(char quote) {
         StringBuilder sb = new StringBuilder();
 
         int startPos = pos;
@@ -447,7 +447,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             int read = read();
             if (read == -1) throw new RuntimeException("Unexpected EOF in String literal");
 
-            if (read == '"') {
+            if (read == quote) {
                 break;
             } else {
                 sb.append((char) read);
@@ -455,7 +455,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             }
         }
 
-        return new Token(sb.toString(), startPos, endPos, STRING);
+        return new StringToken(sb.toString(), quote, startPos, endPos);
     }
 
     /**
