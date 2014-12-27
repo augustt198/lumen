@@ -598,8 +598,15 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
      * Reads characters until a newline ('\n') is reached
      */
     private void consumeComment() {
-        // noinspection StatementWithEmptyBody
-        while (read() != '\n');
+        if (peek() == '*') {
+            read();
+            // noinspection StatementWithEmptyBody
+            while (!(read() == '*' && peek() == '#'));
+            read();
+        } else {
+            // noinspection StatementWithEmptyBody
+            while (read() != '\n');
+        }
     }
 
     /**

@@ -1,11 +1,14 @@
 identifier
 > >= >> >>>
-< <= <<
+< <= << #* MULTI
+      LINE
+     COMMENT *#
 ( ) [ ] { }
 10 "string"
-+ - * /
++ - * / # comment after tokens
 ! !=
 | ||
+# ignore single line comment
 & &&
 = ==
 , :
