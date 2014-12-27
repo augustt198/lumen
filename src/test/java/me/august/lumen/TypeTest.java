@@ -9,7 +9,7 @@ import org.objectweb.asm.Type;
 public class TypeTest implements Opcodes {
 
     @Test
-    public void test() {
+    public void testInstructions() {
         Type type = Type.getType(String.class);
 
         Assert.assertEquals("Expected ASTORE opcode", BytecodeUtil.storeInstruction(type), ASTORE);

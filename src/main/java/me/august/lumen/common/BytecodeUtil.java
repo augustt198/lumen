@@ -107,11 +107,15 @@ public final class BytecodeUtil implements Opcodes {
     }
 
     public static int storeInstruction(Type type) {
-        return type.getOpcode(Opcodes.ISTORE);
+        return type.getOpcode(ISTORE);
     }
 
     public static int loadInstruction(Type type) {
-        return type.getOpcode(Opcodes.ILOAD);
+        return type.getOpcode(ILOAD);
+    }
+
+    public static int addInstruction(Type type) {
+        return type.getOpcode(IADD);
     }
 
     public static int fromOpcodeName(String name) {
@@ -165,6 +169,28 @@ public final class BytecodeUtil implements Opcodes {
         }
     }
 
+    public static void pushLong(MethodVisitor method, long num) {
+        if (num == 0) {
+            method.visitInsn(LCONST_0);
+        } else if (num == 1) {
+            method.visitInsn(LCONST_1);
+        } else {
+            method.visitLdcInsn(num);
+        }
+    }
+
+    public static void pushFloat(MethodVisitor method, float num) {
+        if (num == 0) {
+            method.visitInsn(FCONST_0);
+        } else if (num == 1) {
+            method.visitInsn(FCONST_1);
+        } else if (num == 2) {
+            method.visitInsn(FCONST_2);
+        } else {
+            method.visitLdcInsn(num);
+        }
+    }
+
     public static void pushDouble(MethodVisitor method, double num) {
         if (num == 0) {
             method.visitInsn(DCONST_0);
@@ -173,6 +199,23 @@ public final class BytecodeUtil implements Opcodes {
         } else {
             method.visitLdcInsn(num);
         }
+    }
+
+    public static void pushNull(MethodVisitor method) {
+        method.visitInsn(ACONST_NULL);
+    }
+
+    public static boolean isPrimitive(Type type) {
+        return type.getSort() >= Type.BOOLEAN && type.getSort() <= Type.DOUBLE;
+    }
+
+    public static boolean isIntegral(Type type) {
+        return (type.getSort() >= Type.BYTE && type.getSort() <= Type.INT)
+            || type.getSort() == Type.LONG;
+    }
+
+    public static boolean isNumeric(Type type) {
+        return type.getSort() >= Type.CHAR && type.getSort() <= Type.DOUBLE;
     }
 
     public static Type numberType(Class<? extends Number> cls) {
@@ -228,13 +271,26 @@ public final class BytecodeUtil implements Opcodes {
     private static final String PRIMITIVE_ORDER = "BCSIJFD";
 
     public static boolean canWidenTo(Type orig, Type target) {
-        // orig is not in the char-double range
-        if (orig.getSort() < Type.CHAR || orig.getSort() > Type.DOUBLE)
-            return false;
-        // target is not in the char-double range
-        if (target.getSort() < Type.CHAR || target.getSort() > Type.DOUBLE)
-            return false;
+        // both types must be numeric
+        if (!isNumeric(orig) || !isNumeric(target)) return false;
 
         return PRIMITIVE_ORDER.indexOf(orig.getDescriptor()) <= PRIMITIVE_ORDER.indexOf(target.getDescriptor());
+    }
+
+    public static Type widest(Type t1, Type t2) {
+        // both types must be numeric
+        if (!isNumeric(t1) || !isNumeric(t2)) return null;
+
+        if (PRIMITIVE_ORDER.indexOf(t1.getDescriptor()) <= PRIMITIVE_ORDER.indexOf(t2.getDescriptor())) {
+            return t2;
+        } else {
+            return t1;
+        }
+    }
+
+    public static final Type STRING_TYPE = Type.getType(String.class);
+
+    public static boolean isString(Type type) {
+        return type.equals(STRING_TYPE);
     }
 }

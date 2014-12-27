@@ -32,11 +32,6 @@ public abstract class BinaryExpression implements Expression {
         return left.isConstant() && right.isConstant();
     }
 
-    @Override
-    public void generate(MethodVisitor visitor, BuildContext context) {
-        throw new UnsupportedOperationException();
-    }
-
     public Expression getLeft() {
         return left;
     }

@@ -7,10 +7,7 @@ import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.parser.ast.stmt.IfStmt;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.parser.ast.stmt.WhileStmt;
-import me.august.lumen.compile.scanner.Lexer;
-import me.august.lumen.compile.scanner.Op;
-import me.august.lumen.compile.scanner.Token;
-import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.*;
 
 import java.util.*;
 
@@ -631,7 +628,8 @@ public class Parser {
         } else if (token.getType() == Type.NUMBER) {
             next();
             // set expression to a numeric literal
-            expr = new NumExpr(Double.parseDouble(token.getContent()));
+            NumberToken numToken = (NumberToken) token;
+            expr = new NumExpr(numToken.getValue());
         } else if (token.getType() == Type.TRUE) {
             next();
             // set expression to `true`
