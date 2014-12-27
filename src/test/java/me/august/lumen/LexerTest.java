@@ -48,9 +48,10 @@ public class LexerTest {
 
     @Test
     public void testNumericLiterals() {
-        String[] literals = new String[]{"0x10", "010", "0b10", "1.0e10", "1L"};
+        String[] literals = new String[]{"0x10", "010", "0b10", "1.0e10", "1L", "1F"};
         Class[] expectedClasses = new Class[]{
-            Integer.class, Integer.class, Integer.class, Float.class, Long.class
+            Integer.class, Integer.class, Integer.class, Double.class, Long.class,
+            Float.class
         };
 
         for (int i = 0; i < literals.length; i++) {
