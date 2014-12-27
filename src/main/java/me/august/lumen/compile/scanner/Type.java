@@ -50,6 +50,7 @@ public enum Type {
     MIN,        // -
     MULT,       // *
     DIV,        // /
+    REM,        // %
 
     ASSIGN,     // =
 

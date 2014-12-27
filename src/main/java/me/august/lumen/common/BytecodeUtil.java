@@ -122,6 +122,18 @@ public final class BytecodeUtil implements Opcodes {
         return type.getOpcode(ISUB);
     }
 
+    public static int multiplyInstruction(Type type) {
+        return type.getOpcode(IMUL);
+    }
+
+    public static int divisionInstruction(Type type) {
+        return type.getOpcode(IDIV);
+    }
+
+    public static int remainderInstruction(Type type) {
+        return type.getOpcode(IREM);
+    }
+
     public static int fromOpcodeName(String name) {
         return OPCODES.getOrDefault(name, -1);
     }

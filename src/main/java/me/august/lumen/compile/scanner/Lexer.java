@@ -139,6 +139,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             else if (c == '-') return nextMinOrNumber();
             else if (c == '*') return token(MULT);
             else if (c == '/') return token(DIV);
+            else if (c == '%') return token(REM);
 
             else if (c == '>') return nextGtOrGteOrShift();
             else if (c == '<') return nextLtOrLteOrShift();

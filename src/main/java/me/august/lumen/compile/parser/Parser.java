@@ -604,10 +604,10 @@ public class Parser {
         Expression left = parseComponent();
 
         Type peek = peek().getType();
-        if (peek == Type.MULT || peek == Type.DIV) {
+        if (peek == Type.MULT || peek == Type.DIV || peek == Type.REM) {
             next();
             Expression right = parseExpression();
-            MultExpr.Op op = peek == Type.MULT ? MultExpr.Op.MULT : MultExpr.Op.DIV;
+            MultExpr.Op op = MultExpr.Op.valueOf(peek.name());
 
             return new MultExpr(left, right, op);
         }
