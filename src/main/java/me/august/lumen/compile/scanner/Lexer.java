@@ -34,6 +34,8 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
 
             {"is", EQ},
             {"isnt", NE},
+            {"and", LOGIC_AND},
+            {"or", LOGIC_OR},
 
             {"pb", ACC_PUBLIC},
             {"public", ACC_PUBLIC},
