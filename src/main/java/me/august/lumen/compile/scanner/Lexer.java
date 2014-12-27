@@ -47,7 +47,11 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             {"package_private", ACC_PACKAGE},
 
             {"true", TRUE},
+            {"yes", TRUE},
+            {"on", TRUE},
             {"false", FALSE},
+            {"no", FALSE},
+            {"off", FALSE},
             {"null", NULL},
             {"nil", NULL}
         };
