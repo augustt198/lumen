@@ -118,6 +118,10 @@ public final class BytecodeUtil implements Opcodes {
         return type.getOpcode(IADD);
     }
 
+    public static int subtractInstruction(Type type) {
+        return type.getOpcode(ISUB);
+    }
+
     public static int fromOpcodeName(String name) {
         return OPCODES.getOrDefault(name, -1);
     }

@@ -58,7 +58,13 @@ public class AddExpr extends BinaryExpression {
         if (opcode >= 0)
             visitor.visitInsn(opcode);
 
-        // push addition opcode
-        visitor.visitInsn(BytecodeUtil.addInstruction(expressionType()));
+        // add
+        if (op == Op.ADD) {
+            opcode = BytecodeUtil.addInstruction(expressionType());
+        } else { // subtract
+            opcode = BytecodeUtil.subtractInstruction(expressionType());
+        }
+
+        visitor.visitInsn(opcode);
     }
 }
