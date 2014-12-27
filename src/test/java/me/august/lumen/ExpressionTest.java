@@ -84,6 +84,18 @@ public class ExpressionTest {
         Assert.assertTrue(((OwnedExpr) expr).getTail() instanceof IdentExpr);
     }
 
+    @Test
+    public void testCastExpression() {
+        Expression expr = parseExpression("foo as Bar");
+
+        Assert.assertTrue(expr instanceof CastExpr);
+        CastExpr cast = (CastExpr) expr;
+
+        Assert.assertTrue(cast.getValue() instanceof IdentExpr);
+        Assert.assertEquals(((IdentExpr) cast.getValue()).getIdentifier(), "foo");
+        Assert.assertEquals(cast.getType(), "Bar");
+    }
+
     private Expression parseExpression(String src) {
         Lexer lexer     = new Lexer(src);
         Parser parser   = new Parser(lexer);

@@ -80,6 +80,8 @@ public enum Type {
 
     WHILE_KEYWORD,
 
+    CAST_KEYWORD,
+
     // access modifiers
     ACC_PUBLIC(Attribute.ACC_MOD),
     ACC_PRIVATE(Attribute.ACC_MOD),

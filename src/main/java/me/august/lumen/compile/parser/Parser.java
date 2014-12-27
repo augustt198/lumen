@@ -596,12 +596,12 @@ public class Parser {
 
     /**
      * Parses a multiplicative expression:
-     * component [(* | /) expression]
+     * cast [(* | /) expression]
      *
      * @return An expression
      */
     private Expression parseMultiplicative() {
-        Expression left = parseComponent();
+        Expression left = parseCast();
 
         Type peek = peek().getType();
         if (peek == Type.MULT || peek == Type.DIV || peek == Type.REM) {
@@ -610,6 +610,24 @@ public class Parser {
             MultExpr.Op op = MultExpr.Op.valueOf(peek.name());
 
             return new MultExpr(left, right, op);
+        }
+
+        return left;
+    }
+
+    /**
+     * Parses a casting expression:
+     * component [as identifier]
+     *
+     * @return An expression
+     */
+    private Expression parseCast() {
+        Expression left = parseComponent();
+
+        if (accept(CAST_KEYWORD)) {
+            String ident = next().expectType(IDENTIFIER).getContent();
+
+            return new CastExpr(left, ident);
         }
 
         return left;
