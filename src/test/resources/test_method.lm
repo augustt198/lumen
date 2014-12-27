@@ -1,7 +1,7 @@
 pb class Foo {
 
     def foo() {
-        var bar: String = "Hello " + "world"
+        var bar: String = "Hello " + 'world'
     }
 
 }
