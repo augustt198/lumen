@@ -23,7 +23,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             {"def", DEF_KEYWORD},
             {"import", IMPORT_KEYWORD},
             {"class", CLASS_KEYWORD},
-            {"is", IS_KEYWORD},
+            {"instanceof", IS_KEYWORD}, // to be replaced with `is a` when the lexer supports it
             {"var", VAR_KEYWORD},
             {"if", IF_KEYWORD},
             {"else", ELSE_KEYWORD},
@@ -31,6 +31,9 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             {"stc", STATIC_KEYWORD},
             {"static", STATIC_KEYWORD},
             {"as", CAST_KEYWORD},
+
+            {"is", EQ},
+            {"isnt", NE},
 
             {"pb", ACC_PUBLIC},
             {"public", ACC_PUBLIC},
