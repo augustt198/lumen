@@ -12,4 +12,5 @@ identifier
 & &&
 = ==
 , :
+is a
 true false null nil

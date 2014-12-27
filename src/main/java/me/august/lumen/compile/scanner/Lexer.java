@@ -23,7 +23,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             {"def", DEF_KEYWORD},
             {"import", IMPORT_KEYWORD},
             {"class", CLASS_KEYWORD},
-            {"instanceof", IS_KEYWORD}, // to be replaced with `is a` when the lexer supports it
+            {"instanceof", INSTANCEOF_KEYWORD}, // to be replaced with `is a` when the lexer supports it
             {"var", VAR_KEYWORD},
             {"if", IF_KEYWORD},
             {"else", ELSE_KEYWORD},
@@ -228,6 +228,17 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             type = IDENTIFIER;
         } else {
             handleKeyword(type);
+            if (ident.equals("is")) {
+                consumeWhitespace();
+                Token next = nextToken();
+
+                // next token is identifier with content 'a'
+                if (next.getType() == IDENTIFIER && next.getContent().equals("a")) {
+                    type = INSTANCEOF_KEYWORD;
+                } else {
+                    queued.push(next);
+                }
+            }
         }
         token.setType(type);
 
@@ -598,7 +609,9 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
     }
 
     /**
-     * Reads characters until a newline ('\n') is reached
+     * Consumes a single-line comment (reads until
+     * '\n' is reached) or a multi-line comment (starts
+     * with '#*' and ends with '*#').
      */
     private void consumeComment() {
         if (peek() == '*') {
@@ -610,6 +623,10 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             // noinspection StatementWithEmptyBody
             while (read() != '\n');
         }
+    }
+
+    private void consumeWhitespace() {
+        while (peek() == ' ') read();
     }
 
     /**

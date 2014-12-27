@@ -537,11 +537,11 @@ public class Parser {
 
         Type peek = peek().getType();
         if (peek == Type.LT || peek == Type.GT || peek == Type.LTE ||
-            peek == Type.GTE || peek == Type.IS_KEYWORD) {
+            peek == Type.GTE || peek == Type.INSTANCEOF_KEYWORD) {
             next(); // consume
 
             Expression right = parseExpression();
-            RelExpr.Op op = peek == IS_KEYWORD ? RelExpr.Op.IS : RelExpr.Op.valueOf(peek.name());
+            RelExpr.Op op = peek == INSTANCEOF_KEYWORD ? RelExpr.Op.IS : RelExpr.Op.valueOf(peek.name());
 
             return new RelExpr(left, right, op);
         }
