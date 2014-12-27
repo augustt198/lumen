@@ -364,7 +364,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         if (hasDP) {
             if (hasExp) sb.append(exp);
             double temp = Double.parseDouble(sb.toString());
-            if (temp > Float.MAX_VALUE || temp < Float.MIN_VALUE || suffix == NumericSuffix.DOUBLE) {
+            if (suffix == NumericSuffix.DOUBLE || suffix == NumericSuffix.NONE) {
                 val = temp;
             } else {
                 val = (float) temp;
