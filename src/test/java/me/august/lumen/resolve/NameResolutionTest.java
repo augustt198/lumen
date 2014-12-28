@@ -2,10 +2,8 @@ package me.august.lumen.resolve;
 
 import me.august.lumen.compile.parser.ast.ImportNode;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
-import me.august.lumen.compile.resolve.LumenTypeVisitor;
 import me.august.lumen.compile.resolve.ResolvingVisitor;
 import me.august.lumen.compile.resolve.impl.NameResolver;
-import me.august.lumen.compile.resolve.lookup.DependencyManager;
 import org.junit.Assert;
 import org.junit.Test;
 

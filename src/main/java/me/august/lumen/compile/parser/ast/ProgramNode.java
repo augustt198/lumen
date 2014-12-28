@@ -2,7 +2,6 @@ package me.august.lumen.compile.parser.ast;
 
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
-import me.august.lumen.compile.resolve.impl.NameResolver;
 
 import java.util.Arrays;
 

@@ -4,13 +4,10 @@ import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.method.MethodReference;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.expr.*;
-import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
 import me.august.lumen.compile.resolve.data.ClassData;
 import me.august.lumen.compile.resolve.data.FieldData;
 import me.august.lumen.compile.resolve.data.MethodData;
-import me.august.lumen.compile.resolve.impl.NameResolver;
 import me.august.lumen.compile.resolve.lookup.DependencyManager;
 import org.objectweb.asm.Type;
 

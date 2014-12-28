@@ -1,6 +1,5 @@
 package me.august.lumen.compile.parser.ast.expr;
 
-import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.Typed;
 import org.objectweb.asm.MethodVisitor;

@@ -2,7 +2,6 @@ package me.august.lumen;
 
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.expr.*;
-import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
 import me.august.lumen.compile.scanner.Lexer;
 import org.junit.Assert;
 import org.junit.Test;

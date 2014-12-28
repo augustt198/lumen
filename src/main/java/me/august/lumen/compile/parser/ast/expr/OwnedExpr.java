@@ -1,7 +1,6 @@
-package me.august.lumen.compile.parser.ast.expr.owned;
+package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.parser.ast.expr.Expression;
 import org.objectweb.asm.MethodVisitor;
 
 public interface OwnedExpr extends Expression {
