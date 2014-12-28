@@ -45,11 +45,24 @@ public class CastExpr extends Typed implements Expression {
 
         // if both are primitives
         if (BytecodeUtil.isPrimitive(orig)) {
+            // if the original type is shorter than an int, e.g.
+            // byte -> double, we can just interpret it as
+            // int -> double
             if (orig.getSort() < Type.INT) {
                 visitor.visitInsn(BytecodeUtil.castNumberOpcode(Type.INT_TYPE, target));
+
+            // if the original type is wider than an int, and the target type
+            // is shorter than an int, we first convert the original type to
+            // an int and then convert that int result to the target type.
+            // e.g. double -> byte is interpreted as:
+            // double -> int, then int -> byte
             } else if (orig.getSort() > Type.INT && target.getSort() < Type.INT) {
                 visitor.visitInsn(BytecodeUtil.castNumberOpcode(orig, Type.INT_TYPE));
                 visitor.visitInsn(BytecodeUtil.castNumberOpcode(Type.INT_TYPE, target));
+
+            // if both types are wider (or equal) to an int, we can convert
+            // them directly.
+            // e.g. double -> int produces the D2I opcode
             } else if (orig.getSort() >= Type.INT && target.getSort() >= Type.INT) {
                 visitor.visitInsn(BytecodeUtil.castNumberOpcode(orig, target));
             }
