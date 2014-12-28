@@ -4,14 +4,12 @@ import me.august.lumen.common.Chars;
 import me.august.lumen.compile.Driver;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.error.SourcePositionProvider;
+import me.august.lumen.compile.scanner.tokens.ImportPathToken;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
 import me.august.lumen.compile.scanner.tokens.StringToken;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import static me.august.lumen.compile.scanner.Type.*;
 
@@ -275,15 +273,52 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
 
         StringBuilder sb = new StringBuilder();
         sb.append(ident());
+        List<String> nodes = null;
 
+        boolean didEnd = false;
         while (peek() == '.') {
             sb.append((char) read());
-            sb.append(ident());
+
+            if (didEnd)
+                // TODO proper exception handling
+                throw new RuntimeException("import statement already terminated");
+
+            if (peek() == '{') {
+                read();
+                // once we reach a multi-import, it must be the end
+                didEnd = true;
+
+                consumeWhitespace();
+
+                nodes = new ArrayList<>();
+                nodes.add(ident());
+                consumeWhitespace();
+
+                while (peek() == ',') {
+                    read(); // read ','
+                    consumeWhitespace();
+                    nodes.add(ident());
+                }
+
+                // TODO proper exception handling
+                if (read() != '}') throw new RuntimeException("Expected right brace: }");
+            } else {
+                sb.append(ident());
+            }
+        }
+
+        String importPath = sb.toString();
+        if (nodes == null) {
+            // grab last identifier after dot
+            int lastIdx = importPath.lastIndexOf('.');
+            nodes       = Arrays.asList(importPath.substring(lastIdx + 1));
+            importPath  = importPath.substring(0, lastIdx);
         }
 
         int endPos = pos;
-        String importPath = sb.toString();
-        queued.push(new Token(importPath, startPos, endPos, IMPORT_PATH));
+        queued.push(new ImportPathToken(
+            sb.toString(), startPos, endPos, importPath, nodes
+        ));
     }
 
     /**

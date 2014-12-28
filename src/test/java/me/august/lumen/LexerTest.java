@@ -1,6 +1,7 @@
 package me.august.lumen;
 
 import me.august.lumen.compile.scanner.Lexer;
+import me.august.lumen.compile.scanner.tokens.ImportPathToken;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.Type;
@@ -62,6 +63,31 @@ public class LexerTest {
             NumberToken numToken = (NumberToken) token;
             Assert.assertEquals(numToken.getNumberType(), expectedClasses[i]);
         }
+    }
+
+    @Test
+    public void testImports() {
+        String src;
+        Lexer  lex;
+        Token  tok;
+
+        // multi-class import test
+        src = "import foo.bar.{baz, wut}";
+        lex = new Lexer(src);
+
+        Assert.assertEquals(Type.IMPORT_KEYWORD, lex.nextToken().getType());
+        tok = lex.nextToken();
+        Assert.assertEquals(Type.IMPORT_PATH, tok.getType());
+        Assert.assertTrue(tok instanceof ImportPathToken);
+
+        // single-class import test
+        src = "import foo.bar.qux";
+        lex = new Lexer(src);
+
+        Assert.assertEquals(Type.IMPORT_KEYWORD, lex.nextToken().getType());
+        tok = lex.nextToken();
+        Assert.assertEquals(Type.IMPORT_PATH, tok.getType());
+        Assert.assertTrue(tok instanceof ImportPathToken);
     }
 
 }
