@@ -41,7 +41,7 @@ public class StaticField extends Typed implements Expression {
     public void generate(MethodVisitor visitor, BuildContext context) {
         visitor.visitFieldInsn(
             Opcodes.GETSTATIC,
-            getResolvedType(),
+            getResolvedType().getDescriptor(),
             fieldName,
             type.getDescriptor()
         );

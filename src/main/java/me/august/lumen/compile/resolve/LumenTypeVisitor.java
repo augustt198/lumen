@@ -49,7 +49,7 @@ public class LumenTypeVisitor extends ResolvingVisitor {
         if (expr instanceof StaticField) {
             StaticField stc = (StaticField) expr;
 
-            ClassData cls = deps.lookup(stc.getResolvedType());
+            ClassData cls = deps.lookup(stc.getResolvedType().getClassName());
             if (cls == null)
                 throw new RuntimeException("Unknown class: " + stc.getResolvedType());
 
@@ -58,7 +58,7 @@ public class LumenTypeVisitor extends ResolvingVisitor {
         } else if (expr instanceof StaticMethodCall) {
             StaticMethodCall call = (StaticMethodCall) expr;
 
-            ClassData cls = deps.lookup(call.getResolvedType());
+            ClassData cls = deps.lookup(call.getResolvedType().getClassName());
             if (cls == null)
                 throw new RuntimeException("Unknown class: " + call.getResolvedType());
 
@@ -71,7 +71,7 @@ public class LumenTypeVisitor extends ResolvingVisitor {
             Type methodType = methodType(method.getReturnType(), call.getParameters());
 
             call.setRef(new MethodReference.Static(
-                call.getResolvedType(), methodName, methodType
+                call.getResolvedType().getClassName(), methodName, methodType
             ));
         }
 

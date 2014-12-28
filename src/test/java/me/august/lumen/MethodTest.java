@@ -32,7 +32,7 @@ public class MethodTest {
 
         VarStmt var = (VarStmt) code;
         assertEquals("Expected variable name to be 'bar'", "bar", var.getName());
-        assertEquals("Expected variable type to be 'String'", "String", var.getType());
+        assertEquals("Expected variable type to be 'String'", "String", var.getSimpleType());
         assertTrue("Expected variable to have default value", var.getDefaultValue() != null);
     }
 

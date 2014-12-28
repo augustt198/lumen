@@ -1,5 +1,6 @@
 package me.august.lumen.compile.resolve;
 
+import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
@@ -17,7 +18,8 @@ public abstract class TypeVisitor implements ASTVisitor {
     protected abstract String resolveType(String simple);
 
     public void visitType(Typed type) {
-        type.setResolvedType(resolveType(type.getType()));
+        String strType = resolveType(type.getSimpleType());
+        type.setResolvedType(BytecodeUtil.fromNamedType(strType));
     }
 
     @Override

@@ -93,7 +93,7 @@ public class ExpressionTest {
 
         Assert.assertTrue(cast.getValue() instanceof IdentExpr);
         Assert.assertEquals(((IdentExpr) cast.getValue()).getIdentifier(), "foo");
-        Assert.assertEquals(cast.getType(), "Bar");
+        Assert.assertEquals(cast.getSimpleType(), "Bar");
     }
 
     private Expression parseExpression(String src) {

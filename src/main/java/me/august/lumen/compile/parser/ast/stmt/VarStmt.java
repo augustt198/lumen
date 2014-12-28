@@ -48,7 +48,7 @@ public class VarStmt extends Typed implements CodeBlock {
         // we don't know *where* to store this variable
         if (defaultValue == null || ref == null) return;
 
-        Type type = BytecodeUtil.fromNamedType(getResolvedType());
+        Type type = getResolvedType();
 
         // get expression value
         defaultValue.generate(visitor, context);

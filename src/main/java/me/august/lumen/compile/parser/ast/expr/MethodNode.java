@@ -41,7 +41,7 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
 
     @Override
     public void generate(ClassVisitor visitor, BuildContext context) {
-        Type returnType   = BytecodeUtil.fromNamedType(getResolvedType());
+        Type returnType   = getResolvedType();
         Type[] paramTypes = parameters.values().stream().map(BytecodeUtil::fromNamedType).toArray(Type[]::new);
 
         MethodVisitor method = visitor.visitMethod(
@@ -58,8 +58,8 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
     }
 
     @Override
-    public void setResolvedType(String resolvedType) {
-        super.setResolvedType(resolvedType == null ? "void" : resolvedType);
+    public void setResolvedType(Type resolvedType) {
+        super.setResolvedType(resolvedType == null ? Type.VOID_TYPE : resolvedType);
     }
 
     public Map<String, String> getParameters() {
@@ -104,7 +104,7 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
             "parameters=" + parameters +
             ", name='" + name + '\'' +
             ", modifiers=" + Arrays.toString(modifiers) +
-            ", type='" + type + '\'' +
+            ", type='" + simpleType + '\'' +
             ", body=" + body +
             '}';
     }

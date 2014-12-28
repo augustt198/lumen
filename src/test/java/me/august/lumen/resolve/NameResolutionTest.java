@@ -22,7 +22,7 @@ public class NameResolutionTest {
         VarStmt var = new VarStmt("x", "Baz");
         visitor.visitType(var);
 
-        Assert.assertEquals(var.getResolvedType(), qualifiedName);
+        Assert.assertEquals(var.getResolvedType().getClassName(), qualifiedName);
     }
 
 }
