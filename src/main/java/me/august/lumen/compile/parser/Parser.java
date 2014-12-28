@@ -8,6 +8,8 @@ import me.august.lumen.compile.parser.ast.stmt.IfStmt;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.parser.ast.stmt.WhileStmt;
 import me.august.lumen.compile.scanner.*;
+import me.august.lumen.compile.scanner.tokens.NumberToken;
+import me.august.lumen.compile.scanner.tokens.StringToken;
 
 import java.util.*;
 

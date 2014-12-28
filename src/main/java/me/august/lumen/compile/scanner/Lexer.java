@@ -4,6 +4,8 @@ import me.august.lumen.common.Chars;
 import me.august.lumen.compile.Driver;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.error.SourcePositionProvider;
+import me.august.lumen.compile.scanner.tokens.NumberToken;
+import me.august.lumen.compile.scanner.tokens.StringToken;
 
 import java.io.*;
 import java.util.HashMap;
