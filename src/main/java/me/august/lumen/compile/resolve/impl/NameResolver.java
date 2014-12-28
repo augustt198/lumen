@@ -1,13 +1,15 @@
 package me.august.lumen.compile.resolve.impl;
 
+import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.parser.ast.ImportNode;
-import me.august.lumen.compile.resolve.QualifiedNameResolver;
+import me.august.lumen.compile.resolve.TypeResolver;
+import org.objectweb.asm.Type;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class NameResolver implements QualifiedNameResolver {
+public class NameResolver implements TypeResolver {
 
     private static final Set<String> keywordTypes;
 
@@ -26,9 +28,9 @@ public class NameResolver implements QualifiedNameResolver {
     }
 
     @Override
-    public String getQualifiedName(String simpleName) {
-        if (keywordTypes.contains(simpleName) || isAlreadyQualified(simpleName))
-            return simpleName;
+    public Type resolveType(String simpleName) {
+        if (keywordTypes.contains(simpleName))
+            return BytecodeUtil.fromNamedType(simpleName);
 
         String fullName = null;
         for (ImportNode impt : imports) {
@@ -42,16 +44,8 @@ public class NameResolver implements QualifiedNameResolver {
                 fullName = Class.forName("java.lang." + simpleName).getName();
             } catch (ClassNotFoundException ignored) {}
         }
-        return fullName;
+
+        return fullName == null ? null : Type.getObjectType(fullName);
     }
 
-    // TODO add support for external classes
-    private boolean isAlreadyQualified(String name) {
-        try {
-            Class.forName(name);
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
 }

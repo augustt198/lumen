@@ -4,6 +4,7 @@ import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.method.MethodReference;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.codegen.BuildContext;
+import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.resolve.data.ClassData;
 import me.august.lumen.compile.resolve.data.FieldData;
@@ -15,10 +16,12 @@ import java.util.List;
 
 public class LumenTypeVisitor implements ASTVisitor {
 
+    private TypeResolver resolver;
     private DependencyManager deps;
     private BuildContext build;
 
-    public LumenTypeVisitor(DependencyManager deps, BuildContext build) {
+    public LumenTypeVisitor(TypeResolver resolver, DependencyManager deps, BuildContext build) {
+        this.resolver = resolver;
         this.deps = deps;
         this.build = build;
     }
@@ -40,6 +43,14 @@ public class LumenTypeVisitor implements ASTVisitor {
 
     // TODO split up this mega-method
     private void handleRoot(Expression expr) {
+        if (expr instanceof Typed) {
+            Typed typed = (Typed) expr;
+            if (!typed.isResolved()) {
+                Type type = resolver.resolveType(typed.getSimpleType());
+                typed.setResolvedType(type);
+            }
+        }
+
         if (expr instanceof StaticField) {
             StaticField stc = (StaticField) expr;
 

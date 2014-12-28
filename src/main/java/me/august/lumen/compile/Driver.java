@@ -49,7 +49,7 @@ public class Driver {
         program.accept(visitor);
 
         DependencyManager deps = new DependencyManager();
-        LumenTypeVisitor typeVisitor = new LumenTypeVisitor(deps, context);
+        LumenTypeVisitor typeVisitor = new LumenTypeVisitor(resolver, deps, context);
         program.accept(typeVisitor);
 
         return program;

@@ -10,7 +10,7 @@ import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
-import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
+import me.august.lumen.compile.parser.ast.expr.OwnedExpr;
 import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import org.objectweb.asm.Type;

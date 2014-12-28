@@ -1,6 +1,7 @@
 package me.august.lumen.compile.resolve;
 
 import me.august.lumen.compile.resolve.impl.NameResolver;
+import org.objectweb.asm.Type;
 
 public class ResolvingVisitor extends TypeVisitor {
 
@@ -11,7 +12,7 @@ public class ResolvingVisitor extends TypeVisitor {
     }
 
     @Override
-    public String resolveType(String simple) {
-        return resolver.getQualifiedName(simple);
+    public Type resolveType(String simple) {
+        return resolver.resolveType(simple);
     }
 }
