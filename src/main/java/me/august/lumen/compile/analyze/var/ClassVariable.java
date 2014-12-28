@@ -6,8 +6,6 @@ import org.objectweb.asm.Type;
 
 import java.util.function.Consumer;
 
-// Massively simplified - will only get/set fields
-// of `this` (current Object)
 public class ClassVariable implements VariableReference, Opcodes {
 
     String cls;
@@ -27,14 +25,12 @@ public class ClassVariable implements VariableReference, Opcodes {
 
     @Override
     public void generateGetCode(MethodVisitor m) {
-        // TODO get fields of other objects
         m.visitVarInsn(ALOAD, 0);
         m.visitFieldInsn(GETFIELD, cls, name, type.getDescriptor());
     }
 
     @Override
     public void generateSetCode(MethodVisitor m, Consumer<MethodVisitor> insn) {
-        // TODO set fields of other objects
         m.visitVarInsn(ALOAD, 0);
         insn.accept(m);
         m.visitFieldInsn(PUTFIELD, cls, name, type.getDescriptor());

@@ -2,7 +2,6 @@ package me.august.lumen;
 
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.expr.*;
-import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
 import me.august.lumen.compile.scanner.Lexer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -93,7 +92,7 @@ public class ExpressionTest {
 
         Assert.assertTrue(cast.getValue() instanceof IdentExpr);
         Assert.assertEquals(((IdentExpr) cast.getValue()).getIdentifier(), "foo");
-        Assert.assertEquals(cast.getType(), "Bar");
+        Assert.assertEquals(cast.getSimpleType(), "Bar");
     }
 
     private Expression parseExpression(String src) {

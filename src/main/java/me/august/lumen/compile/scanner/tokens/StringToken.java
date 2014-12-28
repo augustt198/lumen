@@ -1,4 +1,7 @@
-package me.august.lumen.compile.scanner;
+package me.august.lumen.compile.scanner.tokens;
+
+import me.august.lumen.compile.scanner.Token;
+import me.august.lumen.compile.scanner.Type;
 
 public class StringToken extends Token {
 

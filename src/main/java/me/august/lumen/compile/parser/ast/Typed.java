@@ -1,19 +1,21 @@
 package me.august.lumen.compile.parser.ast;
 
+import org.objectweb.asm.Type;
+
 public class Typed {
 
-    protected String type;
-    protected String resolvedType;
+    protected String simpleType;
+    protected Type resolvedType;
 
-    public Typed(String type) {
-        this.type = type;
+    public Typed(String simpleType) {
+        this.simpleType = simpleType;
     }
 
-    public String getType() {
-        return type;
+    public String getSimpleType() {
+        return simpleType;
     }
 
-    public String getResolvedType() {
+    public Type getResolvedType() {
         return resolvedType;
     }
 
@@ -21,7 +23,7 @@ public class Typed {
         return resolvedType != null;
     }
 
-    public void setResolvedType(String resolvedType) {
+    public void setResolvedType(Type resolvedType) {
         this.resolvedType = resolvedType;
     }
 }

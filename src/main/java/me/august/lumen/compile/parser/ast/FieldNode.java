@@ -39,14 +39,17 @@ public class FieldNode extends Typed implements ClassCodeGen {
     @Override
     public void generate(ClassVisitor visitor, BuildContext context) {
         // `null, null` represents `signature (generics), value`
-        visitor.visitField(Modifier.compose(modifiers), getName(), getResolvedType(), null, null);
+        visitor.visitField(
+            Modifier.compose(modifiers), getName(), getResolvedType().getDescriptor(),
+            null, null // signature, value
+        );
     }
 
     @Override
     public String toString() {
         return "FieldNode{" +
             "name='" + name + '\'' +
-            ", type='" + type + '\'' +
+            ", type='" + simpleType + '\'' +
             ", modifiers=" + Arrays.toString(modifiers) +
             ", defaultValue=" + defaultValue +
             '}';

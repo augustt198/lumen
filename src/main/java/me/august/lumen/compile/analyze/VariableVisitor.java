@@ -10,7 +10,7 @@ import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
-import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
+import me.august.lumen.compile.parser.ast.expr.OwnedExpr;
 import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import org.objectweb.asm.Type;
@@ -56,7 +56,7 @@ public class VariableVisitor implements ASTVisitor {
     public void visitField(FieldNode field) {
         Scope scope = scopes.lastElement();
 
-        Type type = BytecodeUtil.fromNamedType(field.getResolvedType());
+        Type type = field.getResolvedType();
         scope.addVariable(field.getName(), new ClassVariable(
             className,
             field.getName(),
@@ -98,7 +98,7 @@ public class VariableVisitor implements ASTVisitor {
     public void visitVar(VarStmt var) {
         Scope scope = scopes.lastElement();
 
-        Type type = BytecodeUtil.fromNamedType(var.getResolvedType());
+        Type type = var.getResolvedType();
         LocalVariable ref = new LocalVariable(nextLocalIndex(), type);
         scope.addVariable(var.getName(), ref);
         var.setRef(ref);

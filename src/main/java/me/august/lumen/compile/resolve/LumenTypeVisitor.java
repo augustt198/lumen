@@ -1,27 +1,27 @@
 package me.august.lumen.compile.resolve;
 
+import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.method.MethodReference;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.expr.*;
-import me.august.lumen.compile.parser.ast.expr.owned.OwnedExpr;
 import me.august.lumen.compile.resolve.data.ClassData;
 import me.august.lumen.compile.resolve.data.FieldData;
 import me.august.lumen.compile.resolve.data.MethodData;
-import me.august.lumen.compile.resolve.impl.NameResolver;
 import me.august.lumen.compile.resolve.lookup.DependencyManager;
 import org.objectweb.asm.Type;
 
 import java.util.List;
 
-public class LumenTypeVisitor extends ResolvingVisitor {
+public class LumenTypeVisitor implements ASTVisitor {
 
+    private TypeResolver resolver;
     private DependencyManager deps;
     private BuildContext build;
 
-    public LumenTypeVisitor(NameResolver resolver, DependencyManager deps, BuildContext build) {
-        super(resolver);
+    public LumenTypeVisitor(TypeResolver resolver, DependencyManager deps, BuildContext build) {
+        this.resolver = resolver;
         this.deps = deps;
         this.build = build;
     }
@@ -41,15 +41,20 @@ public class LumenTypeVisitor extends ResolvingVisitor {
         }
     }
 
+    // TODO split up this mega-method
     private void handleRoot(Expression expr) {
         if (expr instanceof Typed) {
-            visitType((Typed) expr);
+            Typed typed = (Typed) expr;
+            if (!typed.isResolved()) {
+                Type type = resolver.resolveType(typed.getSimpleType());
+                typed.setResolvedType(type);
+            }
         }
 
         if (expr instanceof StaticField) {
             StaticField stc = (StaticField) expr;
 
-            ClassData cls = deps.lookup(stc.getResolvedType());
+            ClassData cls = deps.lookup(stc.getResolvedType().getClassName());
             if (cls == null)
                 throw new RuntimeException("Unknown class: " + stc.getResolvedType());
 
@@ -58,7 +63,7 @@ public class LumenTypeVisitor extends ResolvingVisitor {
         } else if (expr instanceof StaticMethodCall) {
             StaticMethodCall call = (StaticMethodCall) expr;
 
-            ClassData cls = deps.lookup(call.getResolvedType());
+            ClassData cls = deps.lookup(call.getResolvedType().getClassName());
             if (cls == null)
                 throw new RuntimeException("Unknown class: " + call.getResolvedType());
 
@@ -71,7 +76,7 @@ public class LumenTypeVisitor extends ResolvingVisitor {
             Type methodType = methodType(method.getReturnType(), call.getParameters());
 
             call.setRef(new MethodReference.Static(
-                call.getResolvedType(), methodName, methodType
+                call.getResolvedType().getClassName(), methodName, methodType
             ));
         }
 

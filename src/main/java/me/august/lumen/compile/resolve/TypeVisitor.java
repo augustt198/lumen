@@ -4,8 +4,10 @@ import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.Typed;
+import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
+import org.objectweb.asm.Type;
 
 import java.util.Map;
 
@@ -14,10 +16,11 @@ import java.util.Map;
  */
 public abstract class TypeVisitor implements ASTVisitor {
 
-    protected abstract String resolveType(String simple);
+    protected abstract Type resolveType(String simple);
 
     public void visitType(Typed type) {
-        type.setResolvedType(resolveType(type.getType()));
+        Type resolved = resolveType(type.getSimpleType());
+        type.setResolvedType(resolved);
     }
 
     @Override
@@ -35,13 +38,24 @@ public abstract class TypeVisitor implements ASTVisitor {
         visitType(method);
 
         for (Map.Entry<String, String> entry : method.getParameters().entrySet()) {
-            String resolved = resolveType(entry.getValue());
+            String resolved = resolveType(entry.getValue()).getClassName();
             method.getParameters().put(entry.getKey(), resolved);
         }
     }
 
     @Override
+    public void visitExpression(Expression expr) {
+        if (expr instanceof Typed) {
+            visitType((Typed) expr);
+        }
+    }
+
+    @Override
     public void visitClass(ClassNode cls) {
-        cls.setSuperClass(resolveType(cls.getSuperClass()));
+        // TODO better work-around
+        if (!cls.getSuperClass().equals(Object.class.getName())) {
+            String className = resolveType(cls.getSuperClass()).getClassName();
+            cls.setSuperClass(className);
+        }
     }
 }
