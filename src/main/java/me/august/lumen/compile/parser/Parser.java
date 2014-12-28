@@ -530,7 +530,7 @@ public class Parser {
 
     /**
      * Parses a relational expression:
-     * bit_shift [(lt | lte | gt | gte | is) expression]
+     * bit_shift [(lt | lte | gt | gte | is a) expression]
      *
      * @return An expression
      */
@@ -542,10 +542,15 @@ public class Parser {
             peek == Type.GTE || peek == Type.INSTANCEOF_KEYWORD) {
             next(); // consume
 
-            Expression right = parseExpression();
-            RelExpr.Op op = peek == INSTANCEOF_KEYWORD ? RelExpr.Op.IS : RelExpr.Op.valueOf(peek.name());
+            if (peek == INSTANCEOF_KEYWORD) {
+                String type = next().expectType(IDENTIFIER).getContent();
+                return new InstanceofExpression(left, type);
+            } else {
+                RelExpr.Op op = RelExpr.Op.valueOf(peek.name());
+                Expression right = parseExpression();
+                return new RelExpr(left, right, op);
+            }
 
-            return new RelExpr(left, right, op);
         }
 
         return left;
