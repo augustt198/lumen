@@ -51,7 +51,7 @@ public class VariableResolutionTest {
 
         cls.getMethods().add(method);
 
-        PROGRAM.accept(new LumenTypeVisitor(new NameResolver(), new DependencyManager(), null));
+        PROGRAM.accept(new LumenTypeVisitor(new DependencyManager(), null));
     }
 
     @Test

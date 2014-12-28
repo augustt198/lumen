@@ -22,6 +22,8 @@ public class Driver {
     Reader reader;
     private CompileBuildContext context = new CompileBuildContext();
 
+    private NameResolver resolver;
+
     public Driver(Reader reader) {
         this.reader = reader;
     }
@@ -35,7 +37,7 @@ public class Driver {
     }
 
     public ProgramNode phase3Resolving(ProgramNode program) {
-        NameResolver resolver = new NameResolver(program.getImports());
+        resolver = new NameResolver(program.getImports());
         ResolvingVisitor typeVisitor = new ResolvingVisitor(resolver);
         program.accept(typeVisitor);
 
@@ -46,9 +48,8 @@ public class Driver {
         VariableVisitor visitor = new VariableVisitor(context);
         program.accept(visitor);
 
-        NameResolver resolver = new NameResolver(program.getImports());
         DependencyManager deps = new DependencyManager();
-        LumenTypeVisitor typeVisitor = new LumenTypeVisitor(resolver, deps, context);
+        LumenTypeVisitor typeVisitor = new LumenTypeVisitor(deps, context);
         program.accept(typeVisitor);
 
         return program;

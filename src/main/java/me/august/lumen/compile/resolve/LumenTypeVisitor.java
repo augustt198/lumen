@@ -1,5 +1,6 @@
 package me.august.lumen.compile.resolve;
 
+import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.method.MethodReference;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.codegen.BuildContext;
@@ -15,13 +16,12 @@ import org.objectweb.asm.Type;
 
 import java.util.List;
 
-public class LumenTypeVisitor extends ResolvingVisitor {
+public class LumenTypeVisitor implements ASTVisitor {
 
     private DependencyManager deps;
     private BuildContext build;
 
-    public LumenTypeVisitor(NameResolver resolver, DependencyManager deps, BuildContext build) {
-        super(resolver);
+    public LumenTypeVisitor(DependencyManager deps, BuildContext build) {
         this.deps = deps;
         this.build = build;
     }
@@ -41,11 +41,8 @@ public class LumenTypeVisitor extends ResolvingVisitor {
         }
     }
 
+    // TODO split up this mega-method
     private void handleRoot(Expression expr) {
-        if (expr instanceof Typed) {
-            visitType((Typed) expr);
-        }
-
         if (expr instanceof StaticField) {
             StaticField stc = (StaticField) expr;
 
