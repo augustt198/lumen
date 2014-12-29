@@ -38,9 +38,7 @@ public interface Expression extends CodeBlock, VisitorConsumer {
     }
 
     default Type expressionType() {
-        return Type.VOID_TYPE;
+        return null;
     }
-
-
 
 }
