@@ -9,11 +9,11 @@ A WIP tiny programming language for the JVM.
 
 Not much... yet. Here's a sample program:
 
-- **Source**
-![Lumen Source](http://i.imgur.com/RnJ29W6.png)
+- **Lumen Source**
+![Lumen Source](http://i.imgur.com/Fk3I84b.png)
 
-- **Generated <code><strong>class</strong></code> file** (decompiled in IntelliJ)
-![Decompiled to Java](http://i.imgur.com/kTlRyEF.png)
+- **Generated <code><strong>class</strong></code> file**
+![Decompiled to Java](http://i.imgur.com/HvwxTmV.png)
 
 
 #### [Trello Board](https://trello.com/b/CHPN7kR1/lumen)
