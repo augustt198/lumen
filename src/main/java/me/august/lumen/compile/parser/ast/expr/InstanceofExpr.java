@@ -8,11 +8,11 @@ import org.objectweb.asm.Opcodes;
 // NOTE: unlike most other expressions, this expression type
 // has the *same* precedence as RelExpr. They have been separated
 // for ease of use.
-public class InstanceofExpression extends Typed implements Expression {
+public class InstanceofExpr extends Typed implements Expression {
 
     private Expression value;
 
-    public InstanceofExpression(Expression value, String simpleType) {
+    public InstanceofExpr(Expression value, String simpleType) {
         super(simpleType);
         this.value = value;
     }

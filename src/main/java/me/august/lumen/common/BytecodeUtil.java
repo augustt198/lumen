@@ -134,6 +134,10 @@ public final class BytecodeUtil implements Opcodes {
         return type.getOpcode(IREM);
     }
 
+    public static int negateInstruction(Type type) {
+        return type.getOpcode(INEG);
+    }
+
     public static int fromOpcodeName(String name) {
         return OPCODES.getOrDefault(name, -1);
     }

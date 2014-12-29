@@ -546,7 +546,7 @@ public class Parser {
 
             if (peek == INSTANCEOF_KEYWORD) {
                 String type = next().expectType(IDENTIFIER).getContent();
-                return new InstanceofExpression(left, type);
+                return new InstanceofExpr(left, type);
             } else {
                 RelExpr.Op op = RelExpr.Op.valueOf(peek.name());
                 Expression right = parseExpression();
@@ -623,12 +623,12 @@ public class Parser {
 
     /**
      * Parses a casting expression:
-     * component [as identifier]
+     * unary [as identifier]
      *
      * @return An expression
      */
     private Expression parseCast() {
-        Expression left = parseComponent();
+        Expression left = parseUnary();
 
         if (accept(CAST_KEYWORD)) {
             String ident = next().expectType(IDENTIFIER).getContent();
@@ -637,6 +637,23 @@ public class Parser {
         }
 
         return left;
+    }
+
+    /**
+     * Parses a unary expression:
+     * [- +] component
+     *
+     * @return An expression
+     */
+    private Expression parseUnary() {
+        if (accept(MIN)) {
+            return new UnaryMinusExpr(parseComponent());
+        } else if (accept(PLUS)) {
+            // unary plus does nothing important at the moment
+            return parseComponent();
+        } else {
+            return parseComponent();
+        }
     }
 
     /**
