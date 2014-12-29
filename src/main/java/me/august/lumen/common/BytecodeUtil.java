@@ -1,5 +1,7 @@
 package me.august.lumen.common;
 
+import me.august.lumen.compile.codegen.BuildContext;
+import me.august.lumen.compile.parser.ast.expr.Expression;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -312,5 +314,37 @@ public final class BytecodeUtil implements Opcodes {
 
     public static boolean isString(Type type) {
         return type.equals(STRING_TYPE);
+    }
+
+    private static final Type SB_TYPE = Type.getType(StringBuilder.class);
+
+    public static void concatStringsBytecode(MethodVisitor method, BuildContext ctx, Expression... exprs) {
+        // initialize StringBuilder instance
+        method.visitTypeInsn(NEW, SB_TYPE.getInternalName());
+        method.visitInsn(DUP);
+        method.visitMethodInsn(
+            INVOKESPECIAL, SB_TYPE.getInternalName(),
+            "<init>", Type.getMethodType(Type.VOID_TYPE).getDescriptor(),
+            false // not an interface
+        );
+
+        // append expressions
+        for (Expression expr : exprs) {
+            Type type = Type.getMethodType(SB_TYPE, expr.expressionType());
+            expr.generate(method, ctx);
+
+            method.visitMethodInsn(
+                INVOKEVIRTUAL, SB_TYPE.getInternalName(),
+                "append", type.getDescriptor(),
+                false // not an interface
+            );
+        }
+
+        // finally, call toString()
+        method.visitMethodInsn(
+            INVOKEVIRTUAL, SB_TYPE.getInternalName(),
+            "toString", Type.getMethodType(STRING_TYPE).getDescriptor(),
+            false
+        );
     }
 }

@@ -45,6 +45,13 @@ public class AddExpr extends BinaryExpression {
 
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
+        if (BytecodeUtil.isString(expressionType())) {
+            BytecodeUtil.concatStringsBytecode(
+                visitor, context, left, right
+            );
+            return;
+        }
+
         int opcode;
         Type leftType  = left.expressionType();
         Type rightType = right.expressionType();
