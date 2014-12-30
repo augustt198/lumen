@@ -81,6 +81,8 @@ public enum Type {
     IF_KEYWORD,
     ELSE_KEYWORD,
 
+    THEN_KEYWORD,
+
     WHILE_KEYWORD,
 
     CAST_KEYWORD,
