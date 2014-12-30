@@ -145,8 +145,8 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             else if (c == '.') return token(DOT);
             else if (c == ':') return nextColonOrSep();
 
-            else if (c == '+') return nextPlusOrNumber();
-            else if (c == '-') return nextMinOrNumber();
+            else if (c == '+') return nextPlusOrIncOrNumber();
+            else if (c == '-') return nextMinOrDecOrNumber();
             else if (c == '*') return token(MULT);
             else if (c == '/') return token(DIV);
             else if (c == '%') return token(REM);
@@ -325,9 +325,12 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
      * The next MIN token or negative NUMBER token.
      * @return A MIN or NUMBER token.
      */
-    private Token nextMinOrNumber() {
+    private Token nextMinOrDecOrNumber() {
         if (Character.isDigit(peek())) {
             return nextNumber((char) read(), true);
+        } else if (peek() == '-') {
+            read();
+            return token(DEC);
         } else {
             return token(MIN);
         }
@@ -337,9 +340,12 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
      * The next PLUS token or positive NUMBER token.
      * @return A PLUS or NUMBER token.
      */
-    private Token nextPlusOrNumber() {
+    private Token nextPlusOrIncOrNumber() {
         if (Character.isDigit(peek())) {
             return nextNumber((char) read(), false);
+        } else if (peek() == '+') {
+            read();
+            return token(INC);
         } else {
             return token(PLUS);
         }

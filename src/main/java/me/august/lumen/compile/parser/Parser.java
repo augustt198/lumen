@@ -641,7 +641,7 @@ public class Parser {
 
     /**
      * Parses a unary expression:
-     * [- +] component
+     * [+ - ++ --] component
      *
      * @return An expression
      */
@@ -651,6 +651,10 @@ public class Parser {
         } else if (accept(PLUS)) {
             // unary plus does nothing important at the moment
             return parseComponent();
+        } else if (accept(INC)) {
+            return new IncrementExpr(parseComponent(), IncrementExpr.Op.INC, false);
+        } else if (accept(DEC)) {
+            return new IncrementExpr(parseComponent(), IncrementExpr.Op.DEC, false);
         } else {
             return parseComponent();
         }

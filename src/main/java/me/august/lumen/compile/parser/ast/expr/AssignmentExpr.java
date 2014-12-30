@@ -15,6 +15,6 @@ public class AssignmentExpr extends BinaryExpression {
 
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
-        left.getRef().generateSetCode(visitor, (m) -> right.generate(visitor, context));
+        left.getVariableReference().generateSetCode(visitor, (m) -> right.generate(visitor, context));
     }
 }

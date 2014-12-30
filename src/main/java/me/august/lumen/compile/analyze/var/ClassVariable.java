@@ -13,7 +13,7 @@ public class ClassVariable implements VariableReference, Opcodes {
     private Type type;
 
     public ClassVariable(String cls, String name, Type type) {
-        this.cls = cls;
+        this.cls  = cls;
         this.name = name;
         this.type = type;
     }

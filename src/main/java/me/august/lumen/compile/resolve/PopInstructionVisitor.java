@@ -4,8 +4,6 @@ import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.Popable;
 import me.august.lumen.compile.parser.ast.expr.Expression;
-import me.august.lumen.compile.parser.ast.expr.MethodCallExpr;
-import me.august.lumen.compile.parser.ast.expr.StaticMethodCall;
 import me.august.lumen.compile.parser.ast.stmt.Body;
 import org.objectweb.asm.Type;
 
@@ -19,7 +17,7 @@ public class PopInstructionVisitor implements ASTVisitor {
     @Override
     public void visitBody(Body body) {
         for (CodeBlock code : body.getChildren()) {
-            if (code instanceof MethodCallExpr || code instanceof StaticMethodCall) {
+            if (code instanceof Expression && code instanceof Popable) {
                 Expression expr = (Expression) code;
                 Popable popable = (Popable)    expr;
 

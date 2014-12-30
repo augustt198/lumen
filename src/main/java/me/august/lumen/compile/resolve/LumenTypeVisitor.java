@@ -107,7 +107,7 @@ public class LumenTypeVisitor implements ASTVisitor {
         if (field == null)
             throw new RuntimeException("Unknown field: " + fieldName);
 
-        ident.setRef(new ClassVariable(className, fieldName, field.getType()));
+        ident.setVariableReference(new ClassVariable(className, fieldName, field.getType()));
     }
 
     private void handleMethod(MethodCallExpr call, ClassData cls, String className) {

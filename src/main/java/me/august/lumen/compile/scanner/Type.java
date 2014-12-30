@@ -52,6 +52,9 @@ public enum Type {
     DIV,        // /
     REM,        // %
 
+    INC,        // ++
+    DEC,        // --
+
     ASSIGN,     // =
 
     // literals

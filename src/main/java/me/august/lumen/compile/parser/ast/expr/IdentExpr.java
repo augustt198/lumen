@@ -5,7 +5,7 @@ import me.august.lumen.compile.codegen.BuildContext;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-public class IdentExpr extends TerminalExpression implements OwnedExpr {
+public class IdentExpr extends TerminalExpression implements OwnedExpr, VariableExpression {
 
     private String identifier;
     private Expression owner;
@@ -32,11 +32,12 @@ public class IdentExpr extends TerminalExpression implements OwnedExpr {
         return identifier;
     }
 
-    public VariableReference getRef() {
+    @Override
+    public VariableReference getVariableReference() {
         return ref;
     }
 
-    public void setRef(VariableReference ref) {
+    public void setVariableReference(VariableReference ref) {
         this.ref = ref;
     }
 

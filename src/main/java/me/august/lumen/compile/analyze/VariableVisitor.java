@@ -116,7 +116,7 @@ public class VariableVisitor implements ASTVisitor {
 
     private void handleIdent(IdentExpr expr) {
         VariableReference var = getVariable(expr.getIdentifier());
-        expr.setRef(var);
+        expr.setVariableReference(var);
         expr.setExpressionType(var.getType());
     }
 

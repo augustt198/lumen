@@ -11,15 +11,8 @@ import java.util.Set;
 
 public class NameResolver implements TypeResolver {
 
-    private static final Set<String> keywordTypes;
-
-    static {
-        String[] types = {
-            "int", "byte", "boolean", "long",
-            "char", "double", "float", "void"
-        };
-        keywordTypes = new HashSet<>(Arrays.asList(types));
-    }
+    private static final Set<String> keywordTypes
+        = new HashSet<>(Arrays.asList(BytecodeUtil.LUMEN_PRIMITIVES));
 
     private ImportNode[] imports;
 

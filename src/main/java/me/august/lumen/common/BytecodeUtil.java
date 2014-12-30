@@ -14,6 +14,11 @@ import java.util.Map;
 
 public final class BytecodeUtil implements Opcodes {
 
+    public static final String[] LUMEN_PRIMITIVES = {
+        "int", "byte", "boolean", "bool", "long",
+        "char", "double", "float", "void"
+    };
+
     private static final Map<String, Integer> OPCODES  = new HashMap<>();
     private static final Map<String, Integer> ACC_MODS = new HashMap<>();
 
