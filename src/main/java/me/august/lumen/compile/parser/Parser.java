@@ -654,16 +654,27 @@ public class Parser {
      */
     private Expression parseUnary() {
         if (accept(MIN)) {
-            return new UnaryMinusExpr(parseComponent());
+            return new UnaryMinusExpr(parsePostfix());
         } else if (accept(PLUS)) {
             // unary plus does nothing important at the moment
-            return parseComponent();
+            return parsePostfix();
         } else if (accept(INC)) {
-            return new IncrementExpr(parseComponent(), IncrementExpr.Op.INC, false);
+            return new IncrementExpr(parsePostfix(), IncrementExpr.Op.INC, false);
         } else if (accept(DEC)) {
-            return new IncrementExpr(parseComponent(), IncrementExpr.Op.DEC, false);
+            return new IncrementExpr(parsePostfix(), IncrementExpr.Op.DEC, false);
         } else {
-            return parseComponent();
+            return parsePostfix();
+        }
+    }
+
+    private Expression parsePostfix() {
+        Expression expr = parseComponent();
+        if (accept(INC)) {
+            return new IncrementExpr(expr, IncrementExpr.Op.INC, true);
+        } else if (accept(DEC)) {
+            return new IncrementExpr(expr, IncrementExpr.Op.DEC, true);
+        } else {
+            return expr;
         }
     }
 
