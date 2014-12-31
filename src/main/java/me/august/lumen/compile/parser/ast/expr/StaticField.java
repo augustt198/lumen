@@ -50,7 +50,7 @@ public class StaticField extends Typed implements VariableExpression {
 
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
-        variableReference.generateGetCode(visitor);
+        getVariableReference().generateGetCode(visitor);
         /*
         visitor.visitFieldInsn(
             Opcodes.GETSTATIC,

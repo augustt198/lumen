@@ -157,6 +157,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
 
             else if (c == '|') return nextOr();
             else if (c == '&') return nextAnd();
+            else if (c == '~') return token(BIT_COMP);
 
             else if (c == '!') return nextNegOrNe();
             else if (c == '?') return token(QUESTION);

@@ -33,6 +33,7 @@ public enum Type {
     BIT_OR,     // |
     BIT_XOR,    // ^
     BIT_AND,    // &
+    BIT_COMP,   // ~
 
     EQ,         // ==
     NE,         // !=

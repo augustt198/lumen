@@ -658,6 +658,8 @@ public class Parser {
         } else if (accept(PLUS)) {
             // unary plus does nothing important at the moment
             return parsePostfix();
+        } else if (accept(BIT_COMP)) { // bitwise complement
+            return new BitwiseComplementExpr(parsePostfix());
         } else if (accept(INC)) {
             return new IncrementExpr(parsePostfix(), IncrementExpr.Op.INC, false);
         } else if (accept(DEC)) {
