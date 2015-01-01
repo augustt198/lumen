@@ -59,7 +59,7 @@ public class Driver {
     }
 
     public byte[] phase5Bytecode(ProgramNode program) {
-        ClassWriter writer = new ClassWriter(0);
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         program.getClassNode().generate(writer, context);
 
         return writer.toByteArray();
