@@ -25,7 +25,7 @@ public enum Type {
     // operators
     // =========
 
-    NEG,        // !
+    NOT,        // !
 
     LOGIC_OR,   // ||
     LOGIC_AND,  // &&

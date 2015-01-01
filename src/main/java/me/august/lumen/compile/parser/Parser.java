@@ -660,6 +660,8 @@ public class Parser {
             return parsePostfix();
         } else if (accept(BIT_COMP)) { // bitwise complement
             return new BitwiseComplementExpr(parsePostfix());
+        } else if (accept(NOT)) {
+            return new NotExpr(parsePostfix());
         } else if (accept(INC)) {
             return new IncrementExpr(parsePostfix(), IncrementExpr.Op.INC, false);
         } else if (accept(DEC)) {

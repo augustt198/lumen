@@ -159,7 +159,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             else if (c == '&') return nextAnd();
             else if (c == '~') return token(BIT_COMP);
 
-            else if (c == '!') return nextNegOrNe();
+            else if (c == '!') return nextNotOrNe();
             else if (c == '?') return token(QUESTION);
 
             else if (c == '=') return nextEqOrAssign();
@@ -629,17 +629,17 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
      * Precondition: last read char was '!'
      * <p>
      * Differentiates the following tokens:
-     * NEG  "!"  (negate)
+     * NOT  "!"  (not, invert)
      * NE   "!=" (not equal to)
      *
-     * @return The next NEG or NE type token
+     * @return The next NOT or NE type token
      */
-    private Token nextNegOrNe() {
+    private Token nextNotOrNe() {
         if (peek() == '=') {
             read(); // consume '='
             return token(NE);
         }
-        return token(NEG);
+        return token(NOT);
     }
 
     /**
