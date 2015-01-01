@@ -57,6 +57,8 @@ public class Body implements CodeBlock, VisitorConsumer {
                 IfStmt stmt = (IfStmt) code;
                 stmt.getCondition().accept(visitor);
                 stmt.getTrueBody().accept(visitor);
+                if (stmt.getElseBody() != null)
+                    stmt.getElseBody().accept(visitor);
             }
         }
         visitor.visitBodyEnd(this);

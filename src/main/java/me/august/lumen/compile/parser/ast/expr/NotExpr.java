@@ -7,6 +7,7 @@ import me.august.lumen.compile.codegen.MethodCodeGen;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 public class NotExpr implements Expression, Conditional {
 
@@ -24,6 +25,11 @@ public class NotExpr implements Expression, Conditional {
             m.visitJumpInsn(Opcodes.IFNE, label);
         };
         return new Branch(cond, label, ifBranch, elseBranch);
+    }
+
+    @Override
+    public Type expressionType() {
+        return Type.BOOLEAN_TYPE;
     }
 
     @Override
