@@ -59,6 +59,8 @@ public final class BytecodeUtil implements Opcodes {
 
     private BytecodeUtil() {}
 
+    // Use org.objectweb.asm.Type instead
+    @Deprecated
     public static String[] splitTypes(String desc) {
         List<String> types = new ArrayList<>();
 
@@ -90,6 +92,8 @@ public final class BytecodeUtil implements Opcodes {
         return types.toArray(new String[types.size()]);
     }
 
+    // Use org.objectweb.asm.Type instead
+    @Deprecated
     public static String toType(Class<?> cls) {
         switch (cls.getName()) {
             case "boolean":
