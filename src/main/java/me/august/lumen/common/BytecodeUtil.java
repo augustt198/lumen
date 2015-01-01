@@ -356,4 +356,30 @@ public final class BytecodeUtil implements Opcodes {
             false
         );
     }
+
+    public static int negateCondition(int opcode) {
+        switch (opcode) {
+            case IFNULL:    return IFNONNULL;
+            case IFNONNULL: return IFNULL;
+
+            case IFEQ:      return IFNE;
+            case IFNE:      return IFEQ;
+            case IFLT:      return IFGE;
+            case IFLE:      return IFGT;
+            case IFGT:      return IFLE;
+            case IFGE:      return IFLT;
+
+            case IF_ICMPEQ: return IF_ICMPNE;
+            case IF_ICMPNE: return IF_ICMPEQ;
+            case IF_ICMPLT: return IF_ICMPGE;
+            case IF_ICMPLE: return IF_ICMPGT;
+            case IF_ICMPGT: return IF_ICMPLE;
+            case IF_ICMPGE: return IF_ICMPLT;
+
+            case IF_ACMPEQ: return IF_ACMPNE;
+            case IF_ACMPNE: return IF_ACMPEQ;
+
+            default:        return -1;
+        }
+    }
 }
