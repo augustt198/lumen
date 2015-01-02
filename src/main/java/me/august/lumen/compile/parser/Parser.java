@@ -547,13 +547,16 @@ public class Parser {
         Expression left = parseShift();
 
         Type peek = peek().getType();
-        if (peek == Type.LT || peek == Type.GT || peek == Type.LTE ||
-            peek == Type.GTE || peek == Type.INSTANCEOF_KEYWORD) {
+        if (peek == LT || peek == GT || peek == LTE || peek == GTE ||
+            peek == INSTANCEOF_KEYWORD || peek == NOT_INSTANCEOF_KEYWORD) {
             next(); // consume
 
             if (peek == INSTANCEOF_KEYWORD) {
                 String type = next().expectType(IDENTIFIER).getContent();
                 return new InstanceofExpr(left, type);
+            } else if (peek == NOT_INSTANCEOF_KEYWORD) {
+                String type = next().expectType(IDENTIFIER).getContent();
+                return new NotExpr(new InstanceofExpr(left, type));
             } else {
                 RelExpr.Op op = RelExpr.Op.valueOf(peek.name());
                 Expression right = parseExpression();

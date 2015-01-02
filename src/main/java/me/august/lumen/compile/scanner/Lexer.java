@@ -236,13 +236,13 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             type = IDENTIFIER;
         } else {
             handleKeyword(type);
-            if (ident.equals("is")) {
+            if (ident.equals("is") || ident.equals("isnt")) {
                 consumeWhitespace();
                 Token next = nextToken();
 
                 // next token is identifier with content 'a'
                 if (next.getType() == IDENTIFIER && next.getContent().equals("a")) {
-                    type = INSTANCEOF_KEYWORD;
+                    type = ident.equals("is") ? INSTANCEOF_KEYWORD : NOT_INSTANCEOF_KEYWORD;
                 } else {
                     queued.push(next);
                 }

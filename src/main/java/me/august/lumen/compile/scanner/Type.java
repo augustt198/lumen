@@ -76,6 +76,7 @@ public enum Type {
     STATIC_KEYWORD(Attribute.ACC_MOD),
 
     INSTANCEOF_KEYWORD,
+    NOT_INSTANCEOF_KEYWORD,
 
     VAR_KEYWORD,    // declare new local variable
 
