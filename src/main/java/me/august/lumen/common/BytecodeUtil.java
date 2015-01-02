@@ -325,6 +325,10 @@ public final class BytecodeUtil implements Opcodes {
         return type.equals(STRING_TYPE);
     }
 
+    public static boolean isObject(Type type) {
+        return type.getSort() == Type.OBJECT;
+    }
+
     private static final Type SB_TYPE = Type.getType(StringBuilder.class);
 
     public static void concatStringsBytecode(MethodVisitor method, BuildContext ctx, Expression... exprs) {
