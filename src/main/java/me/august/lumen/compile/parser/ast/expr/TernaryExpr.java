@@ -1,6 +1,14 @@
 package me.august.lumen.compile.parser.ast.expr;
 
-public class TernaryExpr implements Expression {
+import me.august.lumen.compile.codegen.Branch;
+import me.august.lumen.compile.codegen.BuildContext;
+import me.august.lumen.compile.codegen.Conditional;
+import me.august.lumen.compile.codegen.MethodCodeGen;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Type;
+
+
+public class TernaryExpr implements Expression, Conditional {
 
     private Expression condition;
 
@@ -23,6 +31,21 @@ public class TernaryExpr implements Expression {
 
     public Expression getFalseExpr() {
         return falseExpr;
+    }
+
+    @Override
+    public Type expressionType() {
+        return trueExpr.expressionType();
+    }
+
+    @Override
+    public Branch branch(MethodCodeGen ifBranch, MethodCodeGen elseBranch) {
+        return ((Conditional) condition).branch(ifBranch, elseBranch);
+    }
+
+    @Override
+    public void generate(MethodVisitor visitor, BuildContext context) {
+        branch(trueExpr, falseExpr).generate(visitor, context);
     }
 
     @Override
