@@ -345,7 +345,11 @@ public class Parser {
         Body body;
         if (accept(THEN_KEYWORD)) {
             body = new Body(Arrays.asList(parseExpression()));
-            return new IfStmt(condition, body, new ArrayList<>(), null);
+            Body elseBody = null;
+            if (accept(ELSE_KEYWORD)) {
+                elseBody = new Body(Arrays.asList(parseExpression()));
+            }
+            return new IfStmt(condition, body, new ArrayList<>(), elseBody);
         }
 
         body = parseBody();
