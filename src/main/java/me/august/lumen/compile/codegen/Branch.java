@@ -20,6 +20,38 @@ public class Branch implements MethodCodeGen {
         this.elseBranch = elseBranch;
     }
 
+    public MethodCodeGen getCond() {
+        return cond;
+    }
+
+    public void setCond(MethodCodeGen cond) {
+        this.cond = cond;
+    }
+
+    public Label getElseJump() {
+        return elseJump;
+    }
+
+    public void setElseJump(Label elseJump) {
+        this.elseJump = elseJump;
+    }
+
+    public MethodCodeGen getIfBranch() {
+        return ifBranch;
+    }
+
+    public void setIfBranch(MethodCodeGen ifBranch) {
+        this.ifBranch = ifBranch;
+    }
+
+    public MethodCodeGen getElseBranch() {
+        return elseBranch;
+    }
+
+    public void setElseBranch(MethodCodeGen elseBranch) {
+        this.elseBranch = elseBranch;
+    }
+
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
         cond.generate(visitor, context);

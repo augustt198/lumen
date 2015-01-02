@@ -1,5 +1,8 @@
 package me.august.lumen.compile.parser.ast.stmt;
 
+import me.august.lumen.compile.analyze.ASTVisitor;
+import me.august.lumen.compile.analyze.VisitorConsumer;
+import me.august.lumen.compile.codegen.Branch;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.Conditional;
 import me.august.lumen.compile.parser.ast.CodeBlock;
@@ -9,7 +12,7 @@ import org.objectweb.asm.MethodVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IfStmt implements CodeBlock {
+public class IfStmt implements CodeBlock, VisitorConsumer {
 
     private Expression condition;
     private Body trueBody;
@@ -29,8 +32,17 @@ public class IfStmt implements CodeBlock {
 
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
-        ((Conditional) condition).branch(trueBody, elseBody)
-            .generate(visitor, context);
+        Branch branch = ((Conditional) condition).branch(trueBody, elseBody);
+
+        if (elseIfs != null) {
+            for (ElseIf elseIf : elseIfs) {
+                branch.setElseBranch(
+                    ((Conditional) elseIf.condition).branch(elseIf.body, branch.getElseBranch())
+                );
+            }
+        }
+
+        branch.generate(visitor, context);
     }
 
     public Expression getCondition() {
@@ -47,6 +59,19 @@ public class IfStmt implements CodeBlock {
 
     public Body getElseBody() {
         return elseBody;
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        condition.accept(visitor);
+        trueBody.accept(visitor);
+
+        for (ElseIf eif : elseIfs) {
+            eif.condition.accept(visitor);
+            eif.body.accept(visitor);
+        }
+
+        if (elseBody != null) elseBody.accept(visitor);
     }
 
     public static class ElseIf {
