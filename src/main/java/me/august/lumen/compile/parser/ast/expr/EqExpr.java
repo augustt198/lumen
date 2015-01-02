@@ -61,6 +61,43 @@ public class EqExpr extends BinaryExpression implements Conditional {
                 right.generate(m, c);
                 m.visitJumpInsn(opcode, label);
             };
+
+        // if the left and right side are both numeric primitives:
+        // 1) get the widest type of the two
+        // 2) promote all types narrower than int to int
+        // 3) cast left and right to widest type if necessary
+        // 4) if the widest type is a double, float, or long get
+        //    the comparison opcode needed
+        // 5) jump using IFNE/IFEQ or IF_ICMPNE/IF_ICMPEQ
+        } else if (BytecodeUtil.isNumeric(lType) && BytecodeUtil.isNumeric(rType)) {
+            Type widest = BytecodeUtil.widest(lType, rType);
+
+            if (widest.getSort() < Type.INT) widest = Type.INT_TYPE;
+            if (lType.getSort() < Type.INT) lType = Type.INT_TYPE;
+            if (rType.getSort() < Type.INT) rType = Type.INT_TYPE;
+
+            int lcast = BytecodeUtil.castNumberOpcode(lType, widest);
+            int rcast = BytecodeUtil.castNumberOpcode(rType, widest);
+
+            int cmp = BytecodeUtil.compareOpcode(widest);
+            final int opcode;
+            if (cmp >= 0) {
+                opcode = op == Op.EQ ? Opcodes.IFNE : Opcodes.IFEQ;
+            } else {
+                opcode = op == Op.EQ ? Opcodes.IF_ICMPNE : Opcodes.IF_ICMPEQ;
+            }
+
+            cond = (m, c) -> {
+                left.generate(m, c);
+                if (lcast >= 0) m.visitInsn(lcast);
+
+                right.generate(m, c);
+                if (rcast >= 0) m.visitInsn(rcast);
+
+                if (cmp >= 0) m.visitInsn(cmp);
+
+                m.visitJumpInsn(opcode, label);
+            };
         }
 
         return new Branch(cond, label, ifBranch, elseBranch);

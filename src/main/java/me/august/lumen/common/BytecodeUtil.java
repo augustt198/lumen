@@ -386,4 +386,13 @@ public final class BytecodeUtil implements Opcodes {
             default:        return -1;
         }
     }
+
+    public static int compareOpcode(Type type) {
+        switch (type.getSort()) {
+            case Type.DOUBLE: return DCMPL;
+            case Type.FLOAT:  return FCMPL;
+            case Type.LONG:   return LCMP;
+            default:          return -1;
+        }
+    }
 }
