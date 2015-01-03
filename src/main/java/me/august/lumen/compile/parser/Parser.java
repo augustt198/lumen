@@ -345,7 +345,11 @@ public class Parser {
         Body body;
         if (accept(THEN_KEYWORD)) {
             body = new Body(Arrays.asList(parseExpression()));
-            return new IfStmt(condition, body, new ArrayList<>(), null);
+            Body elseBody = null;
+            if (accept(ELSE_KEYWORD)) {
+                elseBody = new Body(Arrays.asList(parseExpression()));
+            }
+            return new IfStmt(condition, body, new ArrayList<>(), elseBody);
         }
 
         body = parseBody();
@@ -547,13 +551,16 @@ public class Parser {
         Expression left = parseShift();
 
         Type peek = peek().getType();
-        if (peek == Type.LT || peek == Type.GT || peek == Type.LTE ||
-            peek == Type.GTE || peek == Type.INSTANCEOF_KEYWORD) {
+        if (peek == LT || peek == GT || peek == LTE || peek == GTE ||
+            peek == INSTANCEOF_KEYWORD || peek == NOT_INSTANCEOF_KEYWORD) {
             next(); // consume
 
             if (peek == INSTANCEOF_KEYWORD) {
                 String type = next().expectType(IDENTIFIER).getContent();
                 return new InstanceofExpr(left, type);
+            } else if (peek == NOT_INSTANCEOF_KEYWORD) {
+                String type = next().expectType(IDENTIFIER).getContent();
+                return new NotExpr(new InstanceofExpr(left, type));
             } else {
                 RelExpr.Op op = RelExpr.Op.valueOf(peek.name());
                 Expression right = parseExpression();
@@ -660,6 +667,8 @@ public class Parser {
             return parsePostfix();
         } else if (accept(BIT_COMP)) { // bitwise complement
             return new BitwiseComplementExpr(parsePostfix());
+        } else if (accept(NOT)) {
+            return new NotExpr(parsePostfix());
         } else if (accept(INC)) {
             return new IncrementExpr(parsePostfix(), IncrementExpr.Op.INC, false);
         } else if (accept(DEC)) {

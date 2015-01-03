@@ -23,7 +23,7 @@ public class LexerTest {
             L_PAREN, R_PAREN, L_BRACKET, R_BRACKET, L_BRACE, R_BRACE,
             NUMBER, STRING,
             PLUS, MIN, MULT, DIV,
-            NEG, NE,
+            NOT, NE,
             BIT_OR, LOGIC_OR,
             BIT_AND, LOGIC_AND,
             ASSIGN, EQ,

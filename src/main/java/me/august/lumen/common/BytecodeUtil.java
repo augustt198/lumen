@@ -325,6 +325,10 @@ public final class BytecodeUtil implements Opcodes {
         return type.equals(STRING_TYPE);
     }
 
+    public static boolean isObject(Type type) {
+        return type.getSort() == Type.OBJECT;
+    }
+
     private static final Type SB_TYPE = Type.getType(StringBuilder.class);
 
     public static void concatStringsBytecode(MethodVisitor method, BuildContext ctx, Expression... exprs) {
@@ -355,5 +359,40 @@ public final class BytecodeUtil implements Opcodes {
             "toString", Type.getMethodType(STRING_TYPE).getDescriptor(),
             false
         );
+    }
+
+    public static int negateCondition(int opcode) {
+        switch (opcode) {
+            case IFNULL:    return IFNONNULL;
+            case IFNONNULL: return IFNULL;
+
+            case IFEQ:      return IFNE;
+            case IFNE:      return IFEQ;
+            case IFLT:      return IFGE;
+            case IFLE:      return IFGT;
+            case IFGT:      return IFLE;
+            case IFGE:      return IFLT;
+
+            case IF_ICMPEQ: return IF_ICMPNE;
+            case IF_ICMPNE: return IF_ICMPEQ;
+            case IF_ICMPLT: return IF_ICMPGE;
+            case IF_ICMPLE: return IF_ICMPGT;
+            case IF_ICMPGT: return IF_ICMPLE;
+            case IF_ICMPGE: return IF_ICMPLT;
+
+            case IF_ACMPEQ: return IF_ACMPNE;
+            case IF_ACMPNE: return IF_ACMPEQ;
+
+            default:        return -1;
+        }
+    }
+
+    public static int compareOpcode(Type type) {
+        switch (type.getSort()) {
+            case Type.DOUBLE: return DCMPL;
+            case Type.FLOAT:  return FCMPL;
+            case Type.LONG:   return LCMP;
+            default:          return -1;
+        }
     }
 }

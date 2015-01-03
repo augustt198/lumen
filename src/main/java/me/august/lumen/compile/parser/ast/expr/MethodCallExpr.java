@@ -4,6 +4,7 @@ import me.august.lumen.compile.analyze.method.MethodReference;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.Popable;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Type;
 
 import java.util.List;
 
@@ -42,6 +43,11 @@ public class MethodCallExpr extends TerminalExpression implements OwnedExpr, Pop
 
     public void setRef(MethodReference ref) {
         this.ref = ref;
+    }
+
+    @Override
+    public Type expressionType() {
+        return ref.getReturnType();
     }
 
     @Override

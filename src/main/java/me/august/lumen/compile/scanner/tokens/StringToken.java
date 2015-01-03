@@ -9,6 +9,7 @@ public class StringToken extends Token {
 
     public StringToken(String content, QuoteType quoteType, int start, int end) {
         super(content, start, end, Type.STRING);
+        this.quoteType = quoteType;
     }
 
     public QuoteType getQuoteType() {
