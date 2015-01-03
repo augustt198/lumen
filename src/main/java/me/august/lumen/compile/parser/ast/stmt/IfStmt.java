@@ -1,6 +1,5 @@
 package me.august.lumen.compile.parser.ast.stmt;
 
-import jdk.internal.org.objectweb.asm.Opcodes;
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.codegen.Branch;
@@ -11,11 +10,11 @@ import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.Condition;
 
 public class IfStmt implements CodeBlock, VisitorConsumer {
 

@@ -36,6 +36,10 @@ public abstract class MethodReference implements MethodCodeGen {
         }
     }
 
+    public Type getReturnType() {
+        return descriptor.getReturnType();
+    }
+
     public static class Instance extends MethodReference {
         public Instance(String owner, String name, Type descriptor) {
             super(owner, name, descriptor);
