@@ -87,8 +87,8 @@ public class LumenTypeVisitor implements ASTVisitor {
         if (parentType.getSort() != Type.OBJECT)
             throw new RuntimeException("Tried to access member of a primitive type");
 
-        String className = parentType.getClassName();
-        ClassData cls = deps.lookup(className);
+        String className = parentType.getInternalName();
+        ClassData cls = deps.lookup(parentType.getClassName());
 
         // expr is a field
         if (expr instanceof IdentExpr) {

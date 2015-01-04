@@ -19,7 +19,8 @@ import static me.august.lumen.compile.scanner.Type.*;
 
 public class Parser {
 
-    private static final String OBJECT_CLASS_NAME = Object.class.getName();
+    public static final String OBJECT_CLASS_INTERNAL_NAME =
+        org.objectweb.asm.Type.getType(Object.class).getInternalName();
 
     private Lexer lexer;
 
@@ -277,7 +278,7 @@ public class Parser {
         if (accept(COLON)) {
             return next().expectType(IDENTIFIER, "Expected superclass identifier").getContent();
         } else {
-            return OBJECT_CLASS_NAME;
+            return OBJECT_CLASS_INTERNAL_NAME;
         }
     }
 

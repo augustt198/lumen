@@ -4,6 +4,7 @@ import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.Typed;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 // NOTE: unlike most other expressions, this expression type
 // has the *same* precedence as RelExpr. They have been separated
@@ -22,6 +23,11 @@ public class InstanceofExpr extends Typed implements Expression {
         value.generate(visitor, context);
 
         visitor.visitTypeInsn(Opcodes.INSTANCEOF, getResolvedType().getInternalName());
+    }
+
+    @Override
+    public Type expressionType() {
+        return Type.BOOLEAN_TYPE;
     }
 
     @Override
