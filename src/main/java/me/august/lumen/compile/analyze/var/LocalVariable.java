@@ -36,4 +36,12 @@ public class LocalVariable implements VariableReference, Opcodes {
         insn.accept(m);
         m.visitVarInsn(BytecodeUtil.storeInstruction(type), index);
     }
+
+    @Override
+    public String toString() {
+        return "LocalVariable{" +
+            "index=" + index +
+            ", type=" + type +
+            '}';
+    }
 }

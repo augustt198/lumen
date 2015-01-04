@@ -1,11 +1,11 @@
 package me.august.lumen.compile.parser.ast.expr;
 
-import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.ClassCodeGen;
+import me.august.lumen.compile.parser.ast.Parameter;
 import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.stmt.Body;
 import org.objectweb.asm.ClassVisitor;
@@ -13,22 +13,22 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
 
     private String name;
     private Modifier[] modifiers;
 
-    private Map<String, String> parameters = new HashMap<>();
+    //private Map<String, String> parameters = new HashMap<>();
+    private List<Parameter> parameters;
 
     private Body body;
 
-    public MethodNode(String name, String returnType, Modifier... modifiers) {
+    public MethodNode(String name, String returnType, List<Parameter> parameters, Modifier... modifiers) {
         super(returnType);
         this.name = name;
+        this.parameters = parameters;
         this.modifiers = modifiers;
     }
 
@@ -42,13 +42,13 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
     @Override
     public void generate(ClassVisitor visitor, BuildContext context) {
         Type returnType   = getResolvedType();
-        Type[] paramTypes = parameters.values().stream().map(BytecodeUtil::fromNamedType).toArray(Type[]::new);
+        Type[] paramTypes = parameters.stream().map(Parameter::getResolvedType).toArray(Type[]::new);
 
-        MethodVisitor method = visitor.visitMethod(
-            Modifier.compose(modifiers), name, // access modifier
-            Type.getMethodType(returnType, paramTypes).getDescriptor(), // method descriptor
-            null, null // signature (generics), exceptions
-        );
+            MethodVisitor method = visitor.visitMethod(
+                Modifier.compose(modifiers), name, // access modifier
+                Type.getMethodType(returnType, paramTypes).getDescriptor(), // method descriptor
+                null, null // signature (generics), exceptions
+            );
 
         method.visitCode();
         body.generate(method, context);
@@ -64,11 +64,11 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
         super.setResolvedType(resolvedType == null ? Type.VOID_TYPE : resolvedType);
     }
 
-    public Map<String, String> getParameters() {
+    public List<Parameter> getParameters() {
         return parameters;
     }
 
-    public void setParameters(Map<String, String> parameters) {
+    public void setParameters(List<Parameter> parameters) {
         this.parameters = parameters;
     }
 
@@ -102,12 +102,6 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
 
     @Override
     public String toString() {
-        return "MethodNode{" +
-            "parameters=" + parameters +
-            ", name='" + name + '\'' +
-            ", modifiers=" + Arrays.toString(modifiers) +
-            ", type='" + simpleType + '\'' +
-            ", body=" + body +
-            '}';
+        return super.toString();
     }
 }

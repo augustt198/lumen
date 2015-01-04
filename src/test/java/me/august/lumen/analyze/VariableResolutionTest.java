@@ -18,6 +18,8 @@ import me.august.lumen.compile.resolve.lookup.DependencyManager;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 public class VariableResolutionTest {
 
     private static final ProgramNode PROGRAM;
@@ -40,7 +42,7 @@ public class VariableResolutionTest {
         PROGRAM = new ProgramNode(new ImportNode[0], cls);
 
         cls.getFields().add(new FieldNode("field", "boolean"));
-        MethodNode method = new MethodNode("foo", "void");
+        MethodNode method = new MethodNode("foo", "void", new ArrayList<>());
 
         Body body = new Body();
         body.addCode(new VarStmt("the_var", "boolean"));

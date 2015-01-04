@@ -3,6 +3,7 @@ package me.august.lumen.compile.resolve;
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
+import me.august.lumen.compile.parser.ast.Parameter;
 import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
@@ -37,10 +38,7 @@ public abstract class TypeVisitor implements ASTVisitor {
     public void visitMethod(MethodNode method) {
         visitType(method);
 
-        for (Map.Entry<String, String> entry : method.getParameters().entrySet()) {
-            String resolved = resolveType(entry.getValue()).getClassName();
-            method.getParameters().put(entry.getKey(), resolved);
-        }
+        method.getParameters().forEach(this::visitType);
     }
 
     @Override

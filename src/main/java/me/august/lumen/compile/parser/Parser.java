@@ -210,24 +210,23 @@ public class Parser {
             type = "void";
         }
 
-        current.expectType(L_PAREN);
-        next(); // consume ')'
+        List<Parameter> params = new ArrayList<>();
 
-        Map<String, String> params = new HashMap<>();
+        if (current.getType() == L_PAREN) {
+            next(); // consume ')'
+            while (current.getType() != R_PAREN) {
+                String paramName = current.expectType(IDENTIFIER).getContent();
 
-        while (current.getType() != R_PAREN) {
-            String paramName = current.expectType(IDENTIFIER).getContent();
+                next().expectType(Type.COLON);
 
-            next().expectType(Type.COLON);
+                String paramType = next().expectType(IDENTIFIER).getContent();
+                next(); // consume param type
 
-            String paramType = next().expectType(IDENTIFIER).getContent();
-            next(); // consume param type
-
-            params.put(paramName, paramType);
+                params.add(new Parameter(paramName, paramType));
+            }
         }
 
-        MethodNode method = new MethodNode(name, type, mods);
-        method.setParameters(params);
+        MethodNode method = new MethodNode(name, type, params, mods);
 
         if (peek().getType() == L_BRACE) {
             method.setBody(parseBody());

@@ -7,6 +7,7 @@ import me.august.lumen.compile.analyze.var.VariableReference;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
+import me.august.lumen.compile.parser.ast.Parameter;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
@@ -68,10 +69,10 @@ public class VariableVisitor implements ASTVisitor {
     public void visitMethod(MethodNode method) {
         // local variable index
         int idx = 0;
-        for (Map.Entry<String, String> entry : method.getParameters().entrySet()) {
+        for (Parameter param : method.getParameters()) {
             idx++;
-            Type type = BytecodeUtil.fromNamedType(entry.getValue());
-            pending.put(entry.getKey(), new LocalVariable(idx, type));
+            Type type = param.getResolvedType();
+            pending.put(param.getName(), new LocalVariable(idx, type));
         }
     }
 
