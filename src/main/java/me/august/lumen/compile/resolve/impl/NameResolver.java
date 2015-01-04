@@ -38,7 +38,11 @@ public class NameResolver implements TypeResolver {
             } catch (ClassNotFoundException ignored) {}
         }
 
-        return fullName == null ? null : Type.getObjectType(fullName);
+        if (fullName == null) {
+            return null;
+        } else {
+            return Type.getObjectType(fullName.replace('.', '/'));
+        }
     }
 
 }
