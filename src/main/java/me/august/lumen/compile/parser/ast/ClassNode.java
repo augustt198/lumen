@@ -7,6 +7,8 @@ import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.ClassCodeGen;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,9 +42,27 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
             interfaces
         );
 
+        generateDefaultConstructor(visitor);
+
         for (FieldNode field : fields) field.generate(visitor, context);
 
         for (MethodNode method : methods) method.generate(visitor, context);
+    }
+
+    private void generateDefaultConstructor(ClassVisitor visitor) {
+        MethodVisitor method = visitor.visitMethod(
+            Opcodes.ACC_PUBLIC, "<init>", "()V", null, null
+        );
+
+        // load `this`
+        method.visitVarInsn(Opcodes.ALOAD, 0);
+        method.visitMethodInsn(
+            Opcodes.INVOKESPECIAL, superClass, "<init>", "()V", false
+        );
+        method.visitInsn(Opcodes.RETURN);
+        method.visitMaxs(1, 1);
+
+        method.visitEnd();
     }
 
     @Override

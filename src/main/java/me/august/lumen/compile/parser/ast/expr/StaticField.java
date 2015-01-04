@@ -43,7 +43,7 @@ public class StaticField extends Typed implements VariableExpression {
         if (variableReference != null) return variableReference;
 
         return variableReference = new StaticVariable(
-            className, fieldName, type
+            getResolvedType().getInternalName(), fieldName, type
         );
     }
 

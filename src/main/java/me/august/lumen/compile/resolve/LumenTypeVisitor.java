@@ -76,7 +76,7 @@ public class LumenTypeVisitor implements ASTVisitor {
             Type methodType = methodType(method.getReturnType(), call.getParameters());
 
             call.setRef(new MethodReference.Static(
-                call.getResolvedType().getClassName(), methodName, methodType
+                call.getResolvedType().getInternalName(), methodName, methodType
             ));
         }
 
