@@ -201,12 +201,10 @@ public class Parser {
      */
     private MethodNode parseMethod(Modifier[] mods) {
         String name = current.expectType(IDENTIFIER).getContent();
-        next(); // consume name
 
         String type;
-        if (current.getType() == Type.COLON) {
+        if (peek().getType() == Type.COLON) {
             type = next().expectType(IDENTIFIER).getContent();
-            next(); // consume type
         } else {
             type = "void";
         }
@@ -214,17 +212,19 @@ public class Parser {
         List<Parameter> params = new ArrayList<>();
 
         if (current.getType() == L_PAREN) {
-            next(); // consume ')'
-            while (current.getType() != R_PAREN) {
-                String paramName = current.expectType(IDENTIFIER).getContent();
+            next(); // consume '('
+            while (peek().getType() != R_PAREN) {
+                String paramName = next().expectType(IDENTIFIER).getContent();
 
                 next().expectType(Type.COLON);
 
                 String paramType = next().expectType(IDENTIFIER).getContent();
-                next(); // consume param type
 
                 params.add(new Parameter(paramName, paramType));
+
+                accept(COMMA);
             }
+            next();
         }
 
         MethodNode method = new MethodNode(name, type, params, mods);

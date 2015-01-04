@@ -16,6 +16,7 @@ import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import org.objectweb.asm.Type;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -80,7 +81,10 @@ public class VariableVisitor implements ASTVisitor {
     public void visitBody(Body body) {
         Scope scope = new Scope(className);
         scopes.push(scope);
-        for (String name : pending.keySet()) {
+
+        // wrap keyset in new ArrayList to prevent
+        // ConcurrentModificationException
+        for (String name : new ArrayList<>(pending.keySet())) {
             scope.addVariable(name, pending.remove(name));
         }
     }
