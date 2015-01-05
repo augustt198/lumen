@@ -395,4 +395,18 @@ public final class BytecodeUtil implements Opcodes {
             default:          return -1;
         }
     }
+
+    // Type#getOpcode doesn't work on xRETURN
+    // opcodes for some reason...
+    public static int returnOpcode(Type type) {
+        switch (type.getSort()) {
+            case Type.INT:    return IRETURN;
+            case Type.LONG:   return LRETURN;
+            case Type.FLOAT:  return FRETURN;
+            case Type.DOUBLE: return DRETURN;
+            case Type.OBJECT: return ARETURN;
+            case Type.VOID:   return RETURN;
+            default:          return IRETURN;
+        }
+    }
 }

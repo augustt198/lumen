@@ -3,10 +3,7 @@ package me.august.lumen.compile.parser;
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.parser.ast.*;
 import me.august.lumen.compile.parser.ast.expr.*;
-import me.august.lumen.compile.parser.ast.stmt.Body;
-import me.august.lumen.compile.parser.ast.stmt.IfStmt;
-import me.august.lumen.compile.parser.ast.stmt.VarStmt;
-import me.august.lumen.compile.parser.ast.stmt.WhileStmt;
+import me.august.lumen.compile.parser.ast.stmt.*;
 import me.august.lumen.compile.scanner.Lexer;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.Type;
@@ -204,6 +201,7 @@ public class Parser {
 
         String type;
         if (peek().getType() == Type.COLON) {
+            next(); // consume ':'
             type = next().expectType(IDENTIFIER).getContent();
         } else {
             type = "void";
@@ -211,7 +209,7 @@ public class Parser {
 
         List<Parameter> params = new ArrayList<>();
 
-        if (current.getType() == L_PAREN) {
+        if (peek().getType() == L_PAREN) {
             next(); // consume '('
             while (peek().getType() != R_PAREN) {
                 String paramName = next().expectType(IDENTIFIER).getContent();
@@ -259,6 +257,9 @@ public class Parser {
             } else if (ty == WHILE_KEYWORD) {
                 next();
                 code = parseWhileStatement();
+            } else if (ty == RETURN_KEYWORD) {
+                next();
+                code = new ReturnStmt(parseExpression());
             } else {
                 code = parseExpression();
             }

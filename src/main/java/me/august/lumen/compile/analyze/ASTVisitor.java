@@ -5,6 +5,7 @@ import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.parser.ast.stmt.Body;
+import me.august.lumen.compile.parser.ast.stmt.ReturnStmt;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 
 /**
@@ -40,15 +41,8 @@ public interface ASTVisitor {
 
     default void visitVar(VarStmt var) {}
 
+    default void visitReturn(ReturnStmt ret) {}
+
     default void visitExpression(Expression expr) {}
-
-    @Deprecated
-    default void visitIdentifier(IdentExpr expr) {}
-
-    @Deprecated
-    default void visitStaticField(StaticField sf) {}
-
-    @Deprecated
-    default void visitStaticMethodCall(StaticMethodCall sf) {}
 
 }

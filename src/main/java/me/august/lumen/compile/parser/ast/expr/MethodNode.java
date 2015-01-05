@@ -52,7 +52,9 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
 
         method.visitCode();
         body.generate(method, context);
-        method.visitInsn(Opcodes.RETURN);
+
+        if (getResolvedType().getSort() == Type.VOID)
+            method.visitInsn(Opcodes.RETURN);
 
         // TODO *actually* compute maxs
         method.visitMaxs(10, 10);
