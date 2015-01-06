@@ -26,7 +26,11 @@ public class IncrementExpr implements Expression, Popable {
     private VariableExpression value;
     private Op op;
     private boolean postfix;
-    private boolean shouldGen;
+
+    // whether or not the variable getter should be generated:
+    // e.g. "foo++" should not generate the variable getter,
+    // but "bar = foo++" should generate the variable getter.
+    private boolean shouldGen = true;
 
     public IncrementExpr(Expression value, Op op, boolean postfix) {
         if (!(value instanceof VariableExpression))
