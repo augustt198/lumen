@@ -77,7 +77,7 @@ public class IncrementExpr implements Expression, Popable {
 
     @Override
     public void shouldPop(boolean pop) {
-        shouldGen = pop;
+        shouldGen = !pop;
     }
 
     @Override
