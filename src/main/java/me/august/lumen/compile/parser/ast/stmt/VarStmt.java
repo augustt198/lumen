@@ -1,6 +1,8 @@
 package me.august.lumen.compile.parser.ast.stmt;
 
 import me.august.lumen.common.BytecodeUtil;
+import me.august.lumen.compile.analyze.ASTVisitor;
+import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.CodeBlock;
@@ -9,7 +11,7 @@ import me.august.lumen.compile.parser.ast.expr.Expression;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-public class VarStmt extends Typed implements CodeBlock {
+public class VarStmt extends Typed implements CodeBlock, VisitorConsumer {
 
     private String name;
     private Expression defaultValue;
@@ -40,6 +42,14 @@ public class VarStmt extends Typed implements CodeBlock {
 
     public void setRef(LocalVariable ref) {
         this.ref = ref;
+    }
+
+    @Override
+    public void accept(ASTVisitor astVisitor) {
+        if (defaultValue != null)
+            defaultValue.accept(astVisitor);
+
+        astVisitor.visitVar(this);
     }
 
     @Override

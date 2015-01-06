@@ -4,7 +4,6 @@ import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.CodeBlock;
-import me.august.lumen.compile.parser.ast.expr.Expression;
 import org.objectweb.asm.MethodVisitor;
 
 import java.util.ArrayList;
@@ -45,17 +44,8 @@ public class Body implements CodeBlock, VisitorConsumer {
     public void accept(ASTVisitor visitor) {
         visitor.visitBody(this);
         for (CodeBlock code : children) {
-            if (code instanceof VarStmt) {
-                VarStmt var = (VarStmt) code;
-                visitor.visitVar(var);
-                if (var.getDefaultValue() != null) var.getDefaultValue().accept(visitor);
-            } else if (code instanceof Body) {
-                ((Body) code).accept(visitor);
-            } else if (code instanceof Expression) {
-                ((Expression) code).accept(visitor);
-            } else if (code instanceof IfStmt) {
-                ((IfStmt) code).accept(visitor);
-            }
+            if (code instanceof VisitorConsumer)
+                ((VisitorConsumer) code).accept(visitor);
         }
         visitor.visitBodyEnd(this);
     }

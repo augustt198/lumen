@@ -10,7 +10,10 @@ import me.august.lumen.compile.scanner.Type;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
 import me.august.lumen.compile.scanner.tokens.StringToken;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
 
 import static me.august.lumen.compile.scanner.Type.*;
 

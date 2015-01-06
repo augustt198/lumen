@@ -1,6 +1,5 @@
 package me.august.lumen.compile.analyze;
 
-import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.analyze.var.VariableReference;

@@ -4,14 +4,11 @@ import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
-import me.august.lumen.compile.parser.ast.Parameter;
 import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import org.objectweb.asm.Type;
-
-import java.util.Map;
 
 /**
  * A common visitor pattern for all AST nodes associated with a type.
