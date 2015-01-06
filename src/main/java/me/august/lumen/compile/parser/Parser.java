@@ -247,30 +247,48 @@ public class Parser {
         next().expectType(L_BRACE);
 
         while (peek().getType() != R_BRACE) {
-            Type ty = peek().getType();
-            CodeBlock code;
-            if (ty == VAR_KEYWORD) {
-                next();
-                code = parseLocalVariable();
-            } else if (ty == L_BRACE) {
-                code = parseBody();
-            } else if (ty == IF_KEYWORD) {
-                next();
-                code = parseIfStatement();
-            } else if (ty == WHILE_KEYWORD) {
-                next();
-                code = parseWhileStatement();
-            } else if (ty == RETURN_KEYWORD) {
-                next();
-                code = new ReturnStmt(parseExpression());
-            } else {
-                code = parseExpression();
-            }
+            CodeBlock code = parseStatement();
             body.addCode(code);
         }
         next();
 
         return body;
+    }
+
+    /**
+     * Parses a statement. A statement is one
+     * of the following:
+     * 1. variable declaration
+     * 2. a body of code
+     * 3. an if-statement
+     * 4. a while-loop
+     * 5. a return-statement
+     * 6. an expression
+     *
+     * Expressions are considered to be a statement
+     * in this case because certain expressions can
+     * act as a statement, i.e. a method call.
+     * However, there are also expressions which
+     * cannot act as a statement, i.e. arithmetic.
+     *
+     * @return A statement
+     */
+    private CodeBlock parseStatement() {
+        if (accept(VAR_KEYWORD)) {
+            return parseLocalVariable();
+        } else if (accept(L_BRACE)) {
+            return parseBody();
+        } else if (accept(IF_KEYWORD)) {
+            return parseIfStatement();
+        } else if (accept(WHILE_KEYWORD)) {
+            return parseWhileStatement(false);
+        } else if (accept(UNTIL_KEYWORD)) {
+            return parseWhileStatement(true);
+        } else if (accept(RETURN_KEYWORD)) {
+            return new ReturnStmt(parseExpression());
+        } else {
+            return parseExpression();
+        }
     }
 
     /**
@@ -383,8 +401,13 @@ public class Parser {
      *
      * @return The while-statement AST node
      */
-    private WhileStmt parseWhileStatement() {
+    private WhileStmt parseWhileStatement(boolean inverted) {
         Expression condition = parseExpression();
+
+        if (inverted) {
+            condition = new NotExpr(condition);
+        }
+
         Body body = parseBody();
 
         return new WhileStmt(condition, body);

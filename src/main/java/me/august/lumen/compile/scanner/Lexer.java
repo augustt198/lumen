@@ -28,6 +28,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             {"if", IF_KEYWORD},
             {"else", ELSE_KEYWORD},
             {"while", WHILE_KEYWORD},
+            {"until", UNTIL_KEYWORD},
             {"stc", STATIC_KEYWORD},
             {"static", STATIC_KEYWORD},
             {"as", CAST_KEYWORD},
