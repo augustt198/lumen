@@ -284,6 +284,10 @@ public class Parser {
             return parseWhileStatement(false);
         } else if (accept(UNTIL_KEYWORD)) {
             return parseWhileStatement(true);
+        } else if (accept(BREAK_KEYWORD)) {
+            return new BreakStmt();
+        } else if (accept(NEXT_KEYWORD)) {
+            return new NextStmt();
         } else if (accept(RETURN_KEYWORD)) {
             return new ReturnStmt(parseExpression());
         } else {

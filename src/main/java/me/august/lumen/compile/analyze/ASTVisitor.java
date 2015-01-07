@@ -4,9 +4,7 @@ import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.parser.ast.expr.*;
-import me.august.lumen.compile.parser.ast.stmt.Body;
-import me.august.lumen.compile.parser.ast.stmt.ReturnStmt;
-import me.august.lumen.compile.parser.ast.stmt.VarStmt;
+import me.august.lumen.compile.parser.ast.stmt.*;
 
 /**
  * Visitor pattern used for traversing the AST.
@@ -42,6 +40,11 @@ public interface ASTVisitor {
     default void visitVar(VarStmt var) {}
 
     default void visitReturn(ReturnStmt ret) {}
+
+    default void visitWhileStmt(WhileStmt stmt) {}
+
+    default void visitBreakStmt(BreakStmt stmt) {}
+    default void visitNextStmt(NextStmt stmt) {}
 
     default void visitExpression(Expression expr) {}
 

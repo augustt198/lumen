@@ -1,5 +1,9 @@
 package me.august.lumen.compile.analyze;
 
+import me.august.lumen.compile.analyze.scope.ClassScope;
+import me.august.lumen.compile.analyze.scope.LoopScope;
+import me.august.lumen.compile.analyze.scope.Scope;
+import me.august.lumen.compile.analyze.scope.ScopeType;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.analyze.var.VariableReference;
@@ -11,30 +15,17 @@ import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.MethodNode;
 import me.august.lumen.compile.parser.ast.expr.OwnedExpr;
-import me.august.lumen.compile.parser.ast.stmt.Body;
-import me.august.lumen.compile.parser.ast.stmt.VarStmt;
+import me.august.lumen.compile.parser.ast.stmt.*;
 import org.objectweb.asm.Type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 
 public class VariableVisitor implements ASTVisitor {
-    public static class Scope {
-        Map<String, VariableReference> vars = new HashMap<>();
-        String className;
 
-        public Scope(String className) {
-            this.className = className;
-        }
-
-        public void addVariable(String name, VariableReference var) {
-            vars.put(name, var);
-        }
-    }
-
-    public Stack<Scope> scopes = new Stack<>();
+    private Scope scope;
+    private boolean skipNext;
 
     // name-variable pairs that have yet to be added
     // to a scope. Currently used for adding method
@@ -49,16 +40,14 @@ public class VariableVisitor implements ASTVisitor {
 
     @Override
     public void visitClass(ClassNode cls) {
-        scopes.push(new Scope(cls.getName()));
+        pushScope(new ClassScope(cls.getName()));
         className = cls.getName();
     }
 
     @Override
     public void visitField(FieldNode field) {
-        Scope scope = scopes.lastElement();
-
         Type type = field.getResolvedType();
-        scope.addVariable(field.getName(), new ClassVariable(
+        scope.setVariable(field.getName(), new ClassVariable(
             className,
             field.getName(),
             type
@@ -67,44 +56,72 @@ public class VariableVisitor implements ASTVisitor {
 
     @Override
     public void visitMethod(MethodNode method) {
+        pushScope(new Scope(this.scope));
+
         // local variable index
         int idx = 0;
         for (Parameter param : method.getParameters()) {
             idx++;
             Type type = param.getResolvedType();
-            pending.put(param.getName(), new LocalVariable(idx, type));
+            scope.setVariable(param.getName(), new LocalVariable(idx, type));
         }
+
+        // when the method body is visited, skip it.
+        // we already created the scope for the body here.
+        skipNext();
     }
 
     @Override
     public void visitBody(Body body) {
-        Scope scope = new Scope(className);
-        scopes.push(scope);
+        pushScope(new Scope(this.scope));
 
         // wrap keyset in new ArrayList to prevent
         // ConcurrentModificationException
         for (String name : new ArrayList<>(pending.keySet())) {
-            scope.addVariable(name, pending.remove(name));
+            scope.setVariable(name, pending.remove(name));
         }
     }
 
     @Override
     public void visitBodyEnd(Body body) {
-        scopes.pop();
+        popScope();
     }
 
     @Override
     public void visitClassEnd(ClassNode cls) {
-        scopes.pop();
+        popScope();
+    }
+
+    @Override
+    public void visitWhileStmt(WhileStmt stmt) {
+        pushScope(new LoopScope(scope, stmt));
+    }
+
+    @Override
+    public void visitBreakStmt(BreakStmt stmt) {
+        LoopScope loopScope = nextLoop();
+
+        if (loopScope == null)
+            throw new RuntimeException("break used where loop not found");
+
+        stmt.setOwner(loopScope.getLoop());
+    }
+
+    @Override
+    public void visitNextStmt(NextStmt stmt) {
+        LoopScope loopScope = nextLoop();
+
+        if (loopScope == null)
+            throw new RuntimeException("break used where loop not found");
+
+        stmt.setOwner(loopScope.getLoop());
     }
 
     @Override
     public void visitVar(VarStmt var) {
-        Scope scope = scopes.lastElement();
-
         Type type = var.getResolvedType();
         LocalVariable ref = new LocalVariable(nextLocalIndex(), type);
-        scope.addVariable(var.getName(), ref);
+        scope.setVariable(var.getName(), ref);
         var.setRef(ref);
     }
 
@@ -119,51 +136,71 @@ public class VariableVisitor implements ASTVisitor {
     }
 
     private void handleIdent(IdentExpr expr) {
-        VariableReference var = getVariable(expr.getIdentifier());
+        VariableReference var = scope.getVariable(expr.getIdentifier());
+
+        if (var == null)
+            throw new RuntimeException("Undefined variable: " + expr.getIdentifier());
+
         expr.setVariableReference(var);
         expr.setExpressionType(var.getType());
     }
 
     /**
-     * Gets the next local variable index
+     * Gets the next local variable index starting
+     * at a specific Scope
      * @return The next local variable index
      */
     public int nextLocalIndex() {
-        return nextLocalIndex(scopes.size() - 1);
-    }
+        Scope s = this.scope;
 
-    /**
-     * Gets the next local variable index starting
-     * at a specific Scope
-     * @param stackPos The scope's index within the stack
-     * @return The next local variable index
-     */
-    private int nextLocalIndex(int stackPos) {
-        Scope scope = scopes.get(stackPos);
+        int max = 0;
 
-        int max = -1;
-
-        for (VariableReference var : scope.vars.values()) {
-            if (var instanceof LocalVariable) {
-                LocalVariable local = (LocalVariable) var;
-                if (local.getIndex() > max) max = local.getIndex();
+        while (s != null) {
+            for (VariableReference vr : s.getVariableTable().values()) {
+                if (vr instanceof LocalVariable) {
+                    LocalVariable local = (LocalVariable) vr;
+                    if (local.getIndex() > max)
+                        max = local.getIndex();
+                }
             }
+            s = s.getParent();
         }
 
-        if (max > -1) return max + 1;
+        return max + 1;
+    }
 
-        if (max < 0 && stackPos > 0) {
-            return nextLocalIndex(--stackPos);
+    private void skipNext() {
+        this.skipNext = true;
+    }
+
+    private Scope pushScope(Scope scope) {
+        if (skipNext) {
+            skipNext = false;
+            return null;
         } else {
-            return 1;
+            if (scope.getParent() == null)
+                scope.setParent(this.scope);
+            return this.scope = scope;
         }
     }
 
-    public VariableReference getVariable(String name) {
-        for (int i = scopes.size() - 1; i >= 0; i--) {
-            VariableReference var = scopes.get(i).vars.get(name);
-            if (var != null) return var;
+    private void popScope() {
+        if (scope.getParent() == null) {
+            scope = null;
+        } else {
+            scope = scope.getParent();
         }
-        return null;
+    }
+
+    private LoopScope nextLoop() {
+        return (LoopScope) scope.fromType(ScopeType.LOOP);
+    }
+
+    public Scope getScope() {
+        return scope;
+    }
+
+    public void setScope(Scope scope) {
+        this.scope = scope;
     }
 }

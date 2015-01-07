@@ -1,6 +1,7 @@
 package me.august.lumen.analyze;
 
 import me.august.lumen.compile.analyze.VariableVisitor;
+import me.august.lumen.compile.analyze.scope.Scope;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.analyze.var.VariableReference;
 import org.junit.Assert;
@@ -12,16 +13,19 @@ public class ScopeTest {
     public void testNextIndex() {
         VariableVisitor visitor = new VariableVisitor(null);
 
-        VariableVisitor.Scope lower = visitor.scopes.push(new VariableVisitor.Scope(null));
-        lower.addVariable("a", new LocalVariable(1, null));
-        lower.addVariable("b", new LocalVariable(2, null));
+        Scope lower = new Scope(null);
+        visitor.setScope(lower);
 
-        VariableVisitor.Scope higher = visitor.scopes.push(new VariableVisitor.Scope(null));
+        lower.setVariable("a", new LocalVariable(1, null));
+        lower.setVariable("b", new LocalVariable(2, null));
+
+        Scope higher = new Scope(lower);
+        visitor.setScope(higher);
 
         Assert.assertEquals("Expected next index of 3", 3, visitor.nextLocalIndex());
 
-        higher.addVariable("c", new LocalVariable(3, null));
-        higher.addVariable("d", new LocalVariable(4, null));
+        higher.setVariable("c", new LocalVariable(3, null));
+        higher.setVariable("d", new LocalVariable(4, null));
 
         Assert.assertEquals("Expected next index of 5", 5, visitor.nextLocalIndex());
     }
@@ -30,18 +34,22 @@ public class ScopeTest {
     public void testVarLookup() {
         VariableVisitor visitor = new VariableVisitor(null);
 
-        VariableVisitor.Scope lower = visitor.scopes.push(new VariableVisitor.Scope(null));
-        lower.addVariable("foo", new LocalVariable(1, null));
+        Scope lower = new Scope(null);
+        visitor.setScope(lower);
 
-        VariableVisitor.Scope higher = visitor.scopes.push(new VariableVisitor.Scope(null));
-        higher.addVariable("bar", new LocalVariable(2, null));
+        lower.setVariable("foo", new LocalVariable(1, null));
 
-        VariableReference var = visitor.getVariable("foo");
+        Scope higher = new Scope(lower);
+        visitor.setScope(higher);
+
+        higher.setVariable("bar", new LocalVariable(2, null));
+
+        VariableReference var = visitor.getScope().getVariable("foo");
         Assert.assertTrue("Expected local variable named 'foo'", var instanceof LocalVariable);
         LocalVariable local = (LocalVariable) var;
         Assert.assertEquals(local.getIndex(), 1);
 
-        var = visitor.getVariable("bar");
+        var = visitor.getScope().getVariable("bar");
         Assert.assertTrue("Expected local variable named 'bar'", var instanceof LocalVariable);
         local = (LocalVariable) var;
         Assert.assertEquals(local.getIndex(), 2);

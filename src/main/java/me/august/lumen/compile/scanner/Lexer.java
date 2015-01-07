@@ -29,6 +29,8 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             {"else", ELSE_KEYWORD},
             {"while", WHILE_KEYWORD},
             {"until", UNTIL_KEYWORD},
+            {"break", BREAK_KEYWORD},
+            {"next", NEXT_KEYWORD},
             {"stc", STATIC_KEYWORD},
             {"static", STATIC_KEYWORD},
             {"as", CAST_KEYWORD},

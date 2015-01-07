@@ -13,10 +13,13 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-public class WhileStmt implements CodeBlock, VisitorConsumer {
+public class WhileStmt implements CodeBlock, VisitorConsumer, Loop {
 
     private Expression condition;
     private Body body;
+
+    private Label repeat;
+    private Label exit;
 
     public WhileStmt(Expression condition, Body body) {
         this.condition = condition;
@@ -24,7 +27,19 @@ public class WhileStmt implements CodeBlock, VisitorConsumer {
     }
 
     @Override
+    public Label getRepeatLabel() {
+        return repeat;
+    }
+
+    @Override
+    public Label getExitLabel() {
+        return exit;
+    }
+
+    @Override
     public void accept(ASTVisitor astVisitor) {
+        astVisitor.visitWhileStmt(this);
+
         condition.accept(astVisitor);
         body.accept(astVisitor);
     }
@@ -37,12 +52,13 @@ public class WhileStmt implements CodeBlock, VisitorConsumer {
             Conditional cond = (Conditional) condition;
             Branch branch = cond.branch(body, null);
 
-            Label reset = new Label();
+            repeat = new Label();
+            exit   = branch.getElseJump();
 
             // hijack the condition to add "reset" label
             MethodCodeGen prevCond = branch.getCond();
             branch.setCond((m, c) -> {
-                m.visitLabel(reset);
+                m.visitLabel(repeat);
                 prevCond.generate(m, c);
             });
 
@@ -50,7 +66,7 @@ public class WhileStmt implements CodeBlock, VisitorConsumer {
             MethodCodeGen prevIfBranch = branch.getIfBranch();
             branch.setIfBranch((m, c) -> {
                 prevIfBranch.generate(m, c);
-                m.visitJumpInsn(Opcodes.GOTO, reset);
+                m.visitJumpInsn(Opcodes.GOTO, repeat);
             });
 
             return branch;
@@ -59,19 +75,20 @@ public class WhileStmt implements CodeBlock, VisitorConsumer {
         // compare the condition to 0 (false), and jump to the top
         // (at the end of the body).
         } else if (condition.expressionType().getSort() == Type.BOOLEAN) {
-            Label label = new Label();
-            Label reset = new Label();
+            repeat = new Label();
+            exit   = new Label();
+
             MethodCodeGen cond = (m, c) -> {
-                m.visitLabel(reset);
+                m.visitLabel(repeat);
                 condition.generate(m, c);
-                m.visitJumpInsn(Opcodes.IFEQ, label);
+                m.visitJumpInsn(Opcodes.IFEQ, exit);
             };
             MethodCodeGen branchBody = (m, c) -> {
                 body.generate(m, c);
-                m.visitJumpInsn(Opcodes.GOTO, reset);
+                m.visitJumpInsn(Opcodes.GOTO, repeat);
 
             };
-            return new Branch(cond, label, branchBody, null);
+            return new Branch(cond, exit, branchBody, null);
         } else {
             throw new IllegalArgumentException("Incompatible types.");
         }
