@@ -1,0 +1,13 @@
+class Example {
+
+    pb def run {
+        System::out.println("Hello, world!")
+
+        var i: int = 0
+
+        until i is 3 {
+            System::out.println(i++)
+        }
+    }
+
+}
