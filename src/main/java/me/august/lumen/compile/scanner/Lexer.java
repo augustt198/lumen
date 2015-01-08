@@ -16,6 +16,7 @@ import static me.august.lumen.compile.scanner.Type.*;
 public class Lexer implements Iterable<Token>, SourcePositionProvider {
 
     private static final Map<String, Type> KEYWORDS = new HashMap<>();
+    private final List<String> ignore;
 
     static {
         // looks better than map.put(...) x 100
@@ -74,6 +75,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
     public Lexer(Reader reader) {
         this.reader = reader;
         this.build = new Driver.CompileBuildContext();
+        this.ignore = new ArrayList<>();
     }
 
     public Lexer(String src) {
@@ -82,6 +84,14 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
 
     public Lexer(InputStream in) {
         this(new InputStreamReader(in));
+    }
+
+    /**
+     * Tells the lexer to ignore the specified identifier
+     * @param identifier
+     */
+    public void ignore(String identifier) {
+        ignore.add(identifier);
     }
 
     /**
@@ -233,6 +243,10 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         int endPos = pos;
 
         String ident = sb.toString();
+
+        if (ignore.contains(ident)) {
+            return nextToken();
+        }
 
         Token token = new Token(ident, startPos, endPos, null);
         Type type = KEYWORDS.get(ident);

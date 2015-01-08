@@ -16,6 +16,7 @@ import org.objectweb.asm.ClassWriter;
 
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Driver {
@@ -31,6 +32,14 @@ public class Driver {
 
     public Lexer phase1Scanning() {
         return new Lexer(reader);
+    }
+
+    public Lexer phase1Scanning(Collection<String> ignore) {
+        Lexer l = phase1Scanning();
+        for (String s : ignore) {
+            l.ignore(s);
+        }
+        return l;
     }
 
     public ProgramNode phase2Parsing(Lexer lexer) {
