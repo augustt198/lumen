@@ -5,6 +5,8 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import me.august.lumen.common.FileUtil;
 import me.august.lumen.compile.parser.ast.ProgramNode;
+import me.august.lumen.compile.resolve.lookup.DependencyManager;
+import me.august.lumen.compile.resolve.lookup.JarLookup;
 import me.august.lumen.compile.scanner.Lexer;
 
 import java.io.File;
@@ -13,13 +15,15 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.List;
+import java.util.jar.JarFile;
 
 public class CompileCommandLine implements Runnable {
 
     private String[] args;
 
     private Collection<String> keywordsToIgnore;
-    private Collection<String> dependencies;
+    private DependencyManager deps = new DependencyManager();
 
     public CompileCommandLine(String[] args) {
         this.args = args;
@@ -33,11 +37,18 @@ public class CompileCommandLine implements Runnable {
 
         OptionSet options = parser.parse(args);
         keywordsToIgnore = options.valuesOf(ignore);
-        dependencies = options.valuesOf(dependency);
+
+        for (String depFile : options.valuesOf(dependency)) {
+            try {
+                deps.addSource(new JarLookup(new JarFile(depFile)));
+            } catch (IOException e) {
+                throw new RuntimeException("Jar file dependency not found: " + depFile);
+            }
+        }
 
         for (Object f : options.nonOptionArguments()) {
             if (f instanceof String) {
-                String file = (String) f;
+                String file = new File((String) f).getAbsolutePath();
                 String source = FileUtil.read(file);
                 if (source == null) throw new RuntimeException("File not found: " + file);
                 compileSource(source, file);
@@ -46,7 +57,7 @@ public class CompileCommandLine implements Runnable {
     }
 
     private void compileSource(String src, String file) {
-        Driver driver = new Driver(new StringReader(src));
+        Driver driver = new Driver(new StringReader(src), deps);
 
         Lexer lexer = driver.phase1Scanning(keywordsToIgnore);
         ProgramNode program = driver.phase2Parsing(lexer);
@@ -58,7 +69,7 @@ public class CompileCommandLine implements Runnable {
     }
 
     private void saveBytecode(byte[] bytes, String name, String path) {
-        String fileName = new File(path).getParentFile().getName() + "/" + name + ".class";
+        String fileName = new File(path).getParentFile() + "/" + name + ".class";
         try {
             Files.write(Paths.get(fileName), bytes);
         } catch (IOException e) {

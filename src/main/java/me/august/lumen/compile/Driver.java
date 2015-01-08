@@ -25,9 +25,15 @@ public class Driver {
     private CompileBuildContext context = new CompileBuildContext();
 
     private NameResolver resolver;
+    private DependencyManager deps;
+
+    public Driver(Reader reader, DependencyManager deps) {
+        this.reader = reader;
+        this.deps = deps;
+    }
 
     public Driver(Reader reader) {
-        this.reader = reader;
+        this(reader, new DependencyManager());
     }
 
     public Lexer phase1Scanning() {
@@ -35,11 +41,9 @@ public class Driver {
     }
 
     public Lexer phase1Scanning(Collection<String> ignore) {
-        Lexer l = phase1Scanning();
-        for (String s : ignore) {
-            l.ignore(s);
-        }
-        return l;
+        Lexer lex = phase1Scanning();
+        ignore.forEach(lex::ignore);
+        return lex;
     }
 
     public ProgramNode phase2Parsing(Lexer lexer) {
@@ -58,7 +62,6 @@ public class Driver {
         VariableVisitor visitor = new VariableVisitor(context);
         program.accept(visitor);
 
-        DependencyManager deps = new DependencyManager();
         LumenTypeVisitor typeVisitor = new LumenTypeVisitor(resolver, deps, context);
         program.accept(typeVisitor);
 

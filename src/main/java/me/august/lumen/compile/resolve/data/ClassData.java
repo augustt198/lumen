@@ -132,15 +132,9 @@ public class ClassData extends BaseData {
 
         @Override
         public MethodVisitor visitMethod(int access, String name, String desc, String sig, String[] exs) {
-            String[] parts = desc.split("\\)"); // ["(params...", returnType]
-            Type returnType = Type.getType(parts[1]);
-
-            // remove first char '('
-            String[] params = BytecodeUtil.splitTypes(parts[0].substring(1, parts[0].length()));
-            Type[] types = new Type[params.length];
-            for (int i = 0; i < types.length; i++) {
-                types[i] = Type.getType(params[i]);
-            }
+            Type methodType = Type.getMethodType(desc);
+            Type returnType = methodType.getReturnType();
+            Type[] types    = methodType.getArgumentTypes();
 
             MethodData method = new MethodData(name, returnType, types, Modifier.fromAccess(access));
             classData.methods.add(method);

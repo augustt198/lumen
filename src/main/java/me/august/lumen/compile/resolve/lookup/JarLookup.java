@@ -19,6 +19,8 @@ public class JarLookup implements ClassLookup {
 
     @Override
     public ClassData lookup(String path) {
+        path = path.replace('.', '/');
+
         // Jar entries end with .class
         if (!path.endsWith(".class")) path += ".class";
 
