@@ -101,7 +101,6 @@ public enum Type {
     ACC_PROTECTED(Attribute.ACC_MOD),
     ACC_PACKAGE(Attribute.ACC_MOD),
 
-    IGNORED,
     EOF;
 
     private Attribute[] attrs;
