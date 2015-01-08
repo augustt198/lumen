@@ -1,4 +1,4 @@
-package me.august.lumen.compile.parser.ast.expr;
+package me.august.lumen.compile.parser.ast;
 
 import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.analyze.ASTVisitor;

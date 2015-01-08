@@ -9,7 +9,7 @@ import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.ImportNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
-import me.august.lumen.compile.parser.ast.expr.MethodNode;
+import me.august.lumen.compile.parser.ast.MethodNode;
 import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.resolve.LumenTypeVisitor;
