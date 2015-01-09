@@ -27,6 +27,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             {"instanceof", INSTANCEOF_KEYWORD}, // to be replaced with `is a` when the lexer supports it
             {"var", VAR_KEYWORD},
             {"if", IF_KEYWORD},
+            {"unless", UNLESS_KEYWORD},
             {"else", ELSE_KEYWORD},
             {"while", WHILE_KEYWORD},
             {"until", UNTIL_KEYWORD},

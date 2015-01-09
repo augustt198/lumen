@@ -279,7 +279,9 @@ public class Parser {
         } else if (accept(L_BRACE)) {
             return parseBody();
         } else if (accept(IF_KEYWORD)) {
-            return parseIfStatement();
+            return parseIfStatement(false);
+        } else if (accept(UNLESS_KEYWORD)) {
+            return parseIfStatement(true);
         } else if (accept(WHILE_KEYWORD)) {
             return parseWhileStatement(false);
         } else if (accept(UNTIL_KEYWORD)) {
@@ -365,8 +367,12 @@ public class Parser {
      *
      * @return The if-statement AST node
      */
-    private IfStmt parseIfStatement() {
+    private IfStmt parseIfStatement(boolean inverted) {
         Expression condition = parseExpression();
+
+        if (inverted) {
+            condition = new NotExpr(condition);
+        }
 
         Body body;
         if (accept(THEN_KEYWORD)) {
