@@ -10,10 +10,10 @@ A WIP tiny programming language for the JVM.
 Not much... yet. Here's a sample program:
 
 - **Lumen Source**
-![Lumen Source](http://i.imgur.com/Fk3I84b.png)
+![Lumen Source](http://i.imgur.com/ATSaSNe.png)
 
 - **Generated <code><strong>class</strong></code> file**
-![Decompiled to Java](http://i.imgur.com/HvwxTmV.png)
+![Decompiled to Java](http://i.imgur.com/llu3Cdq.png)
 
 
 #### [Trello Board](https://trello.com/b/CHPN7kR1/lumen)
