@@ -8,6 +8,7 @@ import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.MethodNode;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.Type;
 
 /**
@@ -15,10 +16,10 @@ import org.objectweb.asm.Type;
  */
 public abstract class TypeVisitor implements ASTVisitor {
 
-    protected abstract Type resolveType(String simple);
+    protected abstract Type resolveType(UnresolvedType unresolved);
 
     public void visitType(Typed type) {
-        Type resolved = resolveType(type.getSimpleType());
+        Type resolved = resolveType(type.getUnresolvedType());
         type.setResolvedType(resolved);
     }
 
@@ -48,10 +49,8 @@ public abstract class TypeVisitor implements ASTVisitor {
 
     @Override
     public void visitClass(ClassNode cls) {
-        // TODO better work-around
-        if (!cls.getSuperClass().equals(Parser.OBJECT_CLASS_INTERNAL_NAME)) {
-            String className = resolveType(cls.getSuperClass()).getClassName();
-            cls.setSuperClass(className);
+        if (!cls.getSuperClass().isResolved()) {
+            visitType(cls.getSuperClass());
         }
     }
 }

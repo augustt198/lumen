@@ -1,5 +1,6 @@
 package me.august.lumen.common;
 
+import me.august.lumen.StringUtil;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import org.objectweb.asm.MethodVisitor;
@@ -7,10 +8,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class BytecodeUtil implements Opcodes {
 
@@ -18,6 +16,9 @@ public final class BytecodeUtil implements Opcodes {
         "int", "byte", "boolean", "bool", "long",
         "char", "double", "float", "void"
     };
+
+    public static final Set<String> LUMEN_PRIMITIVES_SET =
+        new HashSet<>(Arrays.asList(LUMEN_PRIMITIVES));
 
     private static final Map<String, Integer> OPCODES  = new HashMap<>();
     private static final Map<String, Integer> ACC_MODS = new HashMap<>();
@@ -157,20 +158,33 @@ public final class BytecodeUtil implements Opcodes {
         return ACC_MODS.getOrDefault(name, -1);
     }
 
-    public static Type fromNamedType(String string) {
-        switch (string) {
-            case "int":     return Type.INT_TYPE;
+    public static Type fromSimpleName(String string) {
+        return Type.getType(getDescriptor(string));
+    }
+
+    public static Type fromSimpleName(String string, int dims) {
+        return Type.getType(getDescriptor(string, dims));
+    }
+
+    public static String getDescriptor(String str) {
+        switch (str) {
+            case "int":     return "I";
             case "bool":
-            case "boolean": return Type.BOOLEAN_TYPE;
-            case "byte":    return Type.BYTE_TYPE;
-            case "float":   return Type.FLOAT_TYPE;
-            case "double":  return Type.DOUBLE_TYPE;
-            case "long":    return Type.LONG_TYPE;
-            case "char":    return Type.CHAR_TYPE;
-            case "short":   return Type.SHORT_TYPE;
-            case "void":    return Type.VOID_TYPE;
-            default:        return Type.getType("L" + string.replace('.', '/') + ";");
+            case "boolean": return "Z";
+            case "byte":    return "B";
+            case "float":   return "F";
+            case "double":  return "D";
+            case "long":    return "L";
+            case "char":    return "C";
+            case "short":   return "S";
+            case "void":    return "V";
+            default:        return "L" + str.replace('.', '/') + ";";
         }
+    }
+
+    public static String getDescriptor(String str, int dims) {
+        String base = getDescriptor(str);
+        return StringUtil.repeat('[', dims) + base;
     }
 
     public static void pushInt(MethodVisitor method, int num) {

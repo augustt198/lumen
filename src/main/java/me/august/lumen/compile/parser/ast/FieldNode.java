@@ -4,6 +4,7 @@ import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.ClassCodeGen;
 import me.august.lumen.compile.parser.ast.expr.Expression;
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.ClassVisitor;
 
 import java.util.Arrays;
@@ -14,7 +15,7 @@ public class FieldNode extends Typed implements ClassCodeGen {
     private Modifier[] modifiers;
     private Expression defaultValue;
 
-    public FieldNode(String name, String type, Modifier... modifiers) {
+    public FieldNode(String name, UnresolvedType type, Modifier... modifiers) {
         super(type);
         this.name = name;
         this.modifiers = modifiers;
@@ -49,7 +50,7 @@ public class FieldNode extends Typed implements ClassCodeGen {
     public String toString() {
         return "FieldNode{" +
             "name='" + name + '\'' +
-            ", type='" + simpleType + '\'' +
+            ", type='" + unresolvedType + '\'' +
             ", modifiers=" + Arrays.toString(modifiers) +
             ", defaultValue=" + defaultValue +
             '}';

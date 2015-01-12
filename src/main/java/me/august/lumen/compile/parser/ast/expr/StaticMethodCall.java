@@ -4,6 +4,7 @@ import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.MethodCodeGen;
 import me.august.lumen.compile.parser.ast.Popable;
 import me.august.lumen.compile.parser.ast.Typed;
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -12,7 +13,6 @@ import java.util.List;
 
 public class StaticMethodCall extends Typed implements Expression, Popable {
 
-    private String className;
     private String methodName;
 
     private List<Expression> parameters;
@@ -22,15 +22,14 @@ public class StaticMethodCall extends Typed implements Expression, Popable {
 
     private boolean pop;
 
-    public StaticMethodCall(String className, String methodName, List<Expression> parameters) {
-        super(className);
-        this.className = className;
+    public StaticMethodCall(UnresolvedType classType, String methodName, List<Expression> parameters) {
+        super(classType);
         this.methodName = methodName;
         this.parameters = parameters;
     }
 
     public String getClassName() {
-        return className;
+        return unresolvedType.getBaseName();
     }
 
     public String getMethodName() {
@@ -90,10 +89,11 @@ public class StaticMethodCall extends Typed implements Expression, Popable {
     @Override
     public String toString() {
         return "StaticMethodCall{" +
-            "className='" + className + '\'' +
-            ", methodName='" + methodName + '\'' +
+            "methodName='" + methodName + '\'' +
             ", parameters=" + parameters +
             ", ref=" + ref +
+            ", returnType=" + returnType +
+            ", pop=" + pop +
             '}';
     }
 }

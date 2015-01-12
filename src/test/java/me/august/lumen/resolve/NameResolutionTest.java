@@ -4,6 +4,7 @@ import me.august.lumen.compile.parser.ast.ImportNode;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.resolve.ResolvingVisitor;
 import me.august.lumen.compile.resolve.impl.NameResolver;
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,7 +19,9 @@ public class NameResolutionTest {
         NameResolver resolver = new NameResolver(imports);
 
         ResolvingVisitor visitor = new ResolvingVisitor(resolver);
-        VarStmt var = new VarStmt("x", "Baz");
+
+        UnresolvedType type = new UnresolvedType("Baz");
+        VarStmt var = new VarStmt("x", type);
         visitor.visitType(var);
 
         Assert.assertEquals(var.getResolvedType().getClassName(), qualifiedName);

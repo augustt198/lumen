@@ -4,17 +4,14 @@ import me.august.lumen.compile.analyze.VariableVisitor;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.analyze.var.VariableReference;
-import me.august.lumen.compile.parser.ast.ClassNode;
-import me.august.lumen.compile.parser.ast.FieldNode;
-import me.august.lumen.compile.parser.ast.ImportNode;
-import me.august.lumen.compile.parser.ast.ProgramNode;
+import me.august.lumen.compile.parser.ast.*;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
-import me.august.lumen.compile.parser.ast.MethodNode;
 import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.resolve.LumenTypeVisitor;
 import me.august.lumen.compile.resolve.impl.NameResolver;
 import me.august.lumen.compile.resolve.lookup.DependencyManager;
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,14 +35,22 @@ public class VariableResolutionTest {
     }
      */
     static {
-        ClassNode cls = new ClassNode("Foo", "java.lang.Object", new String[0]);
+        Typed supType = new Typed(UnresolvedType.OBJECT_TYPE);
+        ClassNode cls = new ClassNode("Foo", supType, new String[0]);
         PROGRAM = new ProgramNode(new ImportNode[0], cls);
 
-        cls.getFields().add(new FieldNode("field", "boolean"));
-        MethodNode method = new MethodNode("foo", "void", new ArrayList<>());
+        UnresolvedType type;
+
+        type = new UnresolvedType("boolean");
+        cls.getFields().add(new FieldNode("field", type));
+
+        type = UnresolvedType.VOID_TYPE;
+        MethodNode method = new MethodNode("foo", type, new ArrayList<>());
 
         Body body = new Body();
-        body.addCode(new VarStmt("the_var", "boolean"));
+
+        type = new UnresolvedType("boolean");
+        body.addCode(new VarStmt("the_var", type));
         body.addCode(IDENT_EXPR = new IdentExpr("the_var"));
         body.addCode(FIELD_IDENT_EXPR = new IdentExpr("field"));
 

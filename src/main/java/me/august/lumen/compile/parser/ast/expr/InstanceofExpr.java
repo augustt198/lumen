@@ -2,6 +2,7 @@ package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.Typed;
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -13,8 +14,8 @@ public class InstanceofExpr extends Typed implements Expression {
 
     private Expression value;
 
-    public InstanceofExpr(Expression value, String simpleType) {
-        super(simpleType);
+    public InstanceofExpr(Expression value, UnresolvedType unresolvedType) {
+        super(unresolvedType);
         this.value = value;
     }
 

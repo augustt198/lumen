@@ -8,6 +8,7 @@ import me.august.lumen.compile.codegen.ClassCodeGen;
 import me.august.lumen.compile.parser.ast.Parameter;
 import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.stmt.Body;
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -25,7 +26,7 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
 
     private Body body;
 
-    public MethodNode(String name, String returnType, List<Parameter> parameters, Modifier... modifiers) {
+    public MethodNode(String name, UnresolvedType returnType, List<Parameter> parameters, Modifier... modifiers) {
         super(returnType);
         this.name = name;
         this.parameters = parameters;

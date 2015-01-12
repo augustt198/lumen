@@ -68,9 +68,9 @@ public class BytecodeUtilTest {
 
     @Test
     public void testNamedType() {
-        Assert.assertEquals(BytecodeUtil.fromNamedType("int"),  Type.INT_TYPE);
+        Assert.assertEquals(BytecodeUtil.fromSimpleName("int"),  Type.INT_TYPE);
 
-        Assert.assertEquals(BytecodeUtil.fromNamedType("bool"), Type.BOOLEAN_TYPE);
+        Assert.assertEquals(BytecodeUtil.fromSimpleName("bool"), Type.BOOLEAN_TYPE);
     }
 
 }
