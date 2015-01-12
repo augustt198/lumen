@@ -76,8 +76,8 @@ public class Parser {
     public UnresolvedType readType() {
         String ident   = next().expectType(IDENTIFIER).getContent();
         int dimensions = 0;
-        while (accept(L_BRACE)) {
-            next().expectType(R_BRACE);
+        while (accept(L_BRACKET)) {
+            next().expectType(R_BRACKET);
             dimensions++;
         }
 
