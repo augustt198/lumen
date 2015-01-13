@@ -33,7 +33,8 @@ public class ClassDeclarationTest {
 
         ClassNode cls = program.getClassNode();
 
-        Assert.assertEquals(cls.getSuperClass(), "Bar");
+        String type = cls.getSuperClass().getUnresolvedType().getBaseName();
+        Assert.assertEquals("Bar", type);
     }
 
     @Test

@@ -3,6 +3,7 @@ package me.august.lumen.compile.parser.ast.expr;
 import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.Typed;
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -11,7 +12,7 @@ public class CastExpr extends Typed implements Expression {
 
     private Expression value;
 
-    public CastExpr(Expression value, String type) {
+    public CastExpr(Expression value, UnresolvedType type) {
         super(type);
         this.value = value;
     }

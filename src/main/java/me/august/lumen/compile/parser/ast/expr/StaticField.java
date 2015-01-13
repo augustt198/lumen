@@ -4,25 +4,24 @@ import me.august.lumen.compile.analyze.var.StaticVariable;
 import me.august.lumen.compile.analyze.var.VariableReference;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.Typed;
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 public class StaticField extends Typed implements VariableExpression {
 
-    private String className;
     private String fieldName;
 
     private Type type;
     private VariableReference variableReference;
 
-    public StaticField(String className, String fieldName) {
+    public StaticField(UnresolvedType className, String fieldName) {
         super(className);
-        this.className = className;
         this.fieldName = fieldName;
     }
 
     public String getClassName() {
-        return className;
+        return unresolvedType.getBaseName();
     }
 
     public String getFieldName() {

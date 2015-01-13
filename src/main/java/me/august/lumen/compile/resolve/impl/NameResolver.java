@@ -3,16 +3,10 @@ package me.august.lumen.compile.resolve.impl;
 import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.parser.ast.ImportNode;
 import me.august.lumen.compile.resolve.TypeResolver;
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.Type;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 public class NameResolver implements TypeResolver {
-
-    private static final Set<String> keywordTypes
-        = new HashSet<>(Arrays.asList(BytecodeUtil.LUMEN_PRIMITIVES));
 
     private ImportNode[] imports;
 
@@ -21,27 +15,30 @@ public class NameResolver implements TypeResolver {
     }
 
     @Override
-    public Type resolveType(String simpleName) {
-        if (keywordTypes.contains(simpleName))
-            return BytecodeUtil.fromNamedType(simpleName);
+    public Type resolveType(UnresolvedType unresolved) {
+        // if unresolved type is a primitive or primitive
+        // array, no resolution is needed
+        if (unresolved.baseIsPrimitive())
+            return unresolved.toType();
 
+        String baseName = unresolved.getBaseName();
         String fullName = null;
         for (ImportNode impt : imports) {
-            if (impt.getPath().endsWith(simpleName)) {
+            if (impt.getPath().endsWith(baseName)) {
                 fullName = impt.getPath();
             }
         }
 
         if (fullName == null) {
             try {
-                fullName = Class.forName("java.lang." + simpleName).getName();
+                fullName = Class.forName("java.lang." + baseName).getName();
             } catch (ClassNotFoundException ignored) {}
         }
 
         if (fullName == null) {
             return null;
         } else {
-            return Type.getObjectType(fullName.replace('.', '/'));
+            return BytecodeUtil.fromSimpleName(fullName, unresolved.getArrayDimensions());
         }
     }
 

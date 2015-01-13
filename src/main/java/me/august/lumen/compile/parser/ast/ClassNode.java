@@ -17,13 +17,13 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
 
     private Modifier[] modifiers;
     private String name;
-    private String superClass;
+    private Typed superClass;
     private String[] interfaces;
 
     private List<FieldNode> fields = new ArrayList<>();
     private List<MethodNode> methods = new ArrayList<>();
 
-    public ClassNode(String name, String superClass, String[] interfaces, Modifier... modifiers) {
+    public ClassNode(String name, Typed superClass, String[] interfaces, Modifier... modifiers) {
         this.name       = name;
         this.superClass = superClass;
         this.interfaces = interfaces;
@@ -37,7 +37,7 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
             Modifier.compose(modifiers),
             name,
             null,
-            superClass,
+            superClass.getResolvedType().getInternalName(),
             interfaces
         );
 
@@ -56,7 +56,9 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
         // load `this`
         method.visitVarInsn(Opcodes.ALOAD, 0);
         method.visitMethodInsn(
-            Opcodes.INVOKESPECIAL, superClass, "<init>", "()V", false
+            Opcodes.INVOKESPECIAL,
+            superClass.getResolvedType().getInternalName(),
+            "<init>", "()V", false
         );
         method.visitInsn(Opcodes.RETURN);
         method.visitMaxs(1, 1);
@@ -104,7 +106,7 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
         return name;
     }
 
-    public String getSuperClass() {
+    public Typed getSuperClass() {
         return superClass;
     }
 
@@ -112,7 +114,7 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
         return interfaces;
     }
 
-    public void setSuperClass(String superClass) {
+    public void setSuperClass(Typed superClass) {
         this.superClass = superClass;
     }
 }

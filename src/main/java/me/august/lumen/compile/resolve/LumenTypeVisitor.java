@@ -46,7 +46,7 @@ public class LumenTypeVisitor implements ASTVisitor {
         if (expr instanceof Typed) {
             Typed typed = (Typed) expr;
             if (!typed.isResolved()) {
-                Type type = resolver.resolveType(typed.getSimpleType());
+                Type type = resolver.resolveType(typed.getUnresolvedType());
                 typed.setResolvedType(type);
             }
         }

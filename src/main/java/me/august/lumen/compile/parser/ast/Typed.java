@@ -1,18 +1,19 @@
 package me.august.lumen.compile.parser.ast;
 
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.Type;
 
 public class Typed {
 
-    protected String simpleType;
+    protected UnresolvedType unresolvedType;
     protected Type resolvedType;
 
-    public Typed(String simpleType) {
-        this.simpleType = simpleType;
+    public Typed(UnresolvedType unresolvedType) {
+        this.unresolvedType = unresolvedType;
     }
 
-    public String getSimpleType() {
-        return simpleType;
+    public UnresolvedType getUnresolvedType() {
+        return unresolvedType;
     }
 
     public Type getResolvedType() {

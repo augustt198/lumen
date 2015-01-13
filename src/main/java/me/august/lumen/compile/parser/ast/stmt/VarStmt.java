@@ -8,6 +8,7 @@ import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.expr.Expression;
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
@@ -18,11 +19,11 @@ public class VarStmt extends Typed implements CodeBlock, VisitorConsumer {
 
     private LocalVariable ref;
 
-    public VarStmt(String name, String type) {
+    public VarStmt(String name, UnresolvedType type) {
         this(name, type, null);
     }
 
-    public VarStmt(String name, String type, Expression defaultValue) {
+    public VarStmt(String name, UnresolvedType type, Expression defaultValue) {
         super(type);
         this.name = name;
         this.defaultValue = defaultValue;

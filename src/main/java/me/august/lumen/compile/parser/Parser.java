@@ -4,6 +4,7 @@ import me.august.lumen.common.Modifier;
 import me.august.lumen.compile.parser.ast.*;
 import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.parser.ast.stmt.*;
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import me.august.lumen.compile.scanner.Lexer;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.Type;
@@ -18,9 +19,6 @@ import java.util.Stack;
 import static me.august.lumen.compile.scanner.Type.*;
 
 public class Parser {
-
-    public static final String OBJECT_CLASS_INTERNAL_NAME =
-        org.objectweb.asm.Type.getType(Object.class).getInternalName();
 
     private Lexer lexer;
 
@@ -74,6 +72,19 @@ public class Parser {
         return false;
     }
 
+
+    public UnresolvedType readType() {
+        String ident   = next().expectType(IDENTIFIER).getContent();
+        int dimensions = 0;
+        while (accept(L_BRACKET)) {
+            next().expectType(R_BRACKET);
+            dimensions++;
+        }
+
+        return new UnresolvedType(ident, dimensions);
+    }
+
+
     /**
      * The main parsing entry point.
      * Accepts the following grammar:
@@ -124,7 +135,7 @@ public class Parser {
     private ClassNode parseClass(Modifier mod) {
         String name = next().expectType(IDENTIFIER).getContent();
 
-        String superClass = parseSuperclass();
+        Typed superClass = new Typed(parseSuperclass());
         String[] interfaces = parseInterfaces();
 
         next().expectType(L_BRACE); // expect {
@@ -175,7 +186,8 @@ public class Parser {
     private FieldNode parseField(Token token, Modifier[] mods) {
         String name = token.expectType(IDENTIFIER).getContent();
         next().expectType(COLON);
-        String type = next().expectType(IDENTIFIER).getContent();
+
+        UnresolvedType type = readType();
 
         FieldNode field = new FieldNode(name, type, mods);
 
@@ -202,12 +214,12 @@ public class Parser {
     private MethodNode parseMethod(Modifier[] mods) {
         String name = current.expectType(IDENTIFIER).getContent();
 
-        String type;
+        UnresolvedType type;
         if (peek().getType() == Type.COLON) {
             next(); // consume ':'
-            type = next().expectType(IDENTIFIER).getContent();
+            type = readType();
         } else {
-            type = "void";
+            type = UnresolvedType.VOID_TYPE;
         }
 
         List<Parameter> params = new ArrayList<>();
@@ -219,7 +231,7 @@ public class Parser {
 
                 next().expectType(Type.COLON);
 
-                String paramType = next().expectType(IDENTIFIER).getContent();
+                UnresolvedType paramType = readType();
 
                 params.add(new Parameter(paramName, paramType));
 
@@ -302,11 +314,11 @@ public class Parser {
      *
      * @return The class's superclass
      */
-    private String parseSuperclass() {
+    private UnresolvedType parseSuperclass() {
         if (accept(COLON)) {
-            return next().expectType(IDENTIFIER, "Expected superclass identifier").getContent();
+            return readType();
         } else {
-            return OBJECT_CLASS_INTERNAL_NAME;
+            return UnresolvedType.OBJECT_TYPE;
         }
     }
 
@@ -348,7 +360,8 @@ public class Parser {
     private VarStmt parseLocalVariable() {
         String name = next().expectType(IDENTIFIER).getContent();
         next().expectType(COLON);
-        String type = next().expectType(IDENTIFIER).getContent();
+
+        UnresolvedType type = readType();
 
         Expression value = null;
         if (accept(ASSIGN)) {
@@ -593,10 +606,10 @@ public class Parser {
             next(); // consume
 
             if (peek == INSTANCEOF_KEYWORD) {
-                String type = next().expectType(IDENTIFIER).getContent();
+                UnresolvedType type = readType();
                 return new InstanceofExpr(left, type);
             } else if (peek == NOT_INSTANCEOF_KEYWORD) {
-                String type = next().expectType(IDENTIFIER).getContent();
+                UnresolvedType type = readType();
                 return new NotExpr(new InstanceofExpr(left, type));
             } else {
                 RelExpr.Op op = RelExpr.Op.valueOf(peek.name());
@@ -682,9 +695,9 @@ public class Parser {
         Expression left = parseUnary();
 
         if (accept(CAST_KEYWORD)) {
-            String ident = next().expectType(IDENTIFIER).getContent();
+            UnresolvedType type = readType();
 
-            return new CastExpr(left, ident);
+            return new CastExpr(left, type);
         }
 
         return left;
@@ -722,6 +735,12 @@ public class Parser {
         } else if (accept(DEC)) {
             return new IncrementExpr(expr, IncrementExpr.Op.DEC, true);
         } else {
+            while (accept(L_BRACKET)) {
+                Expression index = parseExpression();
+                next().expectType(R_BRACKET);
+
+                expr = new ArrayAccessExpr(expr, index);
+            }
             return expr;
         }
     }
@@ -773,9 +792,12 @@ public class Parser {
                 // create a either a static field or static method call
                 if (accept(L_PAREN)) {
                     List<Expression> params = parseExpressionList();
-                    expr = new StaticMethodCall(ident, memberName, params);
+
+                    UnresolvedType type = new UnresolvedType(ident);
+                    expr = new StaticMethodCall(type, memberName, params);
                 } else {
-                    expr = new StaticField(ident, memberName);
+                    UnresolvedType type = new UnresolvedType(ident);
+                    expr = new StaticField(type, memberName);
                 }
             // parse as a normal identifier or method
             } else {
