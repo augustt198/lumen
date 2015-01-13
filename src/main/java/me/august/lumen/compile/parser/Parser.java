@@ -735,6 +735,12 @@ public class Parser {
         } else if (accept(DEC)) {
             return new IncrementExpr(expr, IncrementExpr.Op.DEC, true);
         } else {
+            while (accept(L_BRACKET)) {
+                Expression index = parseExpression();
+                next().expectType(R_BRACKET);
+
+                expr = new ArrayAccessExpr(expr, index);
+            }
             return expr;
         }
     }

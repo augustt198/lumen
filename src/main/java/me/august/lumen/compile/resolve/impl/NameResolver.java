@@ -1,5 +1,6 @@
 package me.august.lumen.compile.resolve.impl;
 
+import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.parser.ast.ImportNode;
 import me.august.lumen.compile.resolve.TypeResolver;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
@@ -37,7 +38,7 @@ public class NameResolver implements TypeResolver {
         if (fullName == null) {
             return null;
         } else {
-            return Type.getObjectType(fullName.replace('.', '/'));
+            return BytecodeUtil.fromSimpleName(fullName, unresolved.getArrayDimensions());
         }
     }
 

@@ -423,4 +423,18 @@ public final class BytecodeUtil implements Opcodes {
             default:          return IRETURN;
         }
     }
+
+    public static int arrayLoadOpcode(Type type) {
+        switch (type.getSort()) {
+            case Type.BYTE:   return BALOAD;
+            case Type.CHAR:   return CALOAD;
+            case Type.SHORT:  return SALOAD;
+            case Type.INT:    return IALOAD;
+            case Type.LONG:   return LALOAD;
+            case Type.FLOAT:  return FALOAD;
+            case Type.DOUBLE: return DALOAD;
+            case Type.OBJECT: return AALOAD;
+            default:          return -1;
+        }
+    }
 }
