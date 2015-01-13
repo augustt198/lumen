@@ -433,8 +433,17 @@ public final class BytecodeUtil implements Opcodes {
             case Type.LONG:   return LALOAD;
             case Type.FLOAT:  return FALOAD;
             case Type.DOUBLE: return DALOAD;
+            case Type.ARRAY:
             case Type.OBJECT: return AALOAD;
             default:          return -1;
         }
+    }
+
+    public static Type componentType(Type type) {
+        // not an array
+        if (type.getDimensions() < 1) return null;
+
+        String descriptor = type.getDescriptor();
+        return Type.getType(descriptor.substring(1, descriptor.length()));
     }
 }

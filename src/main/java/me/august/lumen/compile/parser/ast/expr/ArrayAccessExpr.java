@@ -20,7 +20,7 @@ public class ArrayAccessExpr implements Expression {
         if (value == null || value.expressionType() == null)
             return null;
 
-        return value.expressionType().getElementType();
+        return BytecodeUtil.componentType(value.expressionType());
     }
 
     @Override
