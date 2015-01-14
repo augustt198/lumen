@@ -464,6 +464,21 @@ public final class BytecodeUtil implements Opcodes {
         }
     }
 
+    public static int arrayStoreOpcode(Type type) {
+        switch (type.getSort()) {
+            case Type.BYTE:   return BASTORE;
+            case Type.CHAR:   return CASTORE;
+            case Type.SHORT:  return SASTORE;
+            case Type.INT:    return IASTORE;
+            case Type.LONG:   return LALOAD;
+            case Type.FLOAT:  return FASTORE;
+            case Type.DOUBLE: return DASTORE;
+            case Type.ARRAY:
+            case Type.OBJECT: return AASTORE;
+            default:          return -1;
+        }
+    }
+
     public static Type componentType(Type type) {
         // not an array
         if (type.getDimensions() < 1) return null;

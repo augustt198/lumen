@@ -1,14 +1,15 @@
 package me.august.lumen.compile.parser.ast.expr;
 
+import me.august.lumen.compile.analyze.var.VariableReference;
 import me.august.lumen.compile.codegen.BuildContext;
 import org.objectweb.asm.MethodVisitor;
 
 public class AssignmentExpr extends BinaryExpression {
 
     // BinaryExpression only defines left as general expression
-    IdentExpr left;
+    VariableExpression left;
 
-    public AssignmentExpr(IdentExpr left, Expression right) {
+    public AssignmentExpr(VariableExpression left, Expression right) {
         super(left, right);
         this.left = left;
     }

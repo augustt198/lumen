@@ -454,11 +454,11 @@ public class Parser {
         Expression left = parseTernary();
 
         if (accept(ASSIGN)) {
-            if (!(left instanceof IdentExpr))
-                throw new RuntimeException("Left hand expression must be an identifier");
+            if (!(left instanceof VariableExpression))
+                throw new RuntimeException("Left hand expression must be a variable");
             Expression right = parseExpression();
 
-            return new AssignmentExpr((IdentExpr) left, right);
+            return new AssignmentExpr((VariableExpression) left, right);
         }
 
         return left;

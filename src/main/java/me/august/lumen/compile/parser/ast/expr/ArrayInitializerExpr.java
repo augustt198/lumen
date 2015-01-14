@@ -29,8 +29,6 @@ public class ArrayInitializerExpr extends Typed implements Expression {
 
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
-
-
         if (isMultidimensional()) {
             for (Expression len : lengths) {
                 len.generate(visitor, context);

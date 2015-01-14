@@ -1,11 +1,14 @@
 package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.common.BytecodeUtil;
+import me.august.lumen.compile.analyze.var.VariableReference;
 import me.august.lumen.compile.codegen.BuildContext;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-public class ArrayAccessExpr implements Expression {
+import java.util.function.Consumer;
+
+public class ArrayAccessExpr implements Expression, VariableExpression, VariableReference {
 
     private Expression value;
     private Expression index;
@@ -37,4 +40,30 @@ public class ArrayAccessExpr implements Expression {
         return new Expression[]{value, index};
     }
 
+    @Override
+    public VariableReference getVariableReference() {
+        return this;
+    }
+
+    @Override
+    public Type getType() {
+        return expressionType();
+    }
+
+    @Override
+    public void generateGetCode(MethodVisitor m) {
+        generate(m, null);
+    }
+
+    @Override
+    public void generateSetCode(MethodVisitor m, Consumer<MethodVisitor> insn) {
+        value.generate(m, null);
+        index.generate(m, null);
+        insn.accept(m);
+
+        // stack = array ref, index, value
+
+        int opcode = BytecodeUtil.arrayStoreOpcode(expressionType());
+        m.visitInsn(opcode);
+    }
 }
