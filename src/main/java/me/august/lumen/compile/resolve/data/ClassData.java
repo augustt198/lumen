@@ -1,6 +1,5 @@
 package me.august.lumen.compile.resolve.data;
 
-import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.common.Modifier;
 import org.objectweb.asm.*;
 

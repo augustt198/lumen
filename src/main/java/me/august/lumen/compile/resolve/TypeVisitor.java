@@ -1,12 +1,11 @@
 package me.august.lumen.compile.resolve;
 
 import me.august.lumen.compile.analyze.ASTVisitor;
-import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
+import me.august.lumen.compile.parser.ast.MethodNode;
 import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.expr.Expression;
-import me.august.lumen.compile.parser.ast.MethodNode;
 import me.august.lumen.compile.parser.ast.stmt.VarStmt;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.Type;

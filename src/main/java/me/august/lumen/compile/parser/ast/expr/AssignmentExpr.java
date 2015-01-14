@@ -1,6 +1,5 @@
 package me.august.lumen.compile.parser.ast.expr;
 
-import me.august.lumen.compile.analyze.var.VariableReference;
 import me.august.lumen.compile.codegen.BuildContext;
 import org.objectweb.asm.MethodVisitor;
 

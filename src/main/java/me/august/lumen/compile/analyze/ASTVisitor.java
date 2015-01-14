@@ -4,7 +4,7 @@ import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.FieldNode;
 import me.august.lumen.compile.parser.ast.MethodNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
-import me.august.lumen.compile.parser.ast.expr.*;
+import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.stmt.*;
 
 /**
