@@ -5,8 +5,6 @@ import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.ClassCodeGen;
-import me.august.lumen.compile.parser.ast.Parameter;
-import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.parser.ast.stmt.Body;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.ClassVisitor;
