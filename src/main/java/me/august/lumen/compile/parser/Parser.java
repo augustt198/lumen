@@ -488,9 +488,33 @@ public class Parser {
         Expression left = parseLogicOr();
 
         if (accept(RANGE)) {
-            Expression len = parseExpression();
+            if (!(left instanceof IdentExpr))
+                throw new RuntimeException("Expected identifier");
+            IdentExpr ident = (IdentExpr) left;
+            UnresolvedType type = new UnresolvedType(ident.getIdentifier());
 
-            return new ArrayInitializerExpr(left, len);
+            List<Expression> lengths = new ArrayList<>();
+            int dims = 1;
+
+            next().expectType(L_BRACKET);
+            lengths.add(parseExpression());
+            next().expectType(R_BRACKET);
+
+            boolean unknown = false;
+            while (accept(L_BRACKET)) {
+                if (accept(QUESTION)) {
+                    unknown = true;
+                    dims++;
+                } else {
+                    if (unknown)
+                        throw new RuntimeException("Illegal array initialization");
+                    lengths.add(parseExpression());
+                    dims++;
+                }
+                next().expectType(R_BRACKET);
+            }
+
+            return new ArrayInitializerExpr(type, lengths, dims);
         }
 
         return left;
