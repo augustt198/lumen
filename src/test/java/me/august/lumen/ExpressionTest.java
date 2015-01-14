@@ -97,11 +97,9 @@ public class ExpressionTest {
 
     @Test
     public void testArrayInitializerExpr() {
-        Expression expr = parseExpression("(foo .. 2) .. 2");
+        Expression expr = parseExpression("int.. [1]");
 
         Assert.assertTrue(expr instanceof ArrayInitializerExpr);
-        ArrayInitializerExpr arrInit = (ArrayInitializerExpr) expr;
-        System.out.println(arrInit.getUnresolvedType());
     }
 
     private Expression parseExpression(String src) {
