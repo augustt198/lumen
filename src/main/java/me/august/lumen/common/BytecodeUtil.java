@@ -375,6 +375,31 @@ public final class BytecodeUtil implements Opcodes {
         );
     }
 
+    public static void createArray(MethodVisitor method, BuildContext ctx, Type type, Expression length) {
+        length.generate(method, ctx);
+
+        int typeOpcode = toArrayTypeOpcode(type);
+        if (typeOpcode >= 0) {
+            method.visitIntInsn(NEWARRAY, typeOpcode);
+        } else {
+            method.visitTypeInsn(ANEWARRAY, type.getInternalName());
+        }
+    }
+
+    public static int toArrayTypeOpcode(Type type) {
+        switch (type.getSort()) {
+            case Type.BOOLEAN: return T_BOOLEAN;
+            case Type.BYTE:    return T_BYTE;
+            case Type.CHAR:    return T_CHAR;
+            case Type.SHORT:   return T_SHORT;
+            case Type.INT:     return T_INT;
+            case Type.LONG:    return T_LONG;
+            case Type.FLOAT:   return T_FLOAT;
+            case Type.DOUBLE:  return T_DOUBLE;
+            default:           return -1;
+        }
+    }
+
     public static int negateCondition(int opcode) {
         switch (opcode) {
             case IFNULL:    return IFNONNULL;

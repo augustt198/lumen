@@ -1,5 +1,6 @@
 package me.august.lumen.compile.resolve.type;
 
+import me.august.lumen.StringUtil;
 import me.august.lumen.common.BytecodeUtil;
 import org.objectweb.asm.Type;
 
@@ -47,4 +48,8 @@ public class UnresolvedType {
         return BytecodeUtil.fromSimpleName(baseName, dims);
     }
 
+    @Override
+    public String toString() {
+        return baseName + StringUtil.repeat("[]", dims);
+    }
 }

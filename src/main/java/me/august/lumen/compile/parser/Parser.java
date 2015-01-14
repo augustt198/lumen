@@ -98,7 +98,6 @@ public class Parser {
         Token token = next();
 
         ClassNode classNode = null;
-
         while (token.getType() != EOF) {
             if (token.getType() == IMPORT_KEYWORD) {
                 imports.add(next().expectType(IMPORT_PATH).getContent());
@@ -472,7 +471,7 @@ public class Parser {
      * @return An expression
      */
     private Expression parseTernary() {
-        Expression condition = parseLogicOr();
+        Expression condition = parseRange();
 
         if (accept(QUESTION)) {
             Expression trueExpr = parseExpression();
@@ -483,6 +482,18 @@ public class Parser {
         }
 
         return condition;
+    }
+
+    private Expression parseRange() {
+        Expression left = parseLogicOr();
+
+        if (accept(RANGE)) {
+            Expression len = parseExpression();
+
+            return new ArrayInitializerExpr(left, len);
+        }
+
+        return left;
     }
 
     /**

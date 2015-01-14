@@ -95,6 +95,15 @@ public class ExpressionTest {
         Assert.assertEquals(cast.getUnresolvedType().getBaseName(), "Bar");
     }
 
+    @Test
+    public void testArrayInitializerExpr() {
+        Expression expr = parseExpression("(foo .. 2) .. 2");
+
+        Assert.assertTrue(expr instanceof ArrayInitializerExpr);
+        ArrayInitializerExpr arrInit = (ArrayInitializerExpr) expr;
+        System.out.println(arrInit.getUnresolvedType());
+    }
+
     private Expression parseExpression(String src) {
         Lexer lexer     = new Lexer(src);
         Parser parser   = new Parser(lexer);
