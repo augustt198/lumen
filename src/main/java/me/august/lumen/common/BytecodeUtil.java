@@ -250,6 +250,25 @@ public final class BytecodeUtil implements Opcodes {
         method.visitInsn(ACONST_NULL);
     }
 
+
+    private static Set<Type> BOXED_TYPES;
+
+    static {
+        Class[] classes = new Class[]{
+            Byte.class, Character.class, Short.class, Integer.class,
+            Long.class, Float.class, Double.class
+        };
+
+        BOXED_TYPES = new HashSet<>(classes.length);
+
+        for (Class cls : classes)
+            BOXED_TYPES.add(Type.getType(cls));
+    }
+
+    public static boolean isBoxedType(Type type) {
+        return BOXED_TYPES.contains(type);
+    }
+
     public static boolean isPrimitive(Type type) {
         return type.getSort() >= Type.BOOLEAN && type.getSort() <= Type.DOUBLE;
     }
@@ -314,6 +333,21 @@ public final class BytecodeUtil implements Opcodes {
 
     // byte, char, short, int, long, float, double
     private static final String PRIMITIVE_ORDER = "BCSIJFD";
+
+    public static int compareWidth(Type t1, Type t2) {
+        if (!isNumeric(t1) || !isNumeric(t2)) return Integer.MAX_VALUE;
+
+        int idx1 = PRIMITIVE_ORDER.indexOf(t1.getDescriptor());
+        int idx2 = PRIMITIVE_ORDER.indexOf(t2.getDescriptor());
+
+        if (idx1 > idx2) {
+            return 1;
+        } else if (idx1 < idx2) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 
     public static boolean canWidenTo(Type orig, Type target) {
         // both types must be numeric
@@ -437,4 +471,55 @@ public final class BytecodeUtil implements Opcodes {
             default:          return -1;
         }
     }
+
+    public static int arrayStoreOpcode(Type type) {
+        switch (type.getSort()) {
+            case Type.BYTE:   return BASTORE;
+            case Type.CHAR:   return CASTORE;
+            case Type.SHORT:  return SASTORE;
+            case Type.INT:    return IASTORE;
+            case Type.LONG:   return LALOAD;
+            case Type.FLOAT:  return FASTORE;
+            case Type.DOUBLE: return DASTORE;
+            case Type.ARRAY:
+            case Type.OBJECT: return AASTORE;
+            default:          return -1;
+        }
+    }
+
+    public static Type componentType(Type type) {
+        // not an array
+        if (type.getDimensions() < 1) return null;
+
+        String descriptor = type.getDescriptor();
+        return Type.getType(descriptor.substring(1, descriptor.length()));
+    }
+
+    public static Type toBoxedType(Type type) {
+        switch (type.getSort()) {
+            case Type.BYTE:   return Type.getType(Byte.class);
+            case Type.CHAR:   return Type.getType(Character.class);
+            case Type.SHORT:  return Type.getType(Short.class);
+            case Type.INT:    return Type.getType(Integer.class);
+            case Type.LONG:   return Type.getType(Long.class);
+            case Type.FLOAT:  return Type.getType(Float.class);
+            case Type.DOUBLE: return Type.getType(Double.class);
+            default:          return null;
+        }
+    }
+
+    public static Type toUnboxedType(Type type) {
+        String name = type.getClassName();
+        switch (name) {
+            case "java.lang.Byte":      return Type.BYTE_TYPE;
+            case "java.lang.Character": return Type.CHAR_TYPE;
+            case "java.lang.Short":     return Type.SHORT_TYPE;
+            case "java.lang.Integer":   return Type.INT_TYPE;
+            case "java.lang.Long":      return Type.LONG_TYPE;
+            case "java.lang.Float":     return Type.FLOAT_TYPE;
+            case "java.lang.Double":    return Type.DOUBLE_TYPE;
+            default:                    return null;
+        }
+    }
+
 }
