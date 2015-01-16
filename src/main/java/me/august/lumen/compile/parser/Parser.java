@@ -456,7 +456,7 @@ public class Parser {
         if (accept(ASSIGN)) {
             if (!(left instanceof VariableExpression))
                 throw new RuntimeException("Left hand expression must be a variable");
-            Expression right = parseExpression();
+            Expression right = parseAssignment();
 
             return new AssignmentExpr((VariableExpression) left, right);
         }
@@ -474,9 +474,9 @@ public class Parser {
         Expression condition = parseRange();
 
         if (accept(QUESTION)) {
-            Expression trueExpr = parseExpression();
+            Expression trueExpr = parseTernary();
             next().expectType(Type.COLON);
-            Expression falseExpr = parseExpression();
+            Expression falseExpr = parseTernary();
 
             return new TernaryExpr(condition, trueExpr, falseExpr);
         }
@@ -530,7 +530,7 @@ public class Parser {
         Expression left = parseLogicAnd();
 
         if (accept(LOGIC_OR)) {
-            Expression right = parseExpression();
+            Expression right = parseLogicOr();
             return new OrExpr(left, right);
         }
 
@@ -547,7 +547,7 @@ public class Parser {
         Expression left = parseBitOr();
 
         if (accept(LOGIC_AND)) {
-            Expression right = parseExpression();
+            Expression right = parseLogicAnd();
             return new AndExpr(left, right);
         }
 
@@ -564,7 +564,7 @@ public class Parser {
         Expression left = parseBitXor();
 
         if (accept(BIT_OR)) {
-            Expression right = parseExpression();
+            Expression right = parseBitOr();
             return new BitOrExpr(left, right);
         }
 
@@ -581,7 +581,7 @@ public class Parser {
         Expression left = parseBitAnd();
 
         if (accept(BIT_XOR)) {
-            Expression right = parseExpression();
+            Expression right = parseBitXor();
             return new BitXorExpr(left, right);
         }
 
@@ -598,7 +598,7 @@ public class Parser {
         Expression left = parseEq();
 
         if (accept(BIT_AND)) {
-            Expression right = parseExpression();
+            Expression right = parseBitAnd();
             return new BitAndExpr(left, right);
         }
 
@@ -618,7 +618,7 @@ public class Parser {
         if (peek == Type.EQ || peek == Type.NE) {
             next(); // consume EQ or NE token
 
-            Expression right = parseExpression();
+            Expression right = parseEq();
             EqExpr.Op op = peek == Type.EQ ? EqExpr.Op.EQ : EqExpr.Op.NE;
             return new EqExpr(left, right, op);
         }
@@ -648,7 +648,7 @@ public class Parser {
                 return new NotExpr(new InstanceofExpr(left, type));
             } else {
                 RelExpr.Op op = RelExpr.Op.valueOf(peek.name());
-                Expression right = parseExpression();
+                Expression right = parseRelational();
                 return new RelExpr(left, right, op);
             }
 
@@ -669,7 +669,7 @@ public class Parser {
         Type peek = peek().getType();
         if (peek == Type.SH_L || peek == Type.SH_R || peek == Type.U_SH_R) {
             next();
-            Expression right = parseExpression();
+            Expression right = parseShift();
             ShiftExpr.Op op = ShiftExpr.Op.valueOf(peek.name());
 
             return new ShiftExpr(left, right, op);
@@ -690,7 +690,7 @@ public class Parser {
         Type peek = peek().getType();
         if (peek == Type.PLUS || peek == Type.MIN) {
             next();
-            Expression right = parseExpression();
+            Expression right = parseAdditive();
             AddExpr.Op op = peek == Type.PLUS ? AddExpr.Op.ADD : AddExpr.Op.SUB;
 
             return new AddExpr(left, right, op);
@@ -711,7 +711,7 @@ public class Parser {
         Type peek = peek().getType();
         if (peek == Type.MULT || peek == Type.DIV || peek == Type.REM) {
             next();
-            Expression right = parseExpression();
+            Expression right = parseMultiplicative();
             MultExpr.Op op = MultExpr.Op.valueOf(peek.name());
 
             return new MultExpr(left, right, op);
@@ -771,7 +771,7 @@ public class Parser {
             return new IncrementExpr(expr, IncrementExpr.Op.DEC, true);
         } else {
             while (accept(L_BRACKET)) {
-                Expression index = parseExpression();
+                Expression index = parsePostfix();
                 next().expectType(R_BRACKET);
 
                 expr = new ArrayAccessExpr(expr, index);

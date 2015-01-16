@@ -102,6 +102,16 @@ public class ExpressionTest {
         Assert.assertTrue(expr instanceof ArrayInitializerExpr);
     }
 
+    @Test
+    public void testPrecedence() {
+        Expression expr = parseExpression("1 * 2 + 3 * 4");
+
+        Assert.assertTrue(
+            "Top level expression should be addition",
+            expr instanceof AddExpr
+        );
+    }
+
     private Expression parseExpression(String src) {
         Lexer lexer     = new Lexer(src);
         Parser parser   = new Parser(lexer);
