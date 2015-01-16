@@ -9,7 +9,6 @@ public class MethodScope extends Scope {
     public MethodScope(Scope parent, MethodNode method) {
         super(parent, ScopeType.METHOD);
         this.method = method;
-
     }
 
     public MethodNode getMethod() {

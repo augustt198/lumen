@@ -2,6 +2,7 @@ package me.august.lumen.compile.resolve;
 
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.method.MethodReference;
+import me.august.lumen.compile.analyze.var.ArrayLengthReference;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.Typed;
@@ -84,8 +85,23 @@ public class LumenTypeVisitor implements ASTVisitor {
 
     private void handleMember(OwnedExpr expr, Expression parent) {
         Type parentType = parent.expressionType();
-        if (parentType.getSort() != Type.OBJECT)
+
+        if (parentType.getSort() != Type.OBJECT && parentType.getSort() != Type.ARRAY)
             throw new RuntimeException("Tried to access member of a primitive type");
+
+
+        if (parentType.getSort() == Type.ARRAY) {
+            if (expr instanceof IdentExpr) {
+                IdentExpr ident  = (IdentExpr) expr;
+                String fieldName = ident.getIdentifier();
+                if (fieldName.equals("len") || fieldName.equals("length")) {
+                    ident.setVariableReference(new ArrayLengthReference(parent));
+                    return;
+                } else {
+                    throw new RuntimeException("Field does not exist for array.");
+                }
+            }
+        }
 
         String className = parentType.getInternalName();
         ClassData cls = deps.lookup(parentType.getClassName());
