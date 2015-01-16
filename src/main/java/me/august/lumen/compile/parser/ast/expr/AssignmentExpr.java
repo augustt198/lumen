@@ -6,9 +6,9 @@ import org.objectweb.asm.MethodVisitor;
 public class AssignmentExpr extends BinaryExpression {
 
     // BinaryExpression only defines left as general expression
-    IdentExpr left;
+    VariableExpression left;
 
-    public AssignmentExpr(IdentExpr left, Expression right) {
+    public AssignmentExpr(VariableExpression left, Expression right) {
         super(left, right);
         this.left = left;
     }

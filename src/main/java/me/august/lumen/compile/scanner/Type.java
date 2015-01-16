@@ -15,6 +15,7 @@ public enum Type {
 
     COMMA,      // ,
     DOT,        // .
+    RANGE,      // ..
     COLON,      // :
 
     SEP,        // ::

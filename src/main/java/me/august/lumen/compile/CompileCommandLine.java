@@ -15,7 +15,6 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.List;
 import java.util.jar.JarFile;
 
 public class CompileCommandLine implements Runnable {

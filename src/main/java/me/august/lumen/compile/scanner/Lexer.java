@@ -4,7 +4,6 @@ import me.august.lumen.common.Chars;
 import me.august.lumen.compile.Driver;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.error.SourcePositionProvider;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
 import me.august.lumen.compile.scanner.tokens.ImportPathToken;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
 import me.august.lumen.compile.scanner.tokens.StringToken;
@@ -159,7 +158,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             else if (c == ']') return token(R_BRACKET);
 
             else if (c == ',') return token(COMMA);
-            else if (c == '.') return token(DOT);
+            else if (c == '.') return nextDots();
             else if (c == ':') return nextColonOrSep();
 
             else if (c == '+') return nextPlusOrIncOrNumber();
@@ -341,6 +340,15 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         queued.push(new ImportPathToken(
             sb.toString(), startPos, endPos, importPath, nodes
         ));
+    }
+
+    private Token nextDots() {
+        if (peek() == '.') {
+            read();
+            return token(RANGE);
+        } else {
+            return token(DOT);
+        }
     }
 
     /**

@@ -98,7 +98,6 @@ public class Parser {
         Token token = next();
 
         ClassNode classNode = null;
-
         while (token.getType() != EOF) {
             if (token.getType() == IMPORT_KEYWORD) {
                 imports.add(next().expectType(IMPORT_PATH).getContent());
@@ -455,11 +454,11 @@ public class Parser {
         Expression left = parseTernary();
 
         if (accept(ASSIGN)) {
-            if (!(left instanceof IdentExpr))
-                throw new RuntimeException("Left hand expression must be an identifier");
+            if (!(left instanceof VariableExpression))
+                throw new RuntimeException("Left hand expression must be a variable");
             Expression right = parseExpression();
 
-            return new AssignmentExpr((IdentExpr) left, right);
+            return new AssignmentExpr((VariableExpression) left, right);
         }
 
         return left;
@@ -472,7 +471,7 @@ public class Parser {
      * @return An expression
      */
     private Expression parseTernary() {
-        Expression condition = parseLogicOr();
+        Expression condition = parseRange();
 
         if (accept(QUESTION)) {
             Expression trueExpr = parseExpression();
@@ -483,6 +482,42 @@ public class Parser {
         }
 
         return condition;
+    }
+
+    private Expression parseRange() {
+        Expression left = parseLogicOr();
+
+        if (accept(RANGE)) {
+            if (!(left instanceof IdentExpr))
+                throw new RuntimeException("Expected identifier");
+            IdentExpr ident = (IdentExpr) left;
+            UnresolvedType type = new UnresolvedType(ident.getIdentifier());
+
+            List<Expression> lengths = new ArrayList<>();
+            int dims = 1;
+
+            next().expectType(L_BRACKET);
+            lengths.add(parseExpression());
+            next().expectType(R_BRACKET);
+
+            boolean unknown = false;
+            while (accept(L_BRACKET)) {
+                if (accept(QUESTION)) {
+                    unknown = true;
+                    dims++;
+                } else {
+                    if (unknown)
+                        throw new RuntimeException("Illegal array initialization");
+                    lengths.add(parseExpression());
+                    dims++;
+                }
+                next().expectType(R_BRACKET);
+            }
+
+            return new ArrayInitializerExpr(type, lengths, dims);
+        }
+
+        return left;
     }
 
     /**
