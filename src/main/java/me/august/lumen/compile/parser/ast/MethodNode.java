@@ -12,6 +12,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
@@ -19,7 +20,6 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
     private String name;
     private Modifier[] modifiers;
 
-    //private Map<String, String> parameters = new HashMap<>();
     private List<Parameter> parameters;
 
     private Body body;
@@ -58,6 +58,13 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
         // TODO *actually* compute maxs
         method.visitMaxs(10, 10);
         method.visitEnd();
+    }
+
+    public boolean isStatic() {
+        for (Modifier mod : modifiers) {
+            if (mod == Modifier.STATIC) return true;
+        }
+        return false;
     }
 
     @Override

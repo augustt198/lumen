@@ -2,6 +2,6 @@ package me.august.lumen.compile.analyze.scope;
 
 public enum ScopeType {
 
-    CLASS, NORMAL, LOOP
+    CLASS, NORMAL, LOOP, METHOD
 
 }

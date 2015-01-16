@@ -1,9 +1,6 @@
 package me.august.lumen.compile.analyze;
 
-import me.august.lumen.compile.analyze.scope.ClassScope;
-import me.august.lumen.compile.analyze.scope.LoopScope;
-import me.august.lumen.compile.analyze.scope.Scope;
-import me.august.lumen.compile.analyze.scope.ScopeType;
+import me.august.lumen.compile.analyze.scope.*;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.analyze.var.VariableReference;
@@ -56,7 +53,7 @@ public class VariableVisitor implements ASTVisitor {
 
     @Override
     public void visitMethod(MethodNode method) {
-        pushScope(new Scope(this.scope));
+        pushScope(new MethodScope(this.scope, method));
 
         // local variable index
         int idx = 0;
@@ -153,7 +150,7 @@ public class VariableVisitor implements ASTVisitor {
     public int nextLocalIndex() {
         Scope s = this.scope;
 
-        int max = 0;
+        int max = -1;
 
         while (s != null) {
             for (VariableReference vr : s.getVariableTable().values()) {
@@ -166,7 +163,13 @@ public class VariableVisitor implements ASTVisitor {
             s = s.getParent();
         }
 
-        return max + 1;
+        if (max == -1) {
+            MethodScope methodScope = (MethodScope) scope.fromType(ScopeType.METHOD);
+            return methodScope.getMethod().isStatic() ? 0 : 1;
+        } else {
+            return max + 1;
+        }
+
     }
 
     private void skipNext() {
