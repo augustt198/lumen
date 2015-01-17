@@ -42,7 +42,9 @@ public abstract class TypeVisitor implements ASTVisitor {
     @Override
     public void visitExpression(Expression expr) {
         if (expr instanceof Typed) {
-            visitType((Typed) expr);
+            Typed typed = (Typed) expr;
+            if (!typed.isResolved())
+                visitType((Typed) expr);
         }
     }
 

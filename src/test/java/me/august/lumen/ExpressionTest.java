@@ -2,9 +2,11 @@ package me.august.lumen;
 
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.expr.*;
+import me.august.lumen.compile.resolve.type.UnresolvedType;
 import me.august.lumen.compile.scanner.Lexer;
 import org.junit.Assert;
 import org.junit.Test;
+import org.objectweb.asm.Type;
 
 public class ExpressionTest {
 
@@ -109,6 +111,40 @@ public class ExpressionTest {
         Assert.assertTrue(
             "Top level expression should be addition",
             expr instanceof AddExpr
+        );
+    }
+
+    @Test
+    public void testRescue() {
+        Expression expr;
+        RescueExpr rescue;
+
+        expr = parseExpression("2 / 0 rescue 10");
+
+        Assert.assertTrue(
+            "Expression should be a RescueExpr",
+            expr instanceof RescueExpr
+        );
+
+        rescue = (RescueExpr) expr;
+
+        Assert.assertEquals("Expected `Exception` type", Type.getType(Exception.class), rescue.getResolvedType());
+
+
+        expr = parseExpression("2 / 0 rescue ArithmeticException -> 10");
+
+        Assert.assertTrue(
+            "Expression should be a RescueExpr",
+            expr instanceof RescueExpr
+        );
+
+        rescue = (RescueExpr) expr;
+
+        UnresolvedType expected = new UnresolvedType("ArithmeticException");
+        Assert.assertEquals(
+            "Expected `ArithmeticException` type",
+            expected,
+            rescue.getUnresolvedType()
         );
     }
 

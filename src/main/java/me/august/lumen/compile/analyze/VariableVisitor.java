@@ -56,7 +56,7 @@ public class VariableVisitor implements ASTVisitor {
         pushScope(new MethodScope(this.scope, method));
 
         // local variable index
-        int idx = 0;
+        int idx = method.isStatic() ? -1 : 0;
         for (Parameter param : method.getParameters()) {
             idx++;
             Type type = param.getResolvedType();

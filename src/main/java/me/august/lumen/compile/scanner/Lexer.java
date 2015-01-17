@@ -38,6 +38,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             {"as", CAST_KEYWORD},
             {"then", THEN_KEYWORD},
             {"return", RETURN_KEYWORD},
+            {"rescue", RESCUE_KEYWORD},
 
             {"is", EQ},
             {"isnt", NE},
@@ -361,6 +362,9 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         } else if (peek() == '-') {
             read();
             return token(DEC);
+        } else if (peek() == '>') {
+            read();
+            return token(R_ARROW);
         } else {
             return token(MIN);
         }

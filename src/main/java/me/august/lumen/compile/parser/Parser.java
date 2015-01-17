@@ -451,7 +451,7 @@ public class Parser {
      * @return An expression
      */
     private Expression parseAssignment() {
-        Expression left = parseTernary();
+        Expression left = parseRescue();
 
         if (accept(ASSIGN)) {
             if (!(left instanceof VariableExpression))
@@ -465,8 +465,40 @@ public class Parser {
     }
 
     /**
+     * Parses a rescue expression:
+     * ternary ["rescue" rescue]
+     * @return
+     */
+    private Expression parseRescue() {
+        Expression expr = parseTernary();
+
+        if (accept(RESCUE_KEYWORD)) {
+            UnresolvedType exceptionType = null;
+            boolean defaultException = false;
+            Expression rescueExpr = parseRescue();
+
+
+            if (rescueExpr instanceof IdentExpr && accept(R_ARROW)) {
+                exceptionType = new UnresolvedType(((IdentExpr) rescueExpr).getIdentifier());
+                rescueExpr = parseRescue();
+            } else {
+                defaultException = true;
+            }
+
+            RescueExpr rescue = new RescueExpr(exceptionType, expr, rescueExpr);
+            if (defaultException) {
+                rescue.setResolvedType(org.objectweb.asm.Type.getType(Exception.class));
+            }
+
+            return rescue;
+        }
+
+        return expr;
+    }
+
+    /**
      * Parses a ternary expression:
-     * logic_or [? expression : expression]
+     * range [? expression : expression]
      *
      * @return An expression
      */

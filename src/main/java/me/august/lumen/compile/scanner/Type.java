@@ -97,6 +97,10 @@ public enum Type {
 
     RETURN_KEYWORD,
 
+    RESCUE_KEYWORD,
+
+    R_ARROW,
+
     // access modifiers
     ACC_PUBLIC(Attribute.ACC_MOD),
     ACC_PRIVATE(Attribute.ACC_MOD),
