@@ -13,10 +13,20 @@ public class RescueExpr extends Typed implements Expression {
     private Expression tryExpression;
     private Expression catchExpression;
 
+    private int exceptionVariableIndex;
+
     public RescueExpr(UnresolvedType type, Expression tryExpression, Expression catchExpression) {
         super(type);
         this.tryExpression = tryExpression;
         this.catchExpression = catchExpression;
+    }
+
+    public int getExceptionVariableIndex() {
+        return exceptionVariableIndex;
+    }
+
+    public void setExceptionVariableIndex(int exceptionVariableIndex) {
+        this.exceptionVariableIndex = exceptionVariableIndex;
     }
 
     @Override
@@ -46,6 +56,7 @@ public class RescueExpr extends Typed implements Expression {
         visitor.visitJumpInsn(Opcodes.GOTO, finish);
 
         visitor.visitLabel(handle);
+        visitor.visitVarInsn(Opcodes.ASTORE, exceptionVariableIndex);
         catchExpression.generate(visitor, context);
 
         visitor.visitLabel(finish);

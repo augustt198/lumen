@@ -12,6 +12,7 @@ import me.august.lumen.compile.parser.ast.Parameter;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.OwnedExpr;
+import me.august.lumen.compile.parser.ast.expr.RescueExpr;
 import me.august.lumen.compile.parser.ast.stmt.*;
 import org.objectweb.asm.Type;
 
@@ -129,6 +130,8 @@ public class VariableVisitor implements ASTVisitor {
             if (tail instanceof IdentExpr) {
                 handleIdent((IdentExpr) tail);
             }
+        } else if (expr instanceof RescueExpr) {
+            ((RescueExpr) expr).setExceptionVariableIndex(nextLocalIndex());
         }
     }
 
