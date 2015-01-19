@@ -30,6 +30,11 @@ public interface Expression extends CodeBlock, VisitorConsumer {
             }
         }
 
+        if (this instanceof OwnedExpr) {
+            Expression owned = ((OwnedExpr) this).getOwner();
+            if (owned != null)
+                owned.accept(visitor);
+        }
         visitor.visitExpression(this);
     }
 
