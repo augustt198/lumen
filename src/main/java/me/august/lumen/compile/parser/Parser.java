@@ -854,18 +854,33 @@ public class Parser {
 
             // separated with '::'
             if (accept(SEP)) {
-                String memberName = next().expectType(Type.IDENTIFIER).getContent();
+                token = next();
+                UnresolvedType type = new UnresolvedType(ident);
 
-                // create a either a static field or static method call
-                if (accept(L_PAREN)) {
-                    List<Expression> params = parseExpressionList();
+                if (token.getType() == IDENTIFIER) {
+                    String memberName = token.getContent();
 
-                    UnresolvedType type = new UnresolvedType(ident);
-                    expr = new StaticMethodCall(type, memberName, params);
+                    // create a either a static field or static method call
+                    if (accept(L_PAREN)) {
+                        List<Expression> params = parseExpressionList();
+
+                        expr = new StaticMethodCall(type, memberName, params);
+                    } else {
+                        expr = new StaticField(type, memberName);
+                    }
+                } else if (token.getType() == NEW_KEYWORD) {
+                    List<Expression> params;
+                    if (accept(L_PAREN)) {
+                        params = parseExpressionList();
+                    } else {
+                        params = new ArrayList<>();
+                    }
+
+                    expr = new ConstructorCallExpr(type, params);
                 } else {
-                    UnresolvedType type = new UnresolvedType(ident);
-                    expr = new StaticField(type, memberName);
+                    throw new RuntimeException("Unexpected token: " + token);
                 }
+
             // parse as a normal identifier or method
             } else {
                 expr = identOrMethod(ident);

@@ -8,7 +8,7 @@ import org.objectweb.asm.Type;
 
 import java.util.List;
 
-public class MethodCallExpr extends TerminalExpression implements OwnedExpr, Popable {
+public class MethodCallExpr implements OwnedExpr, Popable {
 
     private String identifier;
     private List<Expression> params;

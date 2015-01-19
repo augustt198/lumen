@@ -99,6 +99,8 @@ public enum Type {
 
     RESCUE_KEYWORD,
 
+    NEW_KEYWORD,
+
     R_ARROW,
 
     // access modifiers
