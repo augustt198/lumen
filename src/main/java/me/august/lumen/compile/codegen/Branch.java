@@ -6,6 +6,15 @@ import org.objectweb.asm.Opcodes;
 
 public class Branch implements MethodCodeGen {
 
+    public static Branch branchBoolean(MethodCodeGen gen, MethodCodeGen ifBranch, MethodCodeGen elseBranch) {
+        Label label = new Label();
+        MethodCodeGen cond = (m, c) -> {
+            gen.generate(m, c);
+            m.visitJumpInsn(Opcodes.IFEQ, label);
+        };
+        return new Branch(cond, label, ifBranch, elseBranch);
+    }
+
     private MethodCodeGen cond;
 
     private Label elseJump;

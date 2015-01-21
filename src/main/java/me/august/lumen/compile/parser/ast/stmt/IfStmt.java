@@ -22,12 +22,7 @@ public class IfStmt implements CodeBlock, VisitorConsumer {
         if (expr instanceof Conditional) {
             return ((Conditional) expr).branch(ifBranch, elseBranch);
         } else if (expr.expressionType().getSort() == Type.BOOLEAN) {
-            Label label = new Label();
-            MethodCodeGen cond = (m, c) -> {
-                expr.generate(m, c);
-                m.visitJumpInsn(Opcodes.IFEQ, label);
-            };
-            return new Branch(cond, label, ifBranch, elseBranch);
+            return Branch.branchBoolean(expr, ifBranch, elseBranch);
         } else {
             throw new IllegalArgumentException("Incompatible types.");
         }

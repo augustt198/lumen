@@ -40,7 +40,13 @@ public class TernaryExpr implements Expression, Conditional {
 
     @Override
     public Branch branch(MethodCodeGen ifBranch, MethodCodeGen elseBranch) {
-        return ((Conditional) condition).branch(ifBranch, elseBranch);
+        if (condition instanceof Conditional) {
+            return ((Conditional) condition).branch(ifBranch, elseBranch);
+        } else if (condition.expressionType().getSort() == Type.BOOLEAN) {
+            return Branch.branchBoolean(condition, ifBranch, elseBranch);
+        } else {
+            throw new IllegalArgumentException("Incompatible types.");
+        }
     }
 
     @Override
