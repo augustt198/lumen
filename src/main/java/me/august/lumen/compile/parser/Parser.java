@@ -297,6 +297,8 @@ public class Parser {
             return parseWhileStatement(false);
         } else if (accept(UNTIL_KEYWORD)) {
             return parseWhileStatement(true);
+        } else if (accept(EACH_KEYWORD)) {
+            return parseEachStatement();
         } else if (accept(BREAK_KEYWORD)) {
             return new BreakStmt();
         } else if (accept(NEXT_KEYWORD)) {
@@ -433,6 +435,16 @@ public class Parser {
         Body body = parseBody();
 
         return new WhileStmt(condition, body);
+    }
+
+    private EachStmt parseEachStatement() {
+        String ident = next().expectType(IDENTIFIER).getContent();
+        next().expectType(IN_KEYWORD);
+
+        Expression expr = parseExpression();
+        Body body = parseBody();
+
+        return new EachStmt(ident, expr, body);
     }
 
     /**

@@ -43,6 +43,7 @@ public interface ASTVisitor {
     default void visitReturn(ReturnStmt ret) {}
 
     default void visitWhileStmt(WhileStmt stmt) {}
+    default void visitEachStmt(EachStmt stmt) {}
 
     default void visitBreakStmt(BreakStmt stmt) {}
     default void visitNextStmt(NextStmt stmt) {}

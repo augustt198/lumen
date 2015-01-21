@@ -1,5 +1,6 @@
 package me.august.lumen.compile.analyze;
 
+import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.analyze.scope.*;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
@@ -15,6 +16,7 @@ import me.august.lumen.compile.parser.ast.expr.OwnedExpr;
 import me.august.lumen.compile.parser.ast.expr.RescueExpr;
 import me.august.lumen.compile.parser.ast.stmt.*;
 import org.objectweb.asm.Type;
+import sun.jvm.hotspot.interpreter.Bytecode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,6 +95,28 @@ public class VariableVisitor implements ASTVisitor {
     @Override
     public void visitWhileStmt(WhileStmt stmt) {
         pushScope(new LoopScope(scope, stmt));
+    }
+
+    @Override
+    public void visitEachStmt(EachStmt stmt) {
+        Scope scope = pushScope(new LoopScope(this.scope, stmt));
+
+        Type componentType = BytecodeUtil.componentType(stmt.getExpr().expressionType());
+
+        int counterIndex = nextLocalIndex();
+        stmt.setCounterIndex(counterIndex);
+        scope.setVariable(null, new LocalVariable(counterIndex, Type.INT_TYPE));
+
+        int arrayIndex = nextLocalIndex();
+        stmt.setArrayIndex(arrayIndex);
+        scope.setVariable(null, new LocalVariable(arrayIndex, stmt.getExpr().expressionType()));
+
+        int targetIndex = nextLocalIndex();
+        scope.setVariable(
+                stmt.getIdent(),
+                new LocalVariable(targetIndex, componentType)
+        );
+        stmt.setTargetIndex(targetIndex);
     }
 
     @Override

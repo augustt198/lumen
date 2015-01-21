@@ -89,6 +89,8 @@ public enum Type {
 
     WHILE_KEYWORD,
     UNTIL_KEYWORD,
+    EACH_KEYWORD,
+    IN_KEYWORD,
 
     BREAK_KEYWORD,
     NEXT_KEYWORD,
