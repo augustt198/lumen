@@ -16,7 +16,6 @@ import me.august.lumen.compile.parser.ast.expr.OwnedExpr;
 import me.august.lumen.compile.parser.ast.expr.RescueExpr;
 import me.august.lumen.compile.parser.ast.stmt.*;
 import org.objectweb.asm.Type;
-import sun.jvm.hotspot.interpreter.Bytecode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
