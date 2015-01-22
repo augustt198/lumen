@@ -13,7 +13,6 @@ Not much... yet. Here's a sample program:
 ![Lumen Source](http://i.imgur.com/zZcGJhr.png)
 
 **Program output**
-![Decompiled to Java](http://i.imgur.com/llu3Cdq.png)
 ```
 0 1 4 3 16 
 -1
