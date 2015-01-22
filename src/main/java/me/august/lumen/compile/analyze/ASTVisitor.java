@@ -44,6 +44,7 @@ public interface ASTVisitor {
 
     default void visitWhileStmt(WhileStmt stmt) {}
     default void visitEachStmt(EachStmt stmt) {}
+    default void visitForStmt(ForStmt stmt) {}
 
     default void visitBreakStmt(BreakStmt stmt) {}
     default void visitNextStmt(NextStmt stmt) {}

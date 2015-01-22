@@ -119,6 +119,19 @@ public class VariableVisitor implements ASTVisitor {
     }
 
     @Override
+    public void visitForStmt(ForStmt stmt) {
+        Scope scope = pushScope(new LoopScope(this.scope, stmt));
+
+        int counterIndex = nextLocalIndex();
+        stmt.setCounterIndex(counterIndex);
+        scope.setVariable(stmt.getIdent(), new LocalVariable(counterIndex, Type.INT_TYPE));
+
+        int boundIndex = nextLocalIndex();
+        stmt.setBoundIndex(boundIndex);
+        scope.setVariable(null, new LocalVariable(counterIndex, Type.INT_TYPE));
+    }
+
+    @Override
     public void visitBreakStmt(BreakStmt stmt) {
         LoopScope loopScope = nextLoop();
 

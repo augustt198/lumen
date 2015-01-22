@@ -299,6 +299,8 @@ public class Parser {
             return parseWhileStatement(true);
         } else if (accept(EACH_KEYWORD)) {
             return parseEachStatement();
+        } else if (accept(FOR_KEYWORD)) {
+            return parseForStatement();
         } else if (accept(BREAK_KEYWORD)) {
             return new BreakStmt();
         } else if (accept(NEXT_KEYWORD)) {
@@ -447,6 +449,20 @@ public class Parser {
         return new EachStmt(ident, expr, body);
     }
 
+    private ForStmt parseForStatement() {
+        String ident = next().expectType(IDENTIFIER).getContent();
+        next().expectType(IN_KEYWORD);
+
+        Expression expr = parseExpression();
+        if (!(expr instanceof RangeExpr))
+            throw new RuntimeException("Expected range");
+
+        RangeExpr range = (RangeExpr) expr;
+        Body body = parseBody();
+
+        return new ForStmt(ident, range, body);
+    }
+
     /**
      * The expression parsing entry point.
      *
@@ -531,37 +547,48 @@ public class Parser {
     private Expression parseRange() {
         Expression left = parseLogicOr();
 
-        if (accept(RANGE)) {
-            if (!(left instanceof IdentExpr))
-                throw new RuntimeException("Expected identifier");
-            IdentExpr ident = (IdentExpr) left;
-            UnresolvedType type = new UnresolvedType(ident.getIdentifier());
+        boolean inclusive = accept(RANGE_INCLUSIVE);
+        boolean exclusive = accept(RANGE_EXCLUSIVE);
+        if (inclusive || exclusive) {
+            if (accept(L_BRACKET)) {
+                return parseArrayInitializer(left);
+            } else {
+                Expression right = parseRange();
 
-            List<Expression> lengths = new ArrayList<>();
-            int dims = 1;
-
-            next().expectType(L_BRACKET);
-            lengths.add(parseExpression());
-            next().expectType(R_BRACKET);
-
-            boolean unknown = false;
-            while (accept(L_BRACKET)) {
-                if (accept(QUESTION)) {
-                    unknown = true;
-                    dims++;
-                } else {
-                    if (unknown)
-                        throw new RuntimeException("Illegal array initialization");
-                    lengths.add(parseExpression());
-                    dims++;
-                }
-                next().expectType(R_BRACKET);
+                return new RangeExpr(left, right, inclusive);
             }
-
-            return new ArrayInitializerExpr(type, lengths, dims);
         }
 
         return left;
+    }
+
+    private Expression parseArrayInitializer(Expression left) {
+        if (!(left instanceof IdentExpr))
+            throw new RuntimeException("Expected identifier");
+        IdentExpr ident = (IdentExpr) left;
+        UnresolvedType type = new UnresolvedType(ident.getIdentifier());
+
+        List<Expression> lengths = new ArrayList<>();
+        int dims = 1;
+
+        lengths.add(parseExpression());
+        next().expectType(R_BRACKET);
+
+        boolean unknown = false;
+        while (accept(L_BRACKET)) {
+            if (accept(QUESTION)) {
+                unknown = true;
+                dims++;
+            } else {
+                if (unknown)
+                    throw new RuntimeException("Illegal array initialization");
+                lengths.add(parseExpression());
+                dims++;
+            }
+            next().expectType(R_BRACKET);
+        }
+
+        return new ArrayInitializerExpr(type, lengths, dims);
     }
 
     /**

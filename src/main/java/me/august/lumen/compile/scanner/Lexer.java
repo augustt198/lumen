@@ -40,6 +40,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             {"return", RETURN_KEYWORD},
             {"rescue", RESCUE_KEYWORD},
             {"new", NEW_KEYWORD},
+            {"for", FOR_KEYWORD},
             {"each", EACH_KEYWORD},
             {"in", IN_KEYWORD},
 
@@ -349,7 +350,12 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
     private Token nextDots() {
         if (peek() == '.') {
             read();
-            return token(RANGE);
+            if (peek() == '.') {
+                read();
+                return token(RANGE_INCLUSIVE);
+            } else {
+                return token(RANGE_EXCLUSIVE);
+            }
         } else {
             return token(DOT);
         }

@@ -15,7 +15,10 @@ public enum Type {
 
     COMMA,      // ,
     DOT,        // .
-    RANGE,      // ..
+
+    RANGE_EXCLUSIVE, // ..
+    RANGE_INCLUSIVE, // ...
+
     COLON,      // :
 
     SEP,        // ::
@@ -89,6 +92,8 @@ public enum Type {
 
     WHILE_KEYWORD,
     UNTIL_KEYWORD,
+
+    FOR_KEYWORD,
     EACH_KEYWORD,
     IN_KEYWORD,
 
