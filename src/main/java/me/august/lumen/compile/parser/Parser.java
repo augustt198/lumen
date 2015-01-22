@@ -8,6 +8,7 @@ import me.august.lumen.compile.resolve.type.UnresolvedType;
 import me.august.lumen.compile.scanner.Lexer;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.tokens.ImportPathToken;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
 import me.august.lumen.compile.scanner.tokens.StringToken;
 
@@ -93,14 +94,15 @@ public class Parser {
      * @return The program AST node
      */
     public ProgramNode parseMain() {
-        List<String> imports = new ArrayList<>();
+        List<ImportNode> imports = new ArrayList<>();
 
         Token token = next();
 
         ClassNode classNode = null;
         while (token.getType() != EOF) {
             if (token.getType() == IMPORT_KEYWORD) {
-                imports.add(next().expectType(IMPORT_PATH).getContent());
+                ImportPathToken importTok = (ImportPathToken) next().expectType(IMPORT_PATH);
+                imports.add(new ImportNode(importTok.getPath(), importTok.getClasses()));
             } else if (token.getType() == CLASS_KEYWORD || token.hasAttribute(Attribute.ACC_MOD)) {
                 if (classNode != null) throw new RuntimeException("Previous class definition found.");
 
@@ -116,10 +118,8 @@ public class Parser {
             token = next();
         }
 
-        ImportNode[] importNodes = new ImportNode[imports.size()];
-        for (int i = 0; i < imports.size(); i++) {
-            importNodes[i] = new ImportNode(imports.get(i));
-        }
+        ImportNode[] importNodes = imports.toArray(new ImportNode[imports.size()]);
+
         return new ProgramNode(importNodes, classNode);
     }
 

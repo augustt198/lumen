@@ -24,8 +24,8 @@ public class NameResolver implements TypeResolver {
         String baseName = unresolved.getBaseName();
         String fullName = null;
         for (ImportNode impt : imports) {
-            if (impt.getPath().endsWith(baseName)) {
-                fullName = impt.getPath();
+            if (impt.hasClass(baseName)) {
+                fullName = impt.getFull(baseName);
             }
         }
 
