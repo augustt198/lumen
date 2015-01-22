@@ -42,7 +42,6 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             {"new", NEW_KEYWORD},
             {"for", FOR_KEYWORD},
             {"each", EACH_KEYWORD},
-            {"in", IN_KEYWORD},
 
             {"is", EQ},
             {"isnt", NE},

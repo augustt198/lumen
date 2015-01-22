@@ -95,7 +95,7 @@ public enum Type {
 
     FOR_KEYWORD,
     EACH_KEYWORD,
-    IN_KEYWORD,
+    // IN_KEYWORD, disabled (clashes with System::in)
 
     BREAK_KEYWORD,
     NEXT_KEYWORD,

@@ -441,7 +441,7 @@ public class Parser {
 
     private EachStmt parseEachStatement() {
         String ident = next().expectType(IDENTIFIER).getContent();
-        next().expectType(IN_KEYWORD);
+        next().expectType(IDENTIFIER).expectContent("in");
 
         Expression expr = parseExpression();
         Body body = parseBody();
@@ -451,7 +451,7 @@ public class Parser {
 
     private ForStmt parseForStatement() {
         String ident = next().expectType(IDENTIFIER).getContent();
-        next().expectType(IN_KEYWORD);
+        next().expectType(IDENTIFIER).expectContent("in");
 
         Expression expr = parseExpression();
         if (!(expr instanceof RangeExpr))

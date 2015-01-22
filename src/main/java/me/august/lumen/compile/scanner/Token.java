@@ -27,6 +27,17 @@ public class Token {
         return this;
     }
 
+    public Token expectContent(String content) {
+        return expectContent(content, "Expected content: " + content + ", found: " + this.content);
+    }
+
+    public Token expectContent(String content, String msg) {
+        if (!this.content.equals(content)) {
+            throw new RuntimeException(msg);
+        }
+        return this;
+    }
+
     public String getContent() {
         return content;
     }
