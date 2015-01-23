@@ -12,9 +12,11 @@ public class NameResolutionTest {
 
     @Test
     public void testTypeResolution() {
-        String qualifiedName = "foo.bar.Baz";
+        String path      = "foo.bar";
+        String className = "Baz";
+        String qualified = path + '.' + className;
 
-        ImportNode[] imports = new ImportNode[]{new ImportNode(qualifiedName)};
+        ImportNode[] imports = new ImportNode[]{new ImportNode(path, className)};
 
         NameResolver resolver = new NameResolver(imports);
 
@@ -24,7 +26,7 @@ public class NameResolutionTest {
         VarStmt var = new VarStmt("x", type);
         visitor.visitType(var);
 
-        Assert.assertEquals(var.getResolvedType().getClassName(), qualifiedName);
+        Assert.assertEquals(var.getResolvedType().getClassName(), qualified);
     }
 
 }
