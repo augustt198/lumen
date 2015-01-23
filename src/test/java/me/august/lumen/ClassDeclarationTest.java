@@ -9,8 +9,8 @@ import org.junit.Test;
 public class ClassDeclarationTest {
 
     static String TEST_SIMPLE_CLASS_FILE = "/test_class.lm";
-    static String TEST_SUPER_CLASS_FILE = "/test_superclass.lm";
-    static String TEST_INTERFACES_FILE = "/test_interfaces.lm";
+    static String TEST_SUPER_CLASS_FILE  = "/test_superclass.lm";
+    static String TEST_INTERFACES_FILE   = "/test_interfaces.lm";
 
     @Test
     public void testSimpleClass() {
@@ -19,11 +19,29 @@ public class ClassDeclarationTest {
 
         ClassNode cls = program.getClassNode();
 
-        Assert.assertEquals(cls.getName(), "Foo");
-        Assert.assertArrayEquals(cls.getModifiers(), new Modifier[]{Modifier.PUBLIC});
-        Assert.assertEquals(cls.getInterfaces().length, 0);
-        Assert.assertEquals(cls.getFields().size(), 0);
-        Assert.assertEquals(cls.getMethods().size(), 0);
+        Assert.assertEquals(
+                "Expected class name to be 'Foo'",
+                "Foo", cls.getName()
+        );
+
+        Assert.assertArrayEquals(
+                "Expected class to have 'public' modifier",
+                new Modifier[]{Modifier.PUBLIC}, cls.getModifiers()
+        );
+
+        Assert.assertEquals(
+                "Expected class to implement to interfaces",
+                0, cls.getInterfaces().length
+        );
+
+        Assert.assertEquals(
+                "Expected class to have no fields",
+                0, cls.getFields().size()
+        );
+        Assert.assertEquals(
+                "Expected class to have no methods",
+                0, cls.getMethods().size()
+        );
     }
 
     @Test
@@ -34,7 +52,10 @@ public class ClassDeclarationTest {
         ClassNode cls = program.getClassNode();
 
         String type = cls.getSuperClass().getUnresolvedType().getBaseName();
-        Assert.assertEquals("Bar", type);
+        Assert.assertEquals(
+                "Expected class's superclass to be 'Bar'",
+                "Bar", type
+        );
     }
 
     @Test
@@ -46,7 +67,10 @@ public class ClassDeclarationTest {
 
         String[] expectedInterfaces = new String[]{"Bar", "Qux"};
 
-        Assert.assertArrayEquals(cls.getInterfaces(), expectedInterfaces);
+        Assert.assertArrayEquals(
+                "Expected class to implement {'Bar', 'Qux'}",
+                expectedInterfaces, cls.getInterfaces()
+        );
     }
 
 }

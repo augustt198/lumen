@@ -67,10 +67,19 @@ public class VariableResolutionTest {
         PROGRAM.accept(visitor);
 
         VariableReference var = IDENT_EXPR.getVariableReference();
-        Assert.assertTrue("Expected identifier to be local", var instanceof LocalVariable);
-        Assert.assertEquals("Expected local variable to be at index 1", 1, ((LocalVariable) var).getIndex());
+        Assert.assertTrue(
+                "Expected identifier to be local",
+                var instanceof LocalVariable
+        );
+        Assert.assertEquals(
+                "Expected local variable to be at index 1",
+                1, ((LocalVariable) var).getIndex()
+        );
 
-        Assert.assertTrue("Expected 'field' to be a class variable", FIELD_IDENT_EXPR.getVariableReference() instanceof ClassVariable);
+        Assert.assertTrue(
+                "Expected 'field' to be a class variable",
+                FIELD_IDENT_EXPR.getVariableReference() instanceof ClassVariable
+        );
     }
 
 }

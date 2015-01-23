@@ -12,8 +12,15 @@ public class TypeTest implements Opcodes {
     public void testInstructions() {
         Type type = Type.getType(String.class);
 
-        Assert.assertEquals("Expected ASTORE opcode", BytecodeUtil.storeInstruction(type), ASTORE);
-        Assert.assertEquals("Expected ALOAD opcode", BytecodeUtil.loadInstruction(type), ALOAD);
+        Assert.assertEquals(
+                "Expected ASTORE opcode",
+                ASTORE, BytecodeUtil.storeInstruction(type)
+        );
+
+        Assert.assertEquals(
+                "Expected ALOAD opcode",
+                ALOAD, BytecodeUtil.loadInstruction(type)
+        );
     }
 
 }

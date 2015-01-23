@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MethodTest {
 
-    private static final String TEST_METHOD_FILE = "/test_method.lm";
+    private static final String TEST_METHOD_FILE     = "/test_method.lm";
     private static final String TEST_STATEMENTS_FILE = "/test_statements.lm";
 
     @Test
@@ -22,18 +22,36 @@ public class MethodTest {
         ProgramNode program = Util.parse(Util.readResource(TEST_METHOD_FILE));
 
         ClassNode cls = program.getClassNode();
-        assertEquals("Expected 1 method in class", cls.getMethods().size(), 1);
+        assertEquals(
+                "Expected 1 method in class",
+                1, cls.getMethods().size()
+        );
 
         MethodNode method = cls.getMethods().get(0);
-        assertEquals("Expected one code block", method.getBody().getChildren().size(), 1);
+        assertEquals(
+                "Expected one code block",
+                1, method.getBody().getChildren().size()
+        );
 
         CodeBlock code = method.getBody().getChildren().get(0);
-        assertTrue("Expected code to be a variable declaration", code instanceof VarStmt);
+        assertTrue(
+                "Expected code to be a variable declaration",
+                code instanceof VarStmt
+        );
 
         VarStmt var = (VarStmt) code;
-        assertEquals("Expected variable name to be 'bar'", "bar", var.getName());
-        assertEquals("Expected variable type to be 'String'", "String", var.getUnresolvedType().getBaseName());
-        assertTrue("Expected variable to have default value", var.getDefaultValue() != null);
+        assertEquals(
+                "Expected variable name to be 'bar'",
+                "bar", var.getName()
+        );
+        assertEquals(
+                "Expected variable type to be 'String'",
+                "String", var.getUnresolvedType().getBaseName()
+        );
+        assertTrue(
+                "Expected variable to have default value",
+                var.getDefaultValue() != null
+        );
     }
 
     @Test
@@ -49,12 +67,18 @@ public class MethodTest {
 
     private void testIfStatement(MethodNode method, int idx) {
         CodeBlock code = method.getBody().getChildren().get(idx);
-        assertTrue("Expected if statement", code instanceof IfStmt);
+        assertTrue(
+                "Expected if statement",
+                code instanceof IfStmt
+        );
     }
 
     private void testWhileStatement(MethodNode method, int idx) {
         CodeBlock code = method.getBody().getChildren().get(idx);
-        assertTrue("Expected while statement", code instanceof WhileStmt);
+        assertTrue(
+                "Expected while statement",
+                code instanceof WhileStmt
+        );
     }
 
 }

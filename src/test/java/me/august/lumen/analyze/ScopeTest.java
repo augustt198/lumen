@@ -22,12 +22,18 @@ public class ScopeTest {
         Scope higher = new Scope(lower);
         visitor.setScope(higher);
 
-        Assert.assertEquals("Expected next index of 3", 3, visitor.nextLocalIndex());
+        Assert.assertEquals(
+                "Expected next index of 3",
+                3, visitor.nextLocalIndex()
+        );
 
         higher.setVariable("c", new LocalVariable(3, null));
         higher.setVariable("d", new LocalVariable(4, null));
 
-        Assert.assertEquals("Expected next index of 5", 5, visitor.nextLocalIndex());
+        Assert.assertEquals(
+                "Expected next index of 5",
+                5, visitor.nextLocalIndex()
+        );
     }
 
     @Test
@@ -45,12 +51,18 @@ public class ScopeTest {
         higher.setVariable("bar", new LocalVariable(2, null));
 
         VariableReference var = visitor.getScope().getVariable("foo");
-        Assert.assertTrue("Expected local variable named 'foo'", var instanceof LocalVariable);
+        Assert.assertTrue(
+                "Expected local variable named 'foo'",
+                var instanceof LocalVariable
+        );
         LocalVariable local = (LocalVariable) var;
         Assert.assertEquals(local.getIndex(), 1);
 
         var = visitor.getScope().getVariable("bar");
-        Assert.assertTrue("Expected local variable named 'bar'", var instanceof LocalVariable);
+        Assert.assertTrue(
+                "Expected local variable named 'bar'",
+                var instanceof LocalVariable
+        );
         local = (LocalVariable) var;
         Assert.assertEquals(local.getIndex(), 2);
     }

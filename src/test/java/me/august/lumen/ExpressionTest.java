@@ -14,27 +14,45 @@ public class ExpressionTest {
     public void testNumberExpression() {
         Expression expr = parseExpression("1");
 
-        Assert.assertTrue(expr instanceof NumExpr);
+        Assert.assertTrue(
+                "Expression should be a NumExpr",
+                expr instanceof NumExpr
+        );
 
-        Assert.assertTrue(expr.equals(new NumExpr(1)));
+        Assert.assertEquals(
+                "Number should be 1",
+                expr, new NumExpr(1)
+        );
     }
 
     @Test
     public void testIdentifierExpression() {
         Expression expr = parseExpression("foo");
 
-        Assert.assertTrue(expr instanceof IdentExpr);
+        Assert.assertTrue(
+                "Expression should be an IdentExpr",
+                expr instanceof IdentExpr
+        );
 
-        Assert.assertTrue(expr.equals(new IdentExpr("foo")));
+        Assert.assertEquals(
+                "Identifier should be 'foo'",
+                expr, new IdentExpr("foo")
+        );
     }
 
     @Test
     public void testUneededParens() {
         Expression expr = parseExpression("((((((1))))))");
 
-        Assert.assertTrue(expr instanceof NumExpr);
+        Assert.assertTrue(
+                "Expected expression to be a NumExpr",
+                expr instanceof NumExpr
+        );
 
-        Assert.assertTrue(expr.equals(new NumExpr(1)));
+        Assert.assertEquals(
+                "Number should be 1",
+                expr, new NumExpr(1)
+        );
     }
 
     @Test
@@ -53,7 +71,10 @@ public class ExpressionTest {
     public void testStaticFieldExpression() {
         Expression expr = parseExpression("Foo::bar");
 
-        Assert.assertTrue(expr instanceof StaticField);
+        Assert.assertTrue(
+                "Expression should be a StaticField",
+                expr instanceof StaticField
+        );
 
         StaticField field = (StaticField) expr;
         Assert.assertEquals("Foo", field.getClassName());
@@ -64,12 +85,18 @@ public class ExpressionTest {
     public void testStaticMethodExpression() {
         Expression expr = parseExpression("Foo::bar()");
 
-        Assert.assertTrue(expr instanceof StaticMethodCall);
+        Assert.assertTrue(
+                "Expression should a StaticMethodCallExpr",
+                expr instanceof StaticMethodCall
+        );
 
         StaticMethodCall method = (StaticMethodCall) expr;
         Assert.assertEquals("Foo", method.getClassName());
         Assert.assertEquals("bar", method.getMethodName());
-        Assert.assertTrue(method.getParameters().isEmpty());
+        Assert.assertTrue(
+                "Method parameters should be empty",
+                method.getParameters().isEmpty()
+        );
     }
 
     @Test
@@ -77,31 +104,72 @@ public class ExpressionTest {
         Expression expr;
 
         expr = parseExpression("foo().bar.qux");
-        Assert.assertTrue(expr instanceof IdentExpr);
-        Assert.assertTrue(((OwnedExpr) expr).getTail() instanceof MethodCallExpr);
+        Assert.assertTrue(
+                "Expression should be an IdentExpr",
+                expr instanceof IdentExpr
+        );
+        Assert.assertTrue(
+                "The identifier's tail should be a MethodCallExpr",
+                ((OwnedExpr) expr).getTail() instanceof MethodCallExpr
+        );
 
         expr = parseExpression("foo.bar.qux()");
-        Assert.assertTrue(expr instanceof MethodCallExpr);
-        Assert.assertTrue(((OwnedExpr) expr).getTail() instanceof IdentExpr);
+        Assert.assertTrue(
+                "Expression should be a MethodCallExpr",
+                expr instanceof MethodCallExpr
+        );
+
+        Assert.assertTrue(
+                "The method call's tail should be an IdentExpr",
+                ((OwnedExpr) expr).getTail() instanceof IdentExpr
+        );
     }
 
     @Test
     public void testCastExpression() {
         Expression expr = parseExpression("foo as Bar");
 
-        Assert.assertTrue(expr instanceof CastExpr);
+        Assert.assertTrue(
+                "Expression should be a CastExpr",
+                expr instanceof CastExpr
+        );
         CastExpr cast = (CastExpr) expr;
 
-        Assert.assertTrue(cast.getValue() instanceof IdentExpr);
-        Assert.assertEquals(((IdentExpr) cast.getValue()).getIdentifier(), "foo");
-        Assert.assertEquals(cast.getUnresolvedType().getBaseName(), "Bar");
+        Assert.assertTrue(
+                "Casting value should be an IdentExpr",
+                cast.getValue() instanceof IdentExpr
+        );
+        Assert.assertEquals(
+                "Identifier should be 'foo'",
+                "foo",
+                ((IdentExpr) cast.getValue()).getIdentifier()
+        );
+
+        Assert.assertEquals(
+                "Cast target type should be 'Bar'",
+                "Bar",
+                cast.getUnresolvedType().getBaseName()
+        );
     }
 
     @Test
     public void testArrayInitializerExpr() {
         Expression expr = parseExpression("int.. [1]");
 
-        Assert.assertTrue(expr instanceof ArrayInitializerExpr);
+        Assert.assertTrue(
+                "Expression should be an ArrayInitializerExpr",
+                expr instanceof ArrayInitializerExpr
+        );
+    }
+
+    @Test
+    public void testArrayAccess() {
+        Expression expr = parseExpression("foo[0]");
+
+        Assert.assertTrue(
+                "Expression should be an ArrayAccessExpr",
+                expr instanceof ArrayAccessExpr
+        );
     }
 
     @Test
@@ -109,8 +177,8 @@ public class ExpressionTest {
         Expression expr = parseExpression("1 * 2 + 3 * 4");
 
         Assert.assertTrue(
-            "Top level expression should be addition",
-            expr instanceof AddExpr
+                "Top level expression should be addition",
+                expr instanceof AddExpr
         );
     }
 
@@ -122,8 +190,8 @@ public class ExpressionTest {
         expr = parseExpression("2 / 0 rescue 10");
 
         Assert.assertTrue(
-            "Expression should be a RescueExpr",
-            expr instanceof RescueExpr
+                "Expression should be a RescueExpr",
+                expr instanceof RescueExpr
         );
 
         rescue = (RescueExpr) expr;
@@ -134,23 +202,23 @@ public class ExpressionTest {
         expr = parseExpression("2 / 0 rescue ArithmeticException -> 10");
 
         Assert.assertTrue(
-            "Expression should be a RescueExpr",
-            expr instanceof RescueExpr
+                "Expression should be a RescueExpr",
+                expr instanceof RescueExpr
         );
 
         rescue = (RescueExpr) expr;
 
         UnresolvedType expected = new UnresolvedType("ArithmeticException");
         Assert.assertEquals(
-            "Expected `ArithmeticException` type",
-            expected,
-            rescue.getUnresolvedType()
+                "Expected `ArithmeticException` type",
+                expected,
+                rescue.getUnresolvedType()
         );
     }
 
     private Expression parseExpression(String src) {
-        Lexer lexer     = new Lexer(src);
-        Parser parser   = new Parser(lexer);
+        Lexer lexer   = new Lexer(src);
+        Parser parser = new Parser(lexer);
 
         return parser.parseExpression();
     }

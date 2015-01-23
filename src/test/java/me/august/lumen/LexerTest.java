@@ -40,8 +40,14 @@ public class LexerTest {
         while (true) {
             Type type = lexer.nextToken().getType();
 
-            Assert.assertTrue("More tokens read than expected", count < expectedTypes.length);
-            Assert.assertEquals("Token mismatch", expectedTypes[count], type);
+            Assert.assertTrue(
+                    "More tokens read than expected",
+                    count < expectedTypes.length
+            );
+            Assert.assertEquals(
+                    "Token mismatch",
+                    expectedTypes[count], type
+            );
 
             if (type == EOF) break;
             count++;
@@ -59,9 +65,13 @@ public class LexerTest {
         for (int i = 0; i < literals.length; i++) {
             Token token = new Lexer(literals[i]).nextToken();
 
-            Assert.assertTrue(token instanceof NumberToken);
+            Assert.assertTrue(
+                    "Expected token to be a NumberToken",
+                    token instanceof NumberToken
+            );
+
             NumberToken numToken = (NumberToken) token;
-            Assert.assertEquals(numToken.getNumberType(), expectedClasses[i]);
+            Assert.assertEquals(expectedClasses[i], numToken.getNumberType());
         }
     }
 
@@ -78,7 +88,10 @@ public class LexerTest {
         Assert.assertEquals(Type.IMPORT_KEYWORD, lex.nextToken().getType());
         tok = lex.nextToken();
         Assert.assertEquals(Type.IMPORT_PATH, tok.getType());
-        Assert.assertTrue(tok instanceof ImportPathToken);
+        Assert.assertTrue(
+                "Expected token to be an ImportPathToken",
+                tok instanceof ImportPathToken
+        );
 
         // single-class import test
         src = "import foo.bar.qux";
@@ -87,7 +100,10 @@ public class LexerTest {
         Assert.assertEquals(Type.IMPORT_KEYWORD, lex.nextToken().getType());
         tok = lex.nextToken();
         Assert.assertEquals(Type.IMPORT_PATH, tok.getType());
-        Assert.assertTrue(tok instanceof ImportPathToken);
+        Assert.assertTrue(
+                "Expected token to be an ImportPathToken",
+                tok instanceof ImportPathToken
+        );
     }
 
 }

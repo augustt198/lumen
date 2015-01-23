@@ -26,7 +26,7 @@ public class NameResolutionTest {
         VarStmt var = new VarStmt("x", type);
         visitor.visitType(var);
 
-        Assert.assertEquals(var.getResolvedType().getClassName(), qualified);
+        Assert.assertEquals(qualified, var.getResolvedType().getClassName());
     }
 
 }
