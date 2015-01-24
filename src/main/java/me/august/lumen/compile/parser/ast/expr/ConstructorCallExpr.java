@@ -34,6 +34,9 @@ public class ConstructorCallExpr extends Typed implements Expression {
 
         Type methodType = Type.getMethodType(Type.VOID_TYPE, paramTypes);
 
+        for (Expression param : params)
+            param.generate(visitor, context);
+
         visitor.visitMethodInsn(
             Opcodes.INVOKESPECIAL,
             getResolvedType().getInternalName(),
