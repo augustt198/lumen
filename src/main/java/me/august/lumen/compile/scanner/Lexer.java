@@ -551,6 +551,8 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
 
             if (read == quote) {
                 break;
+            } else if (read == '\\') {
+                sb.append(nextEscapeSequence());
             } else {
                 sb.append((char) read);
                 endPos++;
@@ -558,6 +560,70 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         }
 
         return new StringToken(sb.toString(), (quote == '"' ? StringToken.QuoteType.DOUBLE : StringToken.QuoteType.SINGLE), startPos, endPos);
+    }
+
+    private char nextEscapeSequence() {
+        int chr = read();
+        switch (chr) {
+            case 'b':  return '\b';
+            case 't':  return '\t';
+            case 'n':  return '\n';
+            case 'f':  return '\f';
+            case 'r':  return '\f';
+            case '"':  return '\"';
+            case '\'': return '\'';
+            case '\\': return '\\';
+
+            case 'u': {
+                int hex = 0;
+                for (int i = 0; i < 4; i++) {
+                    chr = read();
+                    if (chr >= '0' && chr <= '9') {
+                        chr -= '0';
+                    } else if (chr >= 'a' && chr <= 'f') {
+                        chr -= ('a' - 10);
+                    } else if (chr >= 'A' && chr <= 'F') {
+                        chr -= ('A' - 10);
+                    } else {
+                        throw new RuntimeException("Invalid hexadecimal digit: " + (char) chr);
+                    }
+
+                    hex = hex * 16 + chr;
+                    System.out.println("hex = " + hex);
+                }
+
+                return (char) hex;
+            }
+
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7': {
+                int ord = chr - '0';
+                if (ord <= 3) {
+                    int peek = peek();
+                    if (peek >= '0' && peek <= '7') {
+                        read();
+                        ord = ord * 8 + (peek - '0');
+
+                        peek = peek();
+                        if (peek >= '0' && peek <= '7') {
+                            read();
+                            ord = ord * 8 + (peek - '0');
+                        }
+                    }
+
+                    System.out.println("ord = " + ord);
+                }
+                return (char) ord;
+            }
+            default:
+                throw new RuntimeException("Invalid start of escape sequence: " + (char) chr);
+        }
     }
 
     /**
