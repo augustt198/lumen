@@ -592,7 +592,6 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
                     }
 
                     hex = hex * 16 + chr;
-                    System.out.println("hex = " + hex);
                 }
 
                 return (char) hex;
@@ -609,18 +608,15 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
                 int ord = chr - '0';
                 if (ord <= 3) {
                     int peek = peek();
-                    if (peek >= '0' && peek <= '7') {
-                        read();
-                        ord = ord * 8 + (peek - '0');
 
-                        peek = peek();
+                    for (int i = 0; i < 2; i++) {
                         if (peek >= '0' && peek <= '7') {
                             read();
                             ord = ord * 8 + (peek - '0');
+                            peek = peek();
                         }
                     }
 
-                    System.out.println("ord = " + ord);
                 }
                 return (char) ord;
             }
