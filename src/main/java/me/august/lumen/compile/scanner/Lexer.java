@@ -559,7 +559,10 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             }
         }
 
-        return new StringToken(sb.toString(), (quote == '"' ? StringToken.QuoteType.DOUBLE : StringToken.QuoteType.SINGLE), startPos, endPos);
+        StringToken.QuoteType type = quote == '"' ?
+                StringToken.QuoteType.DOUBLE : StringToken.QuoteType.SINGLE;
+
+        return new StringToken(sb.toString(), type, startPos, endPos);
     }
 
     private char nextEscapeSequence() {
