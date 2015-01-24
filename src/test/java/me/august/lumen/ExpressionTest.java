@@ -1,9 +1,7 @@
 package me.august.lumen;
 
-import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
-import me.august.lumen.compile.scanner.Lexer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.objectweb.asm.Type;
@@ -12,7 +10,7 @@ public class ExpressionTest {
 
     @Test
     public void testNumberExpression() {
-        Expression expr = parseExpression("1");
+        Expression expr = Util.parseExpression("1");
 
         Assert.assertTrue(
                 "Expression should be a NumExpr",
@@ -27,7 +25,7 @@ public class ExpressionTest {
 
     @Test
     public void testIdentifierExpression() {
-        Expression expr = parseExpression("foo");
+        Expression expr = Util.parseExpression("foo");
 
         Assert.assertTrue(
                 "Expression should be an IdentExpr",
@@ -42,7 +40,7 @@ public class ExpressionTest {
 
     @Test
     public void testUneededParens() {
-        Expression expr = parseExpression("((((((1))))))");
+        Expression expr = Util.parseExpression("((((((1))))))");
 
         Assert.assertTrue(
                 "Expected expression to be a NumExpr",
@@ -57,7 +55,7 @@ public class ExpressionTest {
 
     @Test
     public void testTernaryExpression() {
-        Expression expr = parseExpression("foo ? bar : baz");
+        Expression expr = Util.parseExpression("foo ? bar : baz");
 
         Assert.assertTrue(expr instanceof TernaryExpr);
 
@@ -69,7 +67,7 @@ public class ExpressionTest {
 
     @Test
     public void testStaticFieldExpression() {
-        Expression expr = parseExpression("Foo::bar");
+        Expression expr = Util.parseExpression("Foo::bar");
 
         Assert.assertTrue(
                 "Expression should be a StaticField",
@@ -83,7 +81,7 @@ public class ExpressionTest {
 
     @Test
     public void testStaticMethodExpression() {
-        Expression expr = parseExpression("Foo::bar()");
+        Expression expr = Util.parseExpression("Foo::bar()");
 
         Assert.assertTrue(
                 "Expression should a StaticMethodCallExpr",
@@ -103,7 +101,7 @@ public class ExpressionTest {
     public void testOwnedExpressions() {
         Expression expr;
 
-        expr = parseExpression("foo().bar.qux");
+        expr = Util.parseExpression("foo().bar.qux");
         Assert.assertTrue(
                 "Expression should be an IdentExpr",
                 expr instanceof IdentExpr
@@ -113,7 +111,7 @@ public class ExpressionTest {
                 ((OwnedExpr) expr).getTail() instanceof MethodCallExpr
         );
 
-        expr = parseExpression("foo.bar.qux()");
+        expr = Util.parseExpression("foo.bar.qux()");
         Assert.assertTrue(
                 "Expression should be a MethodCallExpr",
                 expr instanceof MethodCallExpr
@@ -127,7 +125,7 @@ public class ExpressionTest {
 
     @Test
     public void testCastExpression() {
-        Expression expr = parseExpression("foo as Bar");
+        Expression expr = Util.parseExpression("foo as Bar");
 
         Assert.assertTrue(
                 "Expression should be a CastExpr",
@@ -154,7 +152,7 @@ public class ExpressionTest {
 
     @Test
     public void testArrayInitializerExpr() {
-        Expression expr = parseExpression("int.. [1]");
+        Expression expr = Util.parseExpression("int.. [1]");
 
         Assert.assertTrue(
                 "Expression should be an ArrayInitializerExpr",
@@ -164,7 +162,7 @@ public class ExpressionTest {
 
     @Test
     public void testArrayAccess() {
-        Expression expr = parseExpression("foo[0]");
+        Expression expr = Util.parseExpression("foo[0]");
 
         Assert.assertTrue(
                 "Expression should be an ArrayAccessExpr",
@@ -174,7 +172,7 @@ public class ExpressionTest {
 
     @Test
     public void testPrecedence() {
-        Expression expr = parseExpression("1 * 2 + 3 * 4");
+        Expression expr = Util.parseExpression("1 * 2 + 3 * 4");
 
         Assert.assertTrue(
                 "Top level expression should be addition",
@@ -187,7 +185,7 @@ public class ExpressionTest {
         Expression expr;
         RescueExpr rescue;
 
-        expr = parseExpression("2 / 0 rescue 10");
+        expr = Util.parseExpression("2 / 0 rescue 10");
 
         Assert.assertTrue(
                 "Expression should be a RescueExpr",
@@ -199,7 +197,7 @@ public class ExpressionTest {
         Assert.assertEquals("Expected `Exception` type", Type.getType(Exception.class), rescue.getResolvedType());
 
 
-        expr = parseExpression("2 / 0 rescue ArithmeticException -> 10");
+        expr = Util.parseExpression("2 / 0 rescue ArithmeticException -> 10");
 
         Assert.assertTrue(
                 "Expression should be a RescueExpr",
@@ -216,11 +214,5 @@ public class ExpressionTest {
         );
     }
 
-    private Expression parseExpression(String src) {
-        Lexer lexer   = new Lexer(src);
-        Parser parser = new Parser(lexer);
-
-        return parser.parseExpression();
-    }
 
 }

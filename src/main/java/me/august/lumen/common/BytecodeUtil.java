@@ -154,6 +154,15 @@ public final class BytecodeUtil implements Opcodes {
         return OPCODES.getOrDefault(name, -1);
     }
 
+    public static String toOpcodeName(int opcode) {
+        for (Map.Entry<String, Integer> entry : OPCODES.entrySet()) {
+            if (entry.getValue() == opcode)
+                return entry.getKey();
+        }
+
+        return null;
+    }
+
     public static int fromAccName(String name) {
         return ACC_MODS.getOrDefault(name, -1);
     }

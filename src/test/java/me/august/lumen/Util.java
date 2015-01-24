@@ -2,6 +2,7 @@ package me.august.lumen;
 
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.ProgramNode;
+import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.scanner.Lexer;
 
 import java.io.IOException;
@@ -31,6 +32,14 @@ public class Util {
         Lexer lexer   = new Lexer(src);
         Parser parser = new Parser(lexer);
         return parser.parseMain();
+    }
+
+
+    public static Expression parseExpression(String src) {
+        Lexer lexer   = new Lexer(src);
+        Parser parser = new Parser(lexer);
+
+        return parser.parseExpression();
     }
 
 }
