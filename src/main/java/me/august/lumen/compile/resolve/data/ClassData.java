@@ -1,6 +1,7 @@
 package me.august.lumen.compile.resolve.data;
 
 import me.august.lumen.common.Modifier;
+import me.august.lumen.compile.resolve.lookup.ClassLookup;
 import org.objectweb.asm.*;
 
 import java.io.IOException;
@@ -41,10 +42,13 @@ public class ClassData extends BaseData {
 
     public static ClassData fromClass(Class<?> cls) {
         ClassData data = new ClassData(cls.getName(), Modifier.fromAccess(cls.getModifiers()));
-        data.superClass = cls.getSuperclass().getName();
+
+        if (cls.getSuperclass() != null)
+            data.superClass = cls.getSuperclass().getName();
+
         String[] interfaces = new String[cls.getInterfaces().length];
         for (int i = 0; i < interfaces.length; i++) {
-            interfaces[i] = cls.getInterfaces()[i].toString();
+            interfaces[i] = cls.getInterfaces()[i].getName();
         }
         data.interfaces = interfaces;
 
@@ -68,6 +72,30 @@ public class ClassData extends BaseData {
             data.getFields().add(fieldData);
         }
         return data;
+    }
+
+    public boolean isAssignableTo(String type, ClassLookup lookup) {
+        if (type.equals(getName()))
+            return true;
+
+        if (superClass != null) {
+            ClassData supClass = lookup.lookup(superClass);
+            if (supClass != null) {
+                if (supClass.isAssignableTo(type, lookup))
+                    return true;
+            }
+        }
+
+
+        for (String itf : interfaces) {
+            ClassData itfClass = lookup.lookup(itf);
+            if (itf != null) {
+                if (itfClass.isAssignableTo(type, lookup))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
