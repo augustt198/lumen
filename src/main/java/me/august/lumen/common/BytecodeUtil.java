@@ -1,6 +1,5 @@
 package me.august.lumen.common;
 
-import me.august.lumen.StringUtil;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import org.objectweb.asm.MethodVisitor;
@@ -60,92 +59,74 @@ public final class BytecodeUtil implements Opcodes {
 
     private BytecodeUtil() {}
 
-    // Use org.objectweb.asm.Type instead
-    @Deprecated
-    public static String[] splitTypes(String desc) {
-        List<String> types = new ArrayList<>();
-
-        for (int i = 0; i < desc.length(); i++) {
-            switch (desc.charAt(i)) {
-                case 'Z':
-                case 'B':
-                case 'C':
-                case 'S':
-                case 'I':
-                case 'J':
-                case 'F':
-                case 'D':
-                case 'V':
-                    types.add(desc.charAt(i) + "");
-                    break;
-                case '[':
-                case 'L':
-                    StringBuilder sb = new StringBuilder();
-                    while (desc.charAt(i) != ';') {
-                        sb.append(desc.charAt(i));
-                        i++;
-                    }
-                    types.add(sb.toString());
-                    break;
-            }
-        }
-
-        return types.toArray(new String[types.size()]);
-    }
-
-    // Use org.objectweb.asm.Type instead
-    @Deprecated
-    public static String toType(Class<?> cls) {
-        switch (cls.getName()) {
-            case "boolean":
-                return "Z";
-            case "byte":
-            case "char":
-            case "short":
-            case "int":
-            case "float":
-            case "double":
-            case "void":
-                return cls.getName().substring(0, 1).toUpperCase();
-            case "long":
-                return "J";
-            default:
-                if (cls.isArray()) {
-                    return '[' + toType(cls.getComponentType());
-                } else {
-                    return 'L' + cls.getName().replace('.', '/') + ';';
-                }
-        }
-    }
-
+    /**
+     * Gets the xSTORE instruction for the given type.
+     * @param type The type to be stored
+     * @return The xSTORE instruction for the given type
+     */
     public static int storeInstruction(Type type) {
         return type.getOpcode(ISTORE);
     }
 
+    /**
+     * Gets the xLOAD instruction for the given type.
+     * @param type The type to be loaded
+     * @return The xSTORE instruction for the given type
+     */
     public static int loadInstruction(Type type) {
         return type.getOpcode(ILOAD);
     }
 
+    /**
+     * Gets the xADD instruction for the given type.
+     * @param type The type to be added
+     * @return The xADD instruction for the given type
+     */
     public static int addInstruction(Type type) {
         return type.getOpcode(IADD);
     }
 
+    /**
+     * Gets the xSUB instruction for the given type.
+     * @param type The type to be subtracted
+     * @return The xSUB instruction for the given type
+     */
     public static int subtractInstruction(Type type) {
         return type.getOpcode(ISUB);
     }
 
+    /**
+     * Gets the xMUL instruction for the given type.
+     * @param type The type to be multiplied
+     * @return The xMUL instruction for the given type
+     */
     public static int multiplyInstruction(Type type) {
         return type.getOpcode(IMUL);
     }
 
+    /**
+     * Gets the xDIV instruction for the given type.
+     * @param type The type to be divided
+     * @return The xDIV instruction for the given type
+     */
     public static int divisionInstruction(Type type) {
         return type.getOpcode(IDIV);
     }
 
+    /**
+     * Gets the xREM instruction for the given type.
+     * @param type The type of the remainder operands
+     * @return The xREM instruction for the given type
+     */
     public static int remainderInstruction(Type type) {
         return type.getOpcode(IREM);
     }
 
+    /**
+     * Gets the xNEG instruction for the given type.
+     * @param type The type to be negated
+     * @return The xNEG instruction for the given type
+     */
     public static int negateInstruction(Type type) {
         return type.getOpcode(INEG);
     }

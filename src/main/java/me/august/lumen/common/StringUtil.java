@@ -1,4 +1,4 @@
-package me.august.lumen;
+package me.august.lumen.common;
 
 public class StringUtil {
 

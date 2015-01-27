@@ -75,14 +75,23 @@ public class ClassData extends BaseData {
     }
 
     public boolean isAssignableTo(String type, ClassLookup lookup) {
+        return isAssignableTo(type, lookup, 0) > -1;
+    }
+
+    public int assignableDistance(String type, ClassLookup lookup) {
+        return isAssignableTo(type, lookup, 0);
+    }
+
+    private int isAssignableTo(String type, ClassLookup lookup, int dist) {
         if (type.equals(getName()))
-            return true;
+            return dist;
 
         if (superClass != null) {
             ClassData supClass = lookup.lookup(superClass);
             if (supClass != null) {
-                if (supClass.isAssignableTo(type, lookup))
-                    return true;
+                int supDist = supClass.isAssignableTo(type, lookup, dist + 1);
+                if (supDist > -1)
+                    return supDist;
             }
         }
 
@@ -90,12 +99,13 @@ public class ClassData extends BaseData {
         for (String itf : interfaces) {
             ClassData itfClass = lookup.lookup(itf);
             if (itf != null) {
+                int itfDist = itfClass.isAssignableTo(type, lookup, dist + 1);
                 if (itfClass.isAssignableTo(type, lookup))
-                    return true;
+                    return itfDist;
             }
         }
 
-        return false;
+        return -1;
     }
 
     @Override
