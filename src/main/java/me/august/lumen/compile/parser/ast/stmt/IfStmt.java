@@ -8,9 +8,7 @@ import me.august.lumen.compile.codegen.Conditional;
 import me.august.lumen.compile.codegen.MethodCodeGen;
 import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.expr.Expression;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import java.util.ArrayList;

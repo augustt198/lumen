@@ -5,8 +5,14 @@ import me.august.lumen.compile.resolve.convert.types.PrimitiveWidening;
 import me.august.lumen.compile.resolve.convert.types.ReferenceWidening;
 import me.august.lumen.compile.resolve.convert.types.UnboxingConversion;
 import me.august.lumen.compile.resolve.data.ClassData;
+import me.august.lumen.compile.resolve.data.MethodData;
+import me.august.lumen.compile.resolve.data.exception.AmbiguousMethodException;
 import me.august.lumen.compile.resolve.lookup.ClassLookup;
 import org.objectweb.asm.Type;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
 import static me.august.lumen.common.BytecodeUtil.*;
 
@@ -53,6 +59,55 @@ public class Conversions {
                 cs.addStep(null);
             }
         }
+    }
+
+    public static MethodData pickMethod(Type[] types, MethodData[] methods, ClassLookup lookup)
+        throws AmbiguousMethodException {
+
+        TreeMap<Integer, List<MethodData>> subTypeRanks = new TreeMap<>();
+
+        outer:
+        for (MethodData method : methods) {
+            if (method.getParamTypes().length != types.length)
+                continue;
+
+            int rank = 0;
+            for (int i = 0; i < method.getParamTypes().length; i++) {
+                Type paramType = method.getParamTypes()[i];
+                if (paramType.getSort() != Type.OBJECT)
+                    continue outer;
+
+                ClassData actualTypeClass = lookup.lookup(types[i]);
+                if (actualTypeClass == null)
+                    continue outer;
+
+                int dist = actualTypeClass.assignableDistance(paramType, lookup);
+                if (dist > -1)
+                    rank += dist;
+                else
+                    continue outer;
+            }
+
+            List<MethodData> list = subTypeRanks.get(rank);
+            if (list == null) {
+                list = new ArrayList<>();
+                list.add(method);
+                subTypeRanks.put(rank, list);
+            } else {
+                list.add(method);
+            }
+        }
+
+        if (!subTypeRanks.isEmpty()) {
+            List<MethodData> applicable = subTypeRanks.firstEntry().getValue();
+            if (applicable.size() > 1)
+                throw new AmbiguousMethodException(applicable);
+            else
+                return applicable.get(0);
+        }
+
+        // TODO consider other types of type conversions
+        return null;
     }
 
 }

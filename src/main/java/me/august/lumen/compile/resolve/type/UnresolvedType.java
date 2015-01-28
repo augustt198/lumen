@@ -1,7 +1,7 @@
 package me.august.lumen.compile.resolve.type;
 
-import me.august.lumen.common.StringUtil;
 import me.august.lumen.common.BytecodeUtil;
+import me.august.lumen.common.StringUtil;
 import org.objectweb.asm.Type;
 
 public class UnresolvedType {
