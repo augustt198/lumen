@@ -392,10 +392,10 @@ public class Parser {
 
         Body body;
         if (accept(THEN_KEYWORD)) {
-            body = new Body(Arrays.asList(parseExpression()));
+            body = new Body(Arrays.asList(parseStatement()));
             Body elseBody = null;
             if (accept(ELSE_KEYWORD)) {
-                elseBody = new Body(Arrays.asList(parseExpression()));
+                elseBody = new Body(Arrays.asList(parseStatement()));
             }
             return new IfStmt(condition, body, new ArrayList<>(), elseBody);
         }
@@ -434,7 +434,12 @@ public class Parser {
             condition = new NotExpr(condition);
         }
 
-        Body body = parseBody();
+        Body body;
+
+        if (accept(DO_KEYWORD))
+            body = new Body(Arrays.asList(parseStatement()));
+        else
+            body = parseBody();
 
         return new WhileStmt(condition, body);
     }
@@ -444,7 +449,12 @@ public class Parser {
         next().expectType(IDENTIFIER).expectContent("in");
 
         Expression expr = parseExpression();
-        Body body = parseBody();
+
+        Body body;
+        if (accept(DO_KEYWORD))
+            body = new Body(Arrays.asList(parseStatement()));
+        else
+            body = parseBody();
 
         return new EachStmt(ident, expr, body);
     }
@@ -458,7 +468,12 @@ public class Parser {
             throw new RuntimeException("Expected range");
 
         RangeExpr range = (RangeExpr) expr;
-        Body body = parseBody();
+
+        Body body;
+        if (accept(DO_KEYWORD))
+            body = new Body(Arrays.asList(parseStatement()));
+        else
+            body = parseBody();
 
         return new ForStmt(ident, range, body);
     }

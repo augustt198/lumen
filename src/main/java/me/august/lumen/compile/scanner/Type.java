@@ -89,6 +89,7 @@ public enum Type {
     ELSE_KEYWORD,
 
     THEN_KEYWORD,
+    DO_KEYWORD,
 
     WHILE_KEYWORD,
     UNTIL_KEYWORD,
