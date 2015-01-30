@@ -54,6 +54,13 @@ public class DataTest {
                 "Expected Object to not be assignable to String",
                 data.isAssignableTo("java.lang.String", deps)
         );
+
+        data = ClassData.fromClass(CharSequence.class);
+
+        Assert.assertTrue(
+                "Expected CharSequence to be assignable to Object",
+                data.isAssignableTo("java.lang.Object", deps)
+        );
     }
 
 }

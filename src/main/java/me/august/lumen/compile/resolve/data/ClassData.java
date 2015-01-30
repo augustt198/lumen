@@ -93,8 +93,15 @@ public class ClassData extends BaseData {
         if (type.equals(getName()))
             return dist;
 
-        if (superClass != null) {
-            ClassData supClass = lookup.lookup(superClass);
+        String sup;
+        if (isInterface() && superClass == null) {
+            sup = Object.class.getName();
+        } else {
+            sup = superClass;
+        }
+
+        if (sup != null) {
+            ClassData supClass = lookup.lookup(sup);
             if (supClass != null) {
                 int supDist = supClass.isAssignableTo(type, lookup, dist + 1);
                 if (supDist > -1)
@@ -156,6 +163,13 @@ public class ClassData extends BaseData {
         }
 
         return found;
+    }
+
+    public boolean isInterface() {
+        for (Modifier mod : modifiers)
+            if (mod == Modifier.INTERFACE) return true;
+
+        return false;
     }
 
     private static class ClassAnalyzer extends ClassVisitor {

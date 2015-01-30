@@ -13,6 +13,8 @@ public enum Modifier {
     FINAL(0x0010),
 
     STATIC(0x0008),
+
+    INTERFACE(0x0200),
     ABSTRACT(0x0400),
 
     VOLATILE(0x0040),
