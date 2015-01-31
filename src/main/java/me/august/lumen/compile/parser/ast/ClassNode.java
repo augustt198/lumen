@@ -1,6 +1,6 @@
 package me.august.lumen.compile.parser.ast;
 
-import me.august.lumen.common.Modifier;
+import me.august.lumen.common.ModifierSet;
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.codegen.BuildContext;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ClassNode implements ClassCodeGen, VisitorConsumer {
 
-    private Modifier[] modifiers;
+    private ModifierSet modifiers;
     private String name;
     private Typed superClass;
     private String[] interfaces;
@@ -23,7 +23,7 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
     private List<FieldNode> fields = new ArrayList<>();
     private List<MethodNode> methods = new ArrayList<>();
 
-    public ClassNode(String name, Typed superClass, String[] interfaces, Modifier... modifiers) {
+    public ClassNode(String name, Typed superClass, String[] interfaces, ModifierSet modifiers) {
         this.name       = name;
         this.superClass = superClass;
         this.interfaces = interfaces;
@@ -34,7 +34,7 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
     public void generate(ClassVisitor visitor, BuildContext context) {
         visitor.visit(
             context.classVersion(),
-            Modifier.compose(modifiers),
+            modifiers.getValue(),
             name,
             null,
             superClass.getResolvedType().getInternalName(),
@@ -81,7 +81,7 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
     @Override
     public String toString() {
         return "ClassNode{" +
-            "modifiers=" + Arrays.toString(modifiers) +
+            "modifiers=" + modifiers +
             ", name='" + name + '\'' +
             ", superClass='" + superClass + '\'' +
             ", interfaces=" + Arrays.toString(interfaces) +
@@ -98,7 +98,7 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
         return methods;
     }
 
-    public Modifier[] getModifiers() {
+    public ModifierSet getModifiers() {
         return modifiers;
     }
 

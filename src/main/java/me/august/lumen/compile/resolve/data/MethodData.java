@@ -1,6 +1,6 @@
 package me.august.lumen.compile.resolve.data;
 
-import me.august.lumen.common.Modifier;
+import me.august.lumen.common.ModifierSet;
 import org.objectweb.asm.Type;
 
 import java.util.Arrays;
@@ -12,7 +12,7 @@ public class MethodData extends BaseData {
     private Type returnType;
     private Type[] paramTypes;
 
-    public MethodData(String name, Type returnType, Type[] paramTypes, Modifier... modifiers) {
+    public MethodData(String name, Type returnType, Type[] paramTypes, ModifierSet modifiers) {
         super(name, modifiers);
         this.returnType = returnType;
         this.paramTypes = paramTypes;

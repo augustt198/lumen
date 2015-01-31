@@ -1,6 +1,6 @@
 package me.august.lumen.compile.parser.ast;
 
-import me.august.lumen.common.Modifier;
+import me.august.lumen.common.ModifierSet;
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.codegen.BuildContext;
@@ -17,13 +17,13 @@ import java.util.List;
 public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
 
     private String name;
-    private Modifier[] modifiers;
+    private ModifierSet modifiers;
 
     private List<Parameter> parameters;
 
     private Body body;
 
-    public MethodNode(String name, UnresolvedType returnType, List<Parameter> parameters, Modifier... modifiers) {
+    public MethodNode(String name, UnresolvedType returnType, List<Parameter> parameters, ModifierSet modifiers) {
         super(returnType);
         this.name = name;
         this.parameters = parameters;
@@ -43,7 +43,7 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
         Type[] paramTypes = parameters.stream().map(Parameter::getResolvedType).toArray(Type[]::new);
 
             MethodVisitor method = visitor.visitMethod(
-                Modifier.compose(modifiers), name, // access modifier
+                modifiers.getValue(), name, // access modifier
                 Type.getMethodType(returnType, paramTypes).getDescriptor(), // method descriptor
                 null, null // signature (generics), exceptions
             );
@@ -60,10 +60,7 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
     }
 
     public boolean isStatic() {
-        for (Modifier mod : modifiers) {
-            if (mod == Modifier.STATIC) return true;
-        }
-        return false;
+        return modifiers.isStatic();
     }
 
     @Override
@@ -87,11 +84,11 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
         this.name = name;
     }
 
-    public Modifier[] getModifiers() {
+    public ModifierSet getModifiers() {
         return modifiers;
     }
 
-    public void setModifiers(Modifier[] modifiers) {
+    public void setModifiers(ModifierSet modifiers) {
         this.modifiers = modifiers;
     }
 

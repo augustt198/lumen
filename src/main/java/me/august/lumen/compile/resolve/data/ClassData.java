@@ -1,6 +1,6 @@
 package me.august.lumen.compile.resolve.data;
 
-import me.august.lumen.common.Modifier;
+import me.august.lumen.common.ModifierSet;
 import me.august.lumen.compile.resolve.lookup.ClassLookup;
 import org.objectweb.asm.*;
 
@@ -28,7 +28,7 @@ public class ClassData extends BaseData {
     String superClass;
     String[] interfaces;
 
-    public ClassData(String name, Modifier... modifiers) {
+    public ClassData(String name, ModifierSet modifiers) {
         super(name, modifiers);
     }
 
@@ -41,7 +41,7 @@ public class ClassData extends BaseData {
     }
 
     public static ClassData fromClass(Class<?> cls) {
-        ClassData data = new ClassData(cls.getName(), Modifier.fromAccess(cls.getModifiers()));
+        ClassData data = new ClassData(cls.getName(), new ModifierSet(cls.getModifiers()));
 
         if (cls.getSuperclass() != null)
             data.superClass = cls.getSuperclass().getName();
@@ -58,14 +58,14 @@ public class ClassData extends BaseData {
             for (int i = 0; i < paramsTypes.length; i++) {
                 paramsTypes[i] = Type.getType(method.getParameterTypes()[i]);
             }
-            Modifier[] mods = Modifier.fromAccess(method.getModifiers());
+            ModifierSet mods = new ModifierSet(method.getModifiers());
             MethodData methodData = new MethodData(method.getName(), returnType, paramsTypes, mods);
 
             data.getMethods().add(methodData);
         }
 
         for (Field field : cls.getDeclaredFields()) {
-            Modifier[] mods = Modifier.fromAccess(field.getModifiers());
+            ModifierSet mods = new ModifierSet(field.getModifiers());
             Type type = Type.getType(field.getType());
             FieldData fieldData = new FieldData(field.getName(), type, mods);
 
@@ -166,10 +166,7 @@ public class ClassData extends BaseData {
     }
 
     public boolean isInterface() {
-        for (Modifier mod : modifiers)
-            if (mod == Modifier.INTERFACE) return true;
-
-        return false;
+        return modifiers.isInterface();
     }
 
     private static class ClassAnalyzer extends ClassVisitor {
@@ -181,7 +178,7 @@ public class ClassData extends BaseData {
 
         @Override
         public void visit(int version, int access, String name, String signature, String sup, String[] impls) {
-            Modifier[] modifiers = Modifier.fromAccess(access);
+            ModifierSet modifiers = new ModifierSet(access);
             classData = new ClassData(name, modifiers);
             classData.version    = version;
             classData.superClass = sup;
@@ -194,7 +191,7 @@ public class ClassData extends BaseData {
             Type returnType = methodType.getReturnType();
             Type[] types    = methodType.getArgumentTypes();
 
-            MethodData method = new MethodData(name, returnType, types, Modifier.fromAccess(access));
+            MethodData method = new MethodData(name, returnType, types, new ModifierSet(access));
             classData.methods.add(method);
 
             return super.visitMethod(access, name, desc, sig, exs);
@@ -203,7 +200,7 @@ public class ClassData extends BaseData {
         @Override
         public FieldVisitor visitField(int access, String name, String desc, String sig, Object val) {
             Type type = Type.getType(desc);
-            FieldData field = new FieldData(name, type, Modifier.fromAccess(access));
+            FieldData field = new FieldData(name, type, new ModifierSet(access));
             classData.fields.add(field);
             return super.visitField(access, name, desc, sig, val);
         }

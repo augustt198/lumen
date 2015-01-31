@@ -1,6 +1,7 @@
 package me.august.lumen;
 
 import me.august.lumen.common.Modifier;
+import me.august.lumen.common.ModifierSet;
 import me.august.lumen.compile.parser.ast.ClassNode;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import org.junit.Assert;
@@ -24,9 +25,9 @@ public class ClassDeclarationTest {
                 "Foo", cls.getName()
         );
 
-        Assert.assertArrayEquals(
+        Assert.assertEquals(
                 "Expected class to have 'public' modifier",
-                new Modifier[]{Modifier.PUBLIC}, cls.getModifiers()
+                new ModifierSet(Modifier.PUBLIC), cls.getModifiers()
         );
 
         Assert.assertEquals(

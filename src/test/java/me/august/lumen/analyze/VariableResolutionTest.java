@@ -1,5 +1,6 @@
 package me.august.lumen.analyze;
 
+import me.august.lumen.common.ModifierSet;
 import me.august.lumen.compile.analyze.VariableVisitor;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
@@ -36,16 +37,16 @@ public class VariableResolutionTest {
      */
     static {
         Typed supType = new Typed(UnresolvedType.OBJECT_TYPE);
-        ClassNode cls = new ClassNode("Foo", supType, new String[0]);
+        ClassNode cls = new ClassNode("Foo", supType, new String[0], new ModifierSet());
         PROGRAM = new ProgramNode(new ImportNode[0], cls);
 
         UnresolvedType type;
 
         type = new UnresolvedType("boolean");
-        cls.getFields().add(new FieldNode("field", type));
+        cls.getFields().add(new FieldNode("field", type, new ModifierSet()));
 
         type = UnresolvedType.VOID_TYPE;
-        MethodNode method = new MethodNode("foo", type, new ArrayList<>());
+        MethodNode method = new MethodNode("foo", type, new ArrayList<>(), new ModifierSet());
 
         Body body = new Body();
 

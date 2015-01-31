@@ -1,13 +1,13 @@
 package me.august.lumen.compile.resolve.data;
 
-import me.august.lumen.common.Modifier;
+import me.august.lumen.common.ModifierSet;
 
 public class BaseData {
 
     protected String name;
-    protected Modifier[] modifiers;
+    protected ModifierSet modifiers;
 
-    public BaseData(String name, Modifier... modifiers) {
+    public BaseData(String name, ModifierSet modifiers) {
         this.name = name;
         this.modifiers = modifiers;
     }
@@ -16,7 +16,7 @@ public class BaseData {
         return name;
     }
 
-    public Modifier[] getModifiers() {
+    public ModifierSet getModifiers() {
         return modifiers;
     }
 

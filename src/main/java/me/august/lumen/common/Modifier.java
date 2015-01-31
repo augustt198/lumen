@@ -5,10 +5,10 @@ import java.util.List;
 
 public enum Modifier {
 
+    PACKAGE_PRIVATE(0x0000),
     PUBLIC(0x0001),
     PRIVATE(0x0002),
     PROTECTED(0x004),
-    PACKAGE_PRIVATE(0x0000),
 
     FINAL(0x0010),
 
@@ -21,7 +21,7 @@ public enum Modifier {
     SYNCHRONIZED(0x0020),
     NATIVE(0x0100);
 
-    private int value;
+    public final int value;
 
     Modifier(int value) {
         this.value = value;
@@ -46,9 +46,12 @@ public enum Modifier {
                 modifiers.add(mod);
             }
         }
-        if (modifiers.contains(PRIVATE) || modifiers.contains(PROTECTED)) {
+
+        if ((access & PRIVATE.value) != 0
+                || (access & PROTECTED.value) != 0
+                || (access & PUBLIC.value) != 0)
             modifiers.remove(PACKAGE_PRIVATE);
-        }
+
         return modifiers.toArray(new Modifier[modifiers.size()]);
     }
 }

@@ -1,6 +1,7 @@
 package me.august.lumen.compile.parser;
 
 import me.august.lumen.common.Modifier;
+import me.august.lumen.common.ModifierSet;
 import me.august.lumen.compile.parser.ast.*;
 import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.parser.ast.stmt.*;
@@ -138,7 +139,9 @@ public class Parser {
         String[] interfaces = parseInterfaces();
 
         next().expectType(L_BRACE); // expect {
-        ClassNode cls = new ClassNode(name, superClass, interfaces, mod);
+
+        ModifierSet modifiers = new ModifierSet(mod);
+        ClassNode cls = new ClassNode(name, superClass, interfaces, modifiers);
 
         next();
         while (current.getType() != R_BRACE) {
@@ -158,18 +161,26 @@ public class Parser {
      * @param token The current token
      */
     private void parseClassFieldOrMethod(ClassNode cls, Token token) {
-        List<Modifier> modList = new ArrayList<>();
+        ModifierSet modifiers = new ModifierSet();
+
+        boolean hasAccMod = false;
         while (token.getType().hasAttribute(Attribute.ACC_MOD)) {
-            modList.add(token.getType().toModifier());
+            Modifier mod = token.getType().toModifier();
+            if (mod == Modifier.PRIVATE || mod == Modifier.PUBLIC ||
+                    mod == Modifier.PROTECTED || mod == Modifier.PACKAGE_PRIVATE)
+                hasAccMod = true;
+            modifiers.add(mod);
             token = next();
         }
-        Modifier[] mods = modList.toArray(new Modifier[modList.size()]);
+
+        if (!hasAccMod)
+            modifiers.setPublic(true);
 
         if (token.getType() == IDENTIFIER) {
-            cls.getFields().add(parseField(token, mods));
+            cls.getFields().add(parseField(token, modifiers));
         } else if (token.getType() == DEF_KEYWORD) {
             next();
-            cls.getMethods().add(parseMethod(mods));
+            cls.getMethods().add(parseMethod(modifiers));
         }
     }
 
@@ -182,7 +193,7 @@ public class Parser {
      * @param mods  The field's access modifiers
      * @return The field AST node
      */
-    private FieldNode parseField(Token token, Modifier[] mods) {
+    private FieldNode parseField(Token token, ModifierSet mods) {
         String name = token.expectType(IDENTIFIER).getContent();
         next().expectType(COLON);
 
@@ -210,7 +221,7 @@ public class Parser {
      * @param mods The method's access modifiers
      * @return The method AST node
      */
-    private MethodNode parseMethod(Modifier[] mods) {
+    private MethodNode parseMethod(ModifierSet mods) {
         String name = current.expectType(IDENTIFIER).getContent();
 
         UnresolvedType type;
@@ -510,7 +521,7 @@ public class Parser {
     /**
      * Parses a rescue expression:
      * ternary ["rescue" rescue]
-     * @return
+     * @return An expression
      */
     private Expression parseRescue() {
         Expression expr = parseTernary();

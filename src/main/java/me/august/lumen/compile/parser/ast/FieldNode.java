@@ -1,21 +1,19 @@
 package me.august.lumen.compile.parser.ast;
 
-import me.august.lumen.common.Modifier;
+import me.august.lumen.common.ModifierSet;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.ClassCodeGen;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.ClassVisitor;
 
-import java.util.Arrays;
-
 public class FieldNode extends Typed implements ClassCodeGen {
 
     private String name;
-    private Modifier[] modifiers;
+    private ModifierSet modifiers;
     private Expression defaultValue;
 
-    public FieldNode(String name, UnresolvedType type, Modifier... modifiers) {
+    public FieldNode(String name, UnresolvedType type, ModifierSet modifiers) {
         super(type);
         this.name = name;
         this.modifiers = modifiers;
@@ -33,7 +31,7 @@ public class FieldNode extends Typed implements ClassCodeGen {
         return name;
     }
 
-    public Modifier[] getModifiers() {
+    public ModifierSet getModifiers() {
         return modifiers;
     }
 
@@ -41,7 +39,7 @@ public class FieldNode extends Typed implements ClassCodeGen {
     public void generate(ClassVisitor visitor, BuildContext context) {
         // `null, null` represents `signature (generics), value`
         visitor.visitField(
-            Modifier.compose(modifiers), getName(), getResolvedType().getDescriptor(),
+            modifiers.getValue(), getName(), getResolvedType().getDescriptor(),
             null, null // signature, value
         );
     }
@@ -51,7 +49,7 @@ public class FieldNode extends Typed implements ClassCodeGen {
         return "FieldNode{" +
             "name='" + name + '\'' +
             ", type='" + unresolvedType + '\'' +
-            ", modifiers=" + Arrays.toString(modifiers) +
+            ", modifiers=" + modifiers +
             ", defaultValue=" + defaultValue +
             '}';
     }
