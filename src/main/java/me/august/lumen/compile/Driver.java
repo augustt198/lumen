@@ -7,8 +7,8 @@ import me.august.lumen.compile.error.SourcePositionProvider;
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.resolve.LumenTypeVisitor;
-import me.august.lumen.compile.resolve.PopInstructionVisitor;
 import me.august.lumen.compile.resolve.ResolvingVisitor;
+import me.august.lumen.compile.resolve.TopLevelStatementMarker;
 import me.august.lumen.compile.resolve.impl.NameResolver;
 import me.august.lumen.compile.resolve.lookup.DependencyManager;
 import me.august.lumen.compile.scanner.Lexer;
@@ -65,7 +65,7 @@ public class Driver {
         LumenTypeVisitor typeVisitor = new LumenTypeVisitor(resolver, deps, context);
         program.accept(typeVisitor);
 
-        program.accept(new PopInstructionVisitor());
+        program.accept(new TopLevelStatementMarker());
 
         return program;
     }

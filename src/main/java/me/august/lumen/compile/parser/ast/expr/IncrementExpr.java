@@ -4,14 +4,13 @@ import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.analyze.var.VariableReference;
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.parser.ast.Popable;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 // We're pretending to use the POP instruction, because
 // the same rules apply to incrementing.
-public class IncrementExpr implements Expression, Popable {
+public class IncrementExpr implements Expression {
 
     public enum Op {
         INC(1), DEC(-1);
@@ -80,13 +79,8 @@ public class IncrementExpr implements Expression, Popable {
     }
 
     @Override
-    public void shouldPop(boolean pop) {
-        shouldGen = !pop;
-    }
-
-    @Override
-    public boolean shouldPop() {
-        return shouldGen;
+    public void markAsTopLevelStatement(boolean flag) {
+        shouldGen = !flag;
     }
 
     @Override

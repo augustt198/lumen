@@ -2,13 +2,12 @@ package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.compile.analyze.method.MethodReference;
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.parser.ast.Popable;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 import java.util.List;
 
-public class MethodCallExpr implements OwnedExpr, Popable {
+public class MethodCallExpr implements OwnedExpr {
 
     private String identifier;
     private List<Expression> params;
@@ -76,13 +75,8 @@ public class MethodCallExpr implements OwnedExpr, Popable {
     }
 
     @Override
-    public void shouldPop(boolean pop) {
-        this.pop = pop;
-    }
-
-    @Override
-    public boolean shouldPop() {
-        return pop;
+    public void markAsTopLevelStatement(boolean flag) {
+        this.pop = flag;
     }
 
     @Override

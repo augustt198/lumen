@@ -2,7 +2,6 @@ package me.august.lumen.compile.parser.ast.expr;
 
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.MethodCodeGen;
-import me.august.lumen.compile.parser.ast.Popable;
 import me.august.lumen.compile.parser.ast.Typed;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.MethodVisitor;
@@ -11,7 +10,7 @@ import org.objectweb.asm.Type;
 
 import java.util.List;
 
-public class StaticMethodCall extends Typed implements Expression, Popable {
+public class StaticMethodCall extends Typed implements Expression {
 
     private String methodName;
 
@@ -62,7 +61,7 @@ public class StaticMethodCall extends Typed implements Expression, Popable {
             arg.generate(visitor, context);
 
         ref.generate(visitor, context);
-        if (shouldPop())
+        if (pop)
             visitor.visitInsn(Opcodes.POP);
     }
 
@@ -77,13 +76,8 @@ public class StaticMethodCall extends Typed implements Expression, Popable {
     }
 
     @Override
-    public void shouldPop(boolean pop) {
-        this.pop = pop;
-    }
-
-    @Override
-    public boolean shouldPop() {
-        return pop;
+    public void markAsTopLevelStatement(boolean flag) {
+        this.pop = flag;
     }
 
     @Override
