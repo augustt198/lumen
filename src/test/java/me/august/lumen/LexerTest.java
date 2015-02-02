@@ -106,4 +106,18 @@ public class LexerTest {
         );
     }
 
+    @Test
+    public void testTokenPositioning() {
+        String src = "ident \"string\" ++ () [] {} - + ! * / %";
+        Lexer  lex = new Lexer(src);
+
+        while (true) {
+            Token tok = lex.nextToken();
+            System.out.println(tok.getType().name() + ": " + tok.getStart() + ".." + tok.getEnd());
+
+            if (tok.getType() == Type.EOF)
+                break;
+        }
+    }
+
 }

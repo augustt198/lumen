@@ -1,7 +1,7 @@
 package me.august.lumen.compile.codegen;
 
 import me.august.lumen.compile.error.SourceException;
-import me.august.lumen.compile.error.SourcePositionProvider;
+import me.august.lumen.compile.scanner.pos.SourcePositionProvider;
 
 import java.util.List;
 

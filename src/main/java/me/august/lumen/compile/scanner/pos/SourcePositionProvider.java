@@ -1,4 +1,4 @@
-package me.august.lumen.compile.error;
+package me.august.lumen.compile.scanner.pos;
 
 public interface SourcePositionProvider {
 

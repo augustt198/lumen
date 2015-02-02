@@ -3,7 +3,7 @@ package me.august.lumen.compile;
 import me.august.lumen.compile.analyze.VariableVisitor;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.error.SourceException;
-import me.august.lumen.compile.error.SourcePositionProvider;
+import me.august.lumen.compile.scanner.pos.SourcePositionProvider;
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.resolve.LumenTypeVisitor;

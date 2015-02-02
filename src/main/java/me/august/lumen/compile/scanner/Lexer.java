@@ -3,7 +3,7 @@ package me.august.lumen.compile.scanner;
 import me.august.lumen.common.Chars;
 import me.august.lumen.compile.Driver;
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.error.SourcePositionProvider;
+import me.august.lumen.compile.scanner.pos.SourcePositionProvider;
 import me.august.lumen.compile.scanner.tokens.ImportPathToken;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
 import me.august.lumen.compile.scanner.tokens.StringToken;
@@ -73,6 +73,9 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
     }
 
     private Reader reader;
+
+    private int recorder;
+
     private int pos;
     private BuildContext build;
 
@@ -94,7 +97,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
 
     /**
      * Tells the lexer to ignore the specified identifier
-     * @param identifier
+     * @param identifier The identifier to ignore
      */
     public void ignore(String identifier) {
         ignore.add(identifier);
@@ -190,6 +193,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
 
             else if (c == '#') consumeComment();
             else if (c == ' ' || c == '\r' || c == '\n' || c == '\t') {
+                recorder++;
                 continue; // ignore whitespace chars
             } else {
                 build.error("Unexpected character: " + c, this);
@@ -205,7 +209,9 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
      * @return The new token
      */
     private Token token(Type type) {
-        return new Token(null, pos, pos + 1, type);
+        int start = recorder;
+        recorder = pos;
+        return new Token(null, start, pos, type);
     }
 
     /**
@@ -241,20 +247,15 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
      * token if the identifier is defined in the KEYWORDS map
      */
     private Token nextIdent(char firstChar) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(firstChar);
-
-        int startPos = pos;
-        sb.append(ident());
-        int endPos = pos;
-
-        String ident = sb.toString();
+        String ident = String.valueOf(firstChar) + ident();
 
         if (ignore.contains(ident)) {
             return nextToken();
         }
 
-        Token token = new Token(ident, startPos, endPos, null);
+        int startPos = recorder;
+        recorder = pos;
+        Token token = new Token(ident, startPos, pos, null);
         Type type = KEYWORDS.get(ident);
         if (type == null) {
             type = IDENTIFIER;
@@ -543,9 +544,6 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
     private Token nextString(char quote) {
         StringBuilder sb = new StringBuilder();
 
-        int startPos = pos;
-        int endPos = pos;
-
         while (true) {
             int read = read();
             if (read == -1) throw new RuntimeException("Unexpected EOF in String literal");
@@ -556,14 +554,16 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
                 sb.append(nextEscapeSequence());
             } else {
                 sb.append((char) read);
-                endPos++;
             }
         }
+
+        int startPos = recorder;
+        recorder = pos;
 
         StringToken.QuoteType type = quote == '"' ?
                 StringToken.QuoteType.DOUBLE : StringToken.QuoteType.SINGLE;
 
-        return new StringToken(sb.toString(), type, startPos, endPos);
+        return new StringToken(sb.toString(), type, startPos, pos);
     }
 
     private char nextEscapeSequence() {
@@ -824,11 +824,11 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
     /**
      * The current reading position plus one
      *
-     * @return The current reading position plus one
+     * @return The current reading position
      */
     @Override
     public int getEnd() {
-        return pos + 1;
+        return pos;
     }
 
     /**
