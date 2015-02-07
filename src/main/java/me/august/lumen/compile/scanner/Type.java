@@ -74,59 +74,76 @@ public enum Type {
     IMPORT_PATH,
 
     // keywords
-    DEF_KEYWORD,
-    IMPORT_KEYWORD,
-    CLASS_KEYWORD,
-    STATIC_KEYWORD(Attribute.ACC_MOD),
+    DEF_KEYWORD("def"),
+    IMPORT_KEYWORD("import"),
+    CLASS_KEYWORD("class"),
+    STATIC_KEYWORD("stc", Attribute.ACC_MOD),
 
     INSTANCEOF_KEYWORD,
     NOT_INSTANCEOF_KEYWORD,
 
-    VAR_KEYWORD,    // declare new local variable
+    VAR_KEYWORD("var"),    // declare new local variable
 
-    IF_KEYWORD,
-    UNLESS_KEYWORD,
-    ELSE_KEYWORD,
+    IF_KEYWORD("if"),
+    UNLESS_KEYWORD("unless"),
+    ELSE_KEYWORD("else"),
 
-    THEN_KEYWORD,
-    DO_KEYWORD,
+    THEN_KEYWORD("then"),
+    DO_KEYWORD("do"),
 
-    WHILE_KEYWORD,
-    UNTIL_KEYWORD,
+    WHILE_KEYWORD("while"),
+    UNTIL_KEYWORD("until"),
 
-    FOR_KEYWORD,
-    EACH_KEYWORD,
+
+    FOR_KEYWORD("for"),
+    EACH_KEYWORD("each"),
+
     // IN_KEYWORD, disabled (clashes with System::in)
 
-    BREAK_KEYWORD,
-    NEXT_KEYWORD,
+    BREAK_KEYWORD("break"),
+    NEXT_KEYWORD("next"),
 
-    CAST_KEYWORD,
+    CAST_KEYWORD("as"),
 
-    RETURN_KEYWORD,
+    RETURN_KEYWORD("return"),
 
-    RESCUE_KEYWORD,
+    RESCUE_KEYWORD("rescue"),
 
-    NEW_KEYWORD,
+    NEW_KEYWORD("new"),
 
     R_ARROW,
 
     // access modifiers
-    ACC_PUBLIC(Attribute.ACC_MOD),
-    ACC_PRIVATE(Attribute.ACC_MOD),
-    ACC_PROTECTED(Attribute.ACC_MOD),
-    ACC_PACKAGE(Attribute.ACC_MOD),
+    ACC_PUBLIC("pb", Attribute.ACC_MOD),
+    ACC_PRIVATE("pv", Attribute.ACC_MOD),
+    ACC_PROTECTED("pt", Attribute.ACC_MOD),
+    ACC_PACKAGE("pk", Attribute.ACC_MOD),
 
     EOF;
 
     private Attribute[] attrs;
 
+    private String keyword;
+
     Type() {
         this(new Attribute[]{});
     }
 
+    Type(String keyword) {
+        this.keyword = keyword;
+    }
+
     Type(Attribute... attrs) {
         this.attrs = attrs;
+    }
+
+    Type(String keyword, Attribute... attrs) {
+        this.keyword = keyword;
+        this.attrs   = attrs;
+    }
+
+    public String getKeyword() {
+        return keyword;
     }
 
     public boolean hasAttribute(Attribute a) {
