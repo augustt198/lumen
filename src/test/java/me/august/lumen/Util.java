@@ -1,5 +1,6 @@
 package me.august.lumen;
 
+import me.august.lumen.compile.CompileBuildContext;
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.parser.ast.expr.Expression;
@@ -30,14 +31,14 @@ public class Util {
 
     public static ProgramNode parse(String src) {
         Lexer lexer   = new Lexer(src);
-        Parser parser = new Parser(lexer);
+        Parser parser = new Parser(lexer, new CompileBuildContext());
         return parser.parseMain();
     }
 
 
     public static Expression parseExpression(String src) {
         Lexer lexer   = new Lexer(src);
-        Parser parser = new Parser(lexer);
+        Parser parser = new Parser(lexer, new CompileBuildContext());
 
         return parser.parseExpression();
     }

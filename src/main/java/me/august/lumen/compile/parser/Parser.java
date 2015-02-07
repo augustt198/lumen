@@ -2,6 +2,7 @@ package me.august.lumen.compile.parser;
 
 import me.august.lumen.common.Modifier;
 import me.august.lumen.common.ModifierSet;
+import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.*;
 import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.parser.ast.stmt.*;
@@ -9,6 +10,7 @@ import me.august.lumen.compile.resolve.type.UnresolvedType;
 import me.august.lumen.compile.scanner.Lexer;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.pos.Span;
 import me.august.lumen.compile.scanner.tokens.ImportPathToken;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
 import me.august.lumen.compile.scanner.tokens.StringToken;
@@ -28,8 +30,13 @@ public class Parser {
     private Stack<Token> queued = new Stack<>();
     private Token current;
 
-    public Parser(Lexer lexer) {
+    private Stack<Span> recorder = new Stack<>();
+
+    private BuildContext ctx;
+
+    public Parser(Lexer lexer, BuildContext ctx) {
         this.lexer = lexer;
+        this.ctx   = ctx;
     }
 
     /**
@@ -41,7 +48,7 @@ public class Parser {
      */
     private Token peek() {
         if (queued.isEmpty()) {
-            return queued.push(next());
+            return queued.push(lexer.nextToken());
         } else {
             return queued.get(0);
         }
@@ -53,8 +60,21 @@ public class Parser {
      * @return The next token
      */
     private Token next() {
-        if (!queued.isEmpty()) return queued.pop();
-        return current = lexer.nextToken();
+        Token tok;
+        if (!queued.isEmpty()) {
+            tok = queued.pop();
+        } else {
+            tok = lexer.nextToken();
+        }
+
+        for (Span span : recorder) {
+            if (span.getStart() < 0)
+                span.setStart(tok.getStart());
+
+            span.setEnd(tok.getEnd());
+        }
+
+        return current = tok;
     }
 
     /**
@@ -86,6 +106,19 @@ public class Parser {
         return new UnresolvedType(ident, dimensions);
     }
 
+    private void startRecord() {
+        recorder.push(new Span(-1, 0));
+    }
+
+    private Expression endRecord(Expression expr) {
+        ctx.positionMap().put(expr, recorder.pop());
+
+        return expr;
+    }
+
+    private void cancelRecord() {
+        recorder.pop();
+    }
 
     /**
      * The main parsing entry point.
