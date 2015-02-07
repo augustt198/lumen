@@ -1,9 +1,6 @@
 package me.august.lumen.compile;
 
 import me.august.lumen.compile.analyze.VariableVisitor;
-import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.error.SourceException;
-import me.august.lumen.compile.scanner.pos.SourcePositionProvider;
 import me.august.lumen.compile.parser.Parser;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.resolve.LumenTypeVisitor;
@@ -15,9 +12,7 @@ import me.august.lumen.compile.scanner.Lexer;
 import org.objectweb.asm.ClassWriter;
 
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class Driver {
 
@@ -47,7 +42,7 @@ public class Driver {
     }
 
     public ProgramNode phase2Parsing(Lexer lexer) {
-        return new Parser(lexer).parseMain();
+        return new Parser(lexer, context).parseMain();
     }
 
     public ProgramNode phase3Resolving(ProgramNode program) {
@@ -77,35 +72,4 @@ public class Driver {
         return writer.toByteArray();
     }
 
-    public static class CompileBuildContext implements BuildContext {
-        List<SourceException> errors = new ArrayList<>();
-        boolean cont = true;
-        @Override
-        public int classVersion() {
-            return 51;
-        }
-
-        @Override
-        public List<SourceException> errors() {
-            return errors;
-        }
-
-        @Override
-        public void error(String msg, SourcePositionProvider src) {
-            SourceException ex = new SourceException(msg);
-            ex.beginPos(src.getStart()).endPos(src.getEnd());
-
-            errors.add(ex);
-        }
-
-        @Override
-        public boolean canContinue() {
-            return cont;
-        }
-
-        @Override
-        public void canContinue(boolean val) {
-            cont = val;
-        }
-    }
 }

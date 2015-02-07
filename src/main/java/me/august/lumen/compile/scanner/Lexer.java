@@ -1,7 +1,7 @@
 package me.august.lumen.compile.scanner;
 
 import me.august.lumen.common.Chars;
-import me.august.lumen.compile.Driver;
+import me.august.lumen.compile.CompileBuildContext;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.scanner.pos.SourcePositionProvider;
 import me.august.lumen.compile.scanner.tokens.ImportPathToken;
@@ -83,7 +83,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
 
     public Lexer(Reader reader) {
         this.reader = reader;
-        this.build = new Driver.CompileBuildContext();
+        this.build = new CompileBuildContext();
         this.ignore = new ArrayList<>();
     }
 
@@ -411,9 +411,6 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         if (prefix != NumericPrefix.HEX && prefix != NumericPrefix.BIN)
             sb.append(firstDigit);
 
-        int startPos = pos;
-        int endPos = pos;
-
         // has decimal point
         boolean hasDP = false;
 
@@ -434,7 +431,6 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
                 }
                 sb.append(c);
                 read();
-                endPos++;
             } else {
                 break;
             }
@@ -445,12 +441,10 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
         StringBuilder exp = null;
 
         if (peek() == 'e' || peek() == 'E') {
-            endPos++;
             hasExp = true;
             exp = new StringBuilder("e");
             read(); // consume 'e'
             while (Character.isDigit(peek())) {
-                endPos++;
                 exp.append((char) read());
             }
         }
@@ -479,7 +473,10 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
             }
         }
 
-        return new NumberToken(val, startPos, endPos);
+        int startPos = recorder;
+        recorder = pos;
+
+        return new NumberToken(val, startPos, pos);
     }
 
     /**

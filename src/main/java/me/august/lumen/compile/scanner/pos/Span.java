@@ -5,6 +5,10 @@ public class Span implements SourcePositionProvider {
     private int start;
     private int end;
 
+    public Span() {
+        this(0, 0);
+    }
+
     public Span(int start, int end) {
         this.start = start;
         this.end = end;
@@ -23,5 +27,13 @@ public class Span implements SourcePositionProvider {
     @Override
     public int getEnd() {
         return end;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public void setEnd(int end) {
+        this.end = end;
     }
 }
