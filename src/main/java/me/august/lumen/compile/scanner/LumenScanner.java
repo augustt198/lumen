@@ -1,16 +1,15 @@
 package me.august.lumen.compile.scanner;
 
 import me.august.lumen.common.Chars;
+import me.august.lumen.compile.scanner.tokens.ImportPathToken;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
 import me.august.lumen.compile.scanner.tokens.StringToken;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
+import java.util.function.Consumer;
 
 import static me.august.lumen.compile.scanner.Type.*;
 
@@ -27,12 +26,7 @@ public class LumenScanner implements TokenSource {
         }
     }
 
-    private static Map<Type, Runnable> KEYWORD_HANDLERS = new HashMap<>();
-
-    // initialize keyword handlers
-    static {
-        KEYWORD_HANDLERS.put(Type.IMPORT_PATH, () -> {});
-    }
+    private static Map<Type, Consumer<LumenScanner>> KEYWORD_HANDLERS = new HashMap<>();
 
     private Reader reader;
 
@@ -69,10 +63,10 @@ public class LumenScanner implements TokenSource {
     private int peek() {
         try {
             reader.mark(1);
-            int chr = reader.read();
+            int peek = reader.read();
             reader.reset();
 
-            return chr;
+            return peek;
         } catch (IOException e) {
             return -1;
         }
@@ -94,7 +88,7 @@ public class LumenScanner implements TokenSource {
         return recorded;
     }
 
-    private void consumeWhiteSpace() {
+    private void consumeWhitespace() {
         while (peek() == ' ') read();
     }
 
@@ -108,6 +102,9 @@ public class LumenScanner implements TokenSource {
 
     @Override
     public Token nextToken() {
+        if (!queuedTokens.empty())
+            return queuedTokens.pop();
+
         while (true) {
             int chr = read();
 
@@ -118,7 +115,7 @@ public class LumenScanner implements TokenSource {
                 // Bracket tokens
                 case '(': return newToken(L_PAREN);
                 case ')': return newToken(R_PAREN);
-                case '{': return newToken(L_BRACKET);
+                case '{': return newToken(L_BRACE);
                 case '}': return newToken(R_BRACE);
                 case '[': return newToken(L_BRACKET);
                 case ']': return newToken(R_BRACKET);
@@ -239,7 +236,7 @@ public class LumenScanner implements TokenSource {
                         // add back 10 so A = 10
                         ord -= ('A' - 10);
                     } else {
-                        throw new InvalidStateException(
+                        throw new IllegalStateException(
                                 "Invalid hexadecimal digit: " + (char) ord
                         );
                     }
@@ -247,6 +244,8 @@ public class LumenScanner implements TokenSource {
                     // append value to hex number
                     hex = hex * 16 + ord;
                 }
+
+                return (char) hex;
             }
 
             // octal literal
@@ -283,14 +282,10 @@ public class LumenScanner implements TokenSource {
     }
 
     private Token nextIdentifier(char first) {
-        StringBuilder sb = new StringBuilder().append(first);
-
-        while (peek() > -1 && Chars.isIdentifierRest((char) peek())) {
-            sb.append((char) read());
-        }
-
-        String identifier = sb.toString();
+        String identifier = nextPlainIdentifier(first);
+        System.out.println(">> GOT IDENTIFIER -> " + identifier);
         if (KEYWORD_MAP.containsKey(identifier)) {
+            System.out.println(">> GOT KEYWORD -> " + KEYWORD_MAP.get(identifier));
             if (identifier.equals("is") || identifier.equals("isnt")) {
                 Token next = nextToken();
 
@@ -300,21 +295,31 @@ public class LumenScanner implements TokenSource {
                 } else {
                     queuedTokens.push(next);
                 }
+            } else {
+                Token tok = newToken(KEYWORD_MAP.get(identifier));
+                if (KEYWORD_HANDLERS.containsKey(tok.getType())) {
+                    KEYWORD_HANDLERS.get(tok.getType()).accept(this);
+                }
+
+                return tok;
             }
         }
 
         return newToken(IDENTIFIER, identifier);
     }
 
-    private Token nextNumber(char first) {
-        StringBuilder sb = new StringBuilder().append(first);
+    private String nextPlainIdentifier(char first) {
+        return nextPlainIdentifier().insert(0, first).toString();
+    }
 
-        while (peek() > -1 && Chars.isDigit((char) peek())) {
+    private StringBuilder nextPlainIdentifier() {
+        StringBuilder sb = new StringBuilder();
+
+        while (peek() > -1 && Chars.isIdentifierRest((char) peek())) {
             sb.append((char) read());
         }
 
-        Number num = Integer.valueOf(sb.toString());
-        return new NumberToken(num, advanceRecorder(), currentPosition);
+        return sb;
     }
 
     // Methods for differentiating tokens
@@ -398,4 +403,185 @@ public class LumenScanner implements TokenSource {
         }
         return newToken(ASSIGN); // =
     }
+
+    private Token nextNumber(char first) {
+        StringBuilder sb = new StringBuilder();
+        int base = getPrefixBase(first);
+
+        if (base != 16 && base != 2) {
+            sb.append(first);
+        }
+
+        while (peek() > -1 && isValidChar((char) peek(), base)) {
+                //(Chars.isDigit((char) peek()) || Chars.isAlpha((char) peek()))) {
+            if (!isValidChar((char) peek(), base)) {
+                throw new RuntimeException("Illegal digit: " + (char) peek());
+            }
+
+            sb.append((char) read());
+        }
+
+        if (peek() == '.') {
+            sb.append((char) read());
+            int peek = peek();
+            while (peek > -1 && Chars.isDigit((char) peek)) {
+                sb.append((char) read());
+                peek = peek();
+            }
+        }
+
+        if (peek() == 'e') {
+            sb.append((char) read());
+            if (peek() == '+' || peek() == '-') {
+                sb.append((char) read());
+            }
+            while (Chars.isDigit((char) peek())) {
+                sb.append((char) read());
+            }
+        }
+
+        Class<? extends Number> type = getSuffixType();
+
+
+
+        Number num = parseNumber(sb.toString(), base, type);
+        return new NumberToken(num, advanceRecorder(), currentPosition);
+    }
+
+    // Numbers
+    private int getPrefixBase(char chr) {
+        if (chr > '9' || chr < '0') {
+            return -1;
+        }
+
+        if (chr != '0') {
+            return 10;
+        }
+
+        switch (peek()) {
+            case 'x':
+            case 'X':
+                read();
+                return 16;
+            case 'b':
+            case 'B':
+                read();
+                return 2;
+            default:
+                return 8;
+        }
+    }
+
+    private Class<? extends Number> getSuffixType() {
+        switch (peek()) {
+            case 'f':
+            case 'F':
+                read();
+                return Float.class;
+            case 'd':
+            case 'D':
+                read();
+                return Double.class;
+            case 'l':
+            case 'L':
+                read();
+                return Long.class;
+            default:
+                return null;
+        }
+    }
+
+    private boolean isValidChar(char chr, int radix) {
+        return Character.digit(chr, radix) > -1;
+    }
+
+    private Number parseNumber(String num, int base, Class<? extends Number> type) {
+        if (base != 10 && (num.contains(".") || num.contains("e"))) {
+            throw new RuntimeException("Illegal base prefix");
+        }
+
+        Number result;
+
+        if (num.contains(".") || num.contains("e")) {
+            result = Double.valueOf(num);
+        } else {
+            Long converted = Long.parseLong(num, base);
+            if (converted <= Integer.MAX_VALUE && converted >= Integer.MIN_VALUE) {
+                result = converted.intValue();
+            } else {
+                result = converted;
+            }
+        }
+
+        if (type == Double.class) {
+            return result.doubleValue();
+        } else if (type == Float.class) {
+            return result.floatValue();
+        } else if (type == Long.class) {
+            if (result.getClass() == Long.class || result.getClass() == Integer.class) {
+                return result.longValue();
+            } else {
+
+                throw new RuntimeException("Illegal long suffix");
+            }
+        } else {
+            return result;
+        }
+    }
+
+    static {
+        KEYWORD_HANDLERS.put(Type.IMPORT_KEYWORD, (lex) -> {
+            lex.read(); // consume whitespace
+
+            StringBuilder sb = new StringBuilder();
+            sb.append(lex.nextPlainIdentifier());
+            List<String> nodes = null;
+
+            boolean didEnd = false;
+            while (lex.peek() == '.') {
+                sb.append((char) lex.read());
+
+                if (didEnd)
+                    // TODO proper exception handling
+                    throw new RuntimeException("import statement already terminated");
+
+                if (lex.accept('{')) {
+                    // once we reach a multi-import, it must be the end
+                    didEnd = true;
+
+                    lex.consumeWhitespace();
+
+                    nodes = new ArrayList<>();
+                    nodes.add(lex.nextPlainIdentifier().toString());
+                    lex.consumeWhitespace();
+
+                    while (lex.accept(',')) {
+                        lex.consumeWhitespace();
+                        nodes.add(lex.nextPlainIdentifier().toString());
+                    }
+
+                    // TODO proper exception handling
+                    if (lex.read() != '}')
+                        throw new RuntimeException("Expected right brace: }");
+                } else {
+                    sb.append(lex.nextPlainIdentifier());
+                }
+            }
+
+            String importPath = sb.toString();
+            if (nodes == null) {
+                // grab last identifier after dot
+                int lastIdx = importPath.lastIndexOf('.');
+                nodes       = Arrays.asList(importPath.substring(lastIdx + 1));
+                importPath  = importPath.substring(0, lastIdx);
+            }
+
+            lex.queuedTokens.push(new ImportPathToken(
+                    sb.toString(), lex.advanceRecorder(), lex.lastRecordedPosition,
+                    importPath, nodes
+            ));
+
+        });
+    }
+
 }

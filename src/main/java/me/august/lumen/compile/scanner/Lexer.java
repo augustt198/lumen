@@ -13,7 +13,7 @@ import java.util.*;
 
 import static me.august.lumen.compile.scanner.Type.*;
 
-public class Lexer implements Iterable<Token>, SourcePositionProvider {
+public class Lexer implements Iterable<Token>, TokenSource, SourcePositionProvider {
 
     private static final Map<String, Type> KEYWORDS = new HashMap<>();
     private final List<String> ignore;
@@ -150,6 +150,7 @@ public class Lexer implements Iterable<Token>, SourcePositionProvider {
      *
      * @return The next token
      */
+    @Override
     public Token nextToken() {
         if (!queued.empty()) return queued.pop();
 

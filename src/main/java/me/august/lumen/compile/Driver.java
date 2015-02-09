@@ -12,7 +12,7 @@ import me.august.lumen.compile.scanner.Lexer;
 import org.objectweb.asm.ClassWriter;
 
 import java.io.Reader;
-import java.util.*;
+import java.util.Collection;
 
 public class Driver {
 

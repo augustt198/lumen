@@ -147,6 +147,10 @@ public enum Type {
     }
 
     public boolean hasAttribute(Attribute a) {
+        if (attrs == null) {
+            return false;
+        }
+
         for (Attribute at : attrs) {
             if (at == a) return true;
         }

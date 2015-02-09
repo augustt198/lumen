@@ -2,6 +2,7 @@ package me.august.lumen;
 
 import me.august.lumen.compile.scanner.Lexer;
 import me.august.lumen.compile.scanner.Token;
+import me.august.lumen.compile.scanner.TokenSource;
 import me.august.lumen.compile.scanner.Type;
 import me.august.lumen.compile.scanner.tokens.ImportPathToken;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
@@ -13,6 +14,10 @@ import static me.august.lumen.compile.scanner.Type.*;
 public class LexerTest {
 
     private static final String TOKEN_TEST_FILE = "/token_test.txt";
+
+    private static TokenSource createLexer(String source) {
+        return new Lexer(source);
+    }
 
     @Test
     public void testTokens() {
@@ -34,7 +39,7 @@ public class LexerTest {
         };
 
         String src = Util.readResource(TOKEN_TEST_FILE);
-        Lexer lexer = new Lexer(src);
+        TokenSource lexer = createLexer(src);
 
         int count = 0;
         while (true) {
@@ -63,7 +68,7 @@ public class LexerTest {
         };
 
         for (int i = 0; i < literals.length; i++) {
-            Token token = new Lexer(literals[i]).nextToken();
+            Token token = createLexer(literals[i]).nextToken();
 
             Assert.assertTrue(
                     "Expected token to be a NumberToken",
@@ -78,12 +83,12 @@ public class LexerTest {
     @Test
     public void testImports() {
         String src;
-        Lexer  lex;
+        TokenSource  lex;
         Token  tok;
 
         // multi-class import test
         src = "import foo.bar.{baz, wut}";
-        lex = new Lexer(src);
+        lex = createLexer(src);
 
         Assert.assertEquals(Type.IMPORT_KEYWORD, lex.nextToken().getType());
         tok = lex.nextToken();
@@ -95,7 +100,7 @@ public class LexerTest {
 
         // single-class import test
         src = "import foo.bar.qux";
-        lex = new Lexer(src);
+        lex = createLexer(src);
 
         Assert.assertEquals(Type.IMPORT_KEYWORD, lex.nextToken().getType());
         tok = lex.nextToken();
@@ -109,11 +114,11 @@ public class LexerTest {
     @Test
     public void testTokenPositioning() {
         String src = "ident \"string\" ++ () [] {} - + ! * / %";
-        Lexer  lex = new Lexer(src);
+        TokenSource  lex = createLexer(src);
 
         while (true) {
             Token tok = lex.nextToken();
-            System.out.println(tok.getType().name() + ": " + tok.getStart() + ".." + tok.getEnd());
+            //System.out.println(tok.getType().name() + ": " + tok.getStart() + ".." + tok.getEnd());
 
             if (tok.getType() == Type.EOF)
                 break;
