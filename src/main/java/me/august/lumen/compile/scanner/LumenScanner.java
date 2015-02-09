@@ -20,8 +20,9 @@ public class LumenScanner implements TokenSource {
     // initialize keyword map
     static {
         for (Type type : Type.values()) {
-            if (type.getKeyword() != null) {
-                KEYWORD_MAP.put(type.getKeyword(), type);
+            if (type.getKeywords() == null) continue;;
+            for (String keyword : type.getKeywords()) {
+                KEYWORD_MAP.put(keyword, type);
             }
         }
     }
@@ -146,6 +147,8 @@ public class LumenScanner implements TokenSource {
                 case '?': return newToken(QUESTION);
 
                 case '=': return diffEq();
+
+                case '#': consumeComment();
 
                 case ' ' :
                 case '\n':
@@ -284,25 +287,25 @@ public class LumenScanner implements TokenSource {
     private Token nextIdentifier(char first) {
         String identifier = nextPlainIdentifier(first);
         System.out.println(">> GOT IDENTIFIER -> " + identifier);
-        if (KEYWORD_MAP.containsKey(identifier)) {
-            System.out.println(">> GOT KEYWORD -> " + KEYWORD_MAP.get(identifier));
-            if (identifier.equals("is") || identifier.equals("isnt")) {
-                Token next = nextToken();
 
-                if (next.getType() == IDENTIFIER && next.getContent().equals("a")) {
-                    Type type = identifier.equals("is") ? INSTANCEOF_KEYWORD : NOT_INSTANCEOF_KEYWORD;
-                    return newToken(type);
-                } else {
-                    queuedTokens.push(next);
-                }
+        if (identifier.equals("is") || identifier.equals("isnt")) {
+            Token next = nextToken();
+
+            if (next.getType() == IDENTIFIER && next.getContent().equals("a")) {
+                Type type = identifier.equals("is") ? INSTANCEOF_KEYWORD : NOT_INSTANCEOF_KEYWORD;
+                return newToken(type);
             } else {
-                Token tok = newToken(KEYWORD_MAP.get(identifier));
-                if (KEYWORD_HANDLERS.containsKey(tok.getType())) {
-                    KEYWORD_HANDLERS.get(tok.getType()).accept(this);
-                }
-
-                return tok;
+                queuedTokens.push(next);
             }
+        }
+
+        if (KEYWORD_MAP.containsKey(identifier)) {
+            Token tok = newToken(KEYWORD_MAP.get(identifier));
+            if (KEYWORD_HANDLERS.containsKey(tok.getType())) {
+                KEYWORD_HANDLERS.get(tok.getType()).accept(this);
+            }
+
+            return tok;
         }
 
         return newToken(IDENTIFIER, identifier);
@@ -526,6 +529,18 @@ public class LumenScanner implements TokenSource {
             }
         } else {
             return result;
+        }
+    }
+
+    private void consumeComment() {
+        if (peek() == '*') {
+            read();
+            // noinspection StatementWithEmptyBody
+            while (!(read() == '*' && peek() == '#'));
+            read();
+        } else {
+            // noinspection StatementWithEmptyBody
+            while (read() != '\n');
         }
     }
 

@@ -65,9 +65,9 @@ public enum Type {
     // literals
     NUMBER,
     STRING,
-    TRUE,
-    FALSE,
-    NULL,
+    TRUE("true"),
+    FALSE("false"),
+    NULL("null", "nil"),
 
     IDENTIFIER,
 
@@ -77,7 +77,7 @@ public enum Type {
     DEF_KEYWORD("def"),
     IMPORT_KEYWORD("import"),
     CLASS_KEYWORD("class"),
-    STATIC_KEYWORD("stc", Attribute.ACC_MOD),
+    STATIC_KEYWORD(new String[]{"stc"}, Attribute.ACC_MOD),
 
     INSTANCEOF_KEYWORD,
     NOT_INSTANCEOF_KEYWORD,
@@ -114,36 +114,36 @@ public enum Type {
     R_ARROW,
 
     // access modifiers
-    ACC_PUBLIC("pb", Attribute.ACC_MOD),
-    ACC_PRIVATE("pv", Attribute.ACC_MOD),
-    ACC_PROTECTED("pt", Attribute.ACC_MOD),
-    ACC_PACKAGE("pk", Attribute.ACC_MOD),
+    ACC_PUBLIC(new String[]{"pb", "public"},            Attribute.ACC_MOD),
+    ACC_PRIVATE(new String[]{"pv", "private"},          Attribute.ACC_MOD),
+    ACC_PROTECTED(new String[]{"pt", "protected"},      Attribute.ACC_MOD),
+    ACC_PACKAGE(new String[]{"pk", "package_private"},  Attribute.ACC_MOD),
 
     EOF;
 
     private Attribute[] attrs;
 
-    private String keyword;
+    private String[] keywords;
 
     Type() {
         this(new Attribute[]{});
     }
 
-    Type(String keyword) {
-        this.keyword = keyword;
+    Type(String... keywords) {
+        this.keywords = keywords;
     }
 
     Type(Attribute... attrs) {
         this.attrs = attrs;
     }
 
-    Type(String keyword, Attribute... attrs) {
-        this.keyword = keyword;
-        this.attrs   = attrs;
+    Type(String[] keywords, Attribute... attrs) {
+        this.keywords = keywords;
+        this.attrs    = attrs;
     }
 
-    public String getKeyword() {
-        return keyword;
+    public String[] getKeywords() {
+        return keywords;
     }
 
     public boolean hasAttribute(Attribute a) {
