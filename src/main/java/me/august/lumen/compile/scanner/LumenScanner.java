@@ -286,7 +286,6 @@ public class LumenScanner implements TokenSource {
 
     private Token nextIdentifier(char first) {
         String identifier = nextPlainIdentifier(first);
-        System.out.println(">> GOT IDENTIFIER -> " + identifier);
 
         if (identifier.equals("is") || identifier.equals("isnt")) {
             Token next = nextToken();

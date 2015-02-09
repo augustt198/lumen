@@ -122,7 +122,7 @@ public class Lexer implements Iterable<Token>, TokenSource, SourcePositionProvid
      *
      * @return The next character's ordinal value, or -1 for EOF
      */
-    private int peek() {
+    public int peek() {
         try {
             reader.mark(1);
             int peek = reader.read();
