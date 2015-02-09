@@ -30,6 +30,8 @@ public class LumenParser implements TokenParser {
         prefixParsers.put(L_PAREN,    ComponentParsers.GROUPING_PARSER);
 
 
+        infixParsers.put(ASSIGN, new AssignmentParser());
+
         // infix, prefix, and mixfix parsers
         AdditiveParser additiveParser = new AdditiveParser();
         infixParsers.put(PLUS, additiveParser);
@@ -50,6 +52,21 @@ public class LumenParser implements TokenParser {
         EqualityParser equalityParser = new EqualityParser();
         infixParsers.put(EQ, equalityParser);
         infixParsers.put(NE, equalityParser);
+
+        RelationalParser relParser = new RelationalParser();
+        infixParsers.put(GT, relParser);
+        infixParsers.put(GTE, relParser);
+        infixParsers.put(LT, relParser);
+        infixParsers.put(LTE, relParser);
+        infixParsers.put(INSTANCEOF_KEYWORD, relParser);
+        infixParsers.put(NOT_INSTANCEOF_KEYWORD, relParser);
+
+        ShiftParser shiftParser = new ShiftParser();
+        infixParsers.put(SH_L, shiftParser);
+        infixParsers.put(SH_R, shiftParser);
+        infixParsers.put(U_SH_R, shiftParser);
+
+        infixParsers.put(CAST_KEYWORD, new CastParser());
     }
 
     private TokenSource tokenSource;

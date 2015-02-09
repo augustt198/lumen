@@ -3,7 +3,7 @@ package me.august.lumen.compile.parser.ast.expr;
 public class ShiftExpr extends BinaryExpression {
 
     public enum Op {
-        SH_L, SH_R, U_SHR_R
+        SH_L, SH_R, U_SH_R
     }
 
     private Op op;
