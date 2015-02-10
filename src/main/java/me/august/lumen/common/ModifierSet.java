@@ -199,6 +199,16 @@ public class ModifierSet {
         return true;
     }
 
+    public ModifierSet merge(ModifierSet other) {
+        value |= other.getValue();
+        return this;
+    }
+
+    public ModifierSet merge(int bitfield) {
+        value |= bitfield;
+        return this;
+    }
+
     @Override
     public int hashCode() {
         return value;

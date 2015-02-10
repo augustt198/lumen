@@ -168,6 +168,10 @@ public enum Type {
         }
     }
 
+    public boolean isModifier() {
+        return toModifier() != null;
+    }
+
     public static enum Attribute {
         ACC_MOD
     }

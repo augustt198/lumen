@@ -21,6 +21,12 @@ public class Body implements CodeBlock, VisitorConsumer {
         this.children = children;
     }
 
+    public Body(CodeBlock child) {
+        // initialize `children`
+        this();
+        children.add(child);
+    }
+
     public void addCode(CodeBlock code) {
         children.add(code);
     }

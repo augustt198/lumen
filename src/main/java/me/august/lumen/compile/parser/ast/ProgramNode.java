@@ -4,6 +4,7 @@ import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ProgramNode implements VisitorConsumer {
 
@@ -11,7 +12,12 @@ public class ProgramNode implements VisitorConsumer {
     ClassNode classNode;
 
     public ProgramNode(ImportNode[] imports, ClassNode classNode) {
-        this.imports = imports;
+        this.imports   = imports;
+        this.classNode = classNode;
+    }
+
+    public ProgramNode(List<ImportNode> imports, ClassNode classNode) {
+        this.imports   = imports.toArray(new ImportNode[imports.size()]);
         this.classNode = classNode;
     }
 
