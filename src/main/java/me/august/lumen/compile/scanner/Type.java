@@ -39,8 +39,8 @@ public enum Type {
     BIT_AND,    // &
     BIT_COMP,   // ~
 
-    EQ,         // ==
-    NE,         // !=
+    EQ("is"),   // ==
+    NE("isnt"), // !=
 
     LT,         // <
     GT,         // >

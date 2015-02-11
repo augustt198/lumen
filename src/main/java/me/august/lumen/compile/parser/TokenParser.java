@@ -31,5 +31,13 @@ public interface TokenParser {
         return new UnresolvedType(identifier, dimensions);
     }
 
+    default String expectIdentifier() {
+        Token token = consume();
+        if (token.getType() != Type.IDENTIFIER) {
+            throw new RuntimeException("Expected identifier");
+        }
+
+        return token.getContent();
+    }
 
 }
