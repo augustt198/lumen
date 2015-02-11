@@ -25,9 +25,10 @@ public class ExpressionParser implements TokenParser {
         prefixParsers.put(INC,      unaryPrefixParser);
         prefixParsers.put(DEC,      unaryPrefixParser);
         prefixParsers.put(NOT,      unaryPrefixParser);
-        prefixParsers.put(IDENTIFIER, ComponentParsers.IDENTIFIER_PARSER);
+        prefixParsers.put(IDENTIFIER, new IdentifierParser());
         prefixParsers.put(NUMBER,     ComponentParsers.NUMBER_PARSER);
         prefixParsers.put(L_PAREN,    ComponentParsers.GROUPING_PARSER);
+        prefixParsers.put(STRING,     ComponentParsers.STRING_PARSER);
 
 
         infixParsers.put(ASSIGN, new AssignmentParser());
@@ -43,8 +44,9 @@ public class ExpressionParser implements TokenParser {
         infixParsers.put(REM, multiplicativeParser);
 
         PostfixParser postfixParser = new PostfixParser();
-        infixParsers.put(INC, postfixParser);
-        infixParsers.put(DEC, postfixParser);
+        infixParsers.put(INC,       postfixParser);
+        infixParsers.put(DEC,       postfixParser);
+        infixParsers.put(L_BRACKET, postfixParser);
 
         infixParsers.put(QUESTION, new TernaryParser());
         infixParsers.put(RESCUE_KEYWORD, new RescueParser());
@@ -67,6 +69,10 @@ public class ExpressionParser implements TokenParser {
         infixParsers.put(U_SH_R, shiftParser);
 
         infixParsers.put(CAST_KEYWORD, new CastParser());
+
+        RangeParser rangeParser = new RangeParser();
+        infixParsers.put(RANGE_INCLUSIVE, rangeParser);
+        infixParsers.put(RANGE_EXCLUSIVE, rangeParser);
     }
 
     private TokenSource tokenSource;
@@ -80,7 +86,8 @@ public class ExpressionParser implements TokenParser {
         return tokenSource.nextToken();
     }
 
-    protected Token peek() {
+    @Override
+    public Token peek() {
         if (!queuedTokens.empty()) {
             return queuedTokens.get(0);
         } else {

@@ -12,13 +12,18 @@ public class RescueParser implements InfixParser {
 
     @Override
     public Expression parse(TokenParser parser, Expression left, Token token) {
-        Expression catchExpr = parser.parseExpression(getPrecedence());
+        Expression catchExpr;
         UnresolvedType type = null;
 
-        if (catchExpr instanceof IdentExpr && parser.accept(Type.R_ARROW)) {
-            IdentExpr identifier = (IdentExpr) catchExpr;
-            type = new UnresolvedType(identifier.getIdentifier());
-
+        if (parser.peek().getType() == Type.IDENTIFIER) {
+            String identifier = parser.consume().getContent();
+            if (parser.accept(Type.R_ARROW)) {
+                type = new UnresolvedType(identifier);
+                catchExpr = parser.parseExpression(getPrecedence());
+            } else {
+                catchExpr = new IdentExpr(identifier);
+            }
+        } else {
             catchExpr = parser.parseExpression(getPrecedence());
         }
 

@@ -336,6 +336,8 @@ public class LumenScanner implements TokenSource {
     private Token diffMin() {
         if (accept('-')) {
             return newToken(DEC); // --
+        } else if (accept('>')) {
+            return newToken(R_ARROW); // ->
         }
         return newToken(MIN); // -
     }

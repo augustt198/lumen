@@ -14,6 +14,8 @@ public interface TokenParser {
     Expression parseExpression(int precedence);
 
     Token consume();
+    Token peek();
+
     boolean accept(Type type);
     boolean expect(Type type);
 

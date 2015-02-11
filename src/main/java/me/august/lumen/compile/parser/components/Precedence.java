@@ -8,6 +8,7 @@ public enum Precedence {
     ASSIGNMENT,
     RESCUE,
     TERNARY,
+    RANGE,
     LOGIC_OR,
     LOGIC_AND,
     BIT_OR,

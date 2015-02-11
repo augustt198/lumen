@@ -1,9 +1,6 @@
 package me.august.lumen;
 
-import me.august.lumen.compile.scanner.Lexer;
-import me.august.lumen.compile.scanner.Token;
-import me.august.lumen.compile.scanner.TokenSource;
-import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.*;
 import me.august.lumen.compile.scanner.tokens.ImportPathToken;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
 import org.junit.Assert;
@@ -16,7 +13,7 @@ public class LexerTest {
     private static final String TOKEN_TEST_FILE = "/token_test.txt";
 
     private static TokenSource createLexer(String source) {
-        return new Lexer(source);
+        return new LumenScanner(source);
     }
 
     @Test

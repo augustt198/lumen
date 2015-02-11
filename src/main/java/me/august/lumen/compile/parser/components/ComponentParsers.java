@@ -4,28 +4,21 @@ import me.august.lumen.compile.parser.TokenParser;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.NumExpr;
+import me.august.lumen.compile.parser.ast.expr.StringExpr;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.Type;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
+import me.august.lumen.compile.scanner.tokens.StringToken;
 
 public final class ComponentParsers {
-
-    public static final IdentifierParser IDENTIFIER_PARSER = new IdentifierParser();
 
     public static final NumberParser NUMBER_PARSER = new NumberParser();
 
     public static final GroupingParser GROUPING_PARSER = new GroupingParser();
 
+    public static final StringParser STRING_PARSER = new StringParser();
+
     private ComponentParsers() {}
-
-    private static class IdentifierParser implements PrefixParser {
-
-        @Override
-        public Expression parse(TokenParser parser, Token token) {
-            return new IdentExpr(token.getContent());
-        }
-
-    }
 
     private static class NumberParser implements PrefixParser {
 
@@ -52,6 +45,16 @@ public final class ComponentParsers {
             }
 
             return expression;
+        }
+
+    }
+
+    private static class StringParser implements PrefixParser {
+
+        @Override
+        public Expression parse(TokenParser parser, Token token) {
+            StringToken stringTok = (StringToken) token;
+            return new StringExpr(token.getContent(), stringTok.getQuoteType());
         }
 
     }

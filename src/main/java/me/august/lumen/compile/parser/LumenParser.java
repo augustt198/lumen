@@ -55,6 +55,8 @@ public class LumenParser extends ExpressionParser {
                     modifiers.add(token.getType().toModifier());
                     modifiers.merge(parseModifiers());
                     expect(CLASS_KEYWORD);
+                } else {
+                    modifiers.setPublic(true);
                 }
 
                 classNode = parseClass(modifiers);
@@ -105,7 +107,7 @@ public class LumenParser extends ExpressionParser {
                 if (token.getType() == R_PAREN) {
                     break;
                 } else {
-                    expect(COMMA);
+                    token.expectType(COMMA);
                 }
             }
 
