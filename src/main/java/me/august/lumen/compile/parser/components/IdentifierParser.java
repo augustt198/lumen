@@ -24,11 +24,11 @@ public class IdentifierParser implements PrefixParser {
             // method -> Foo::bar()
             if (parser.peek().getType() == Type.L_PAREN) {
                 List<Expression> parameters = parseParameters(parser);
-                return new StaticMethodCall(classType, name, parameters);
+                expression = new StaticMethodCall(classType, name, parameters);
 
             // field -> Foo::bar
             } else {
-                return new StaticField(classType, name);
+                expression = new StaticField(classType, name);
             }
         } else {
             if (parser.peek().getType() == Type.L_PAREN) {
