@@ -1,14 +1,15 @@
 package me.august.lumen.compile;
 
 import me.august.lumen.compile.analyze.VariableVisitor;
-import me.august.lumen.compile.parser.Parser;
+import me.august.lumen.compile.parser.LumenParser;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.resolve.LumenTypeVisitor;
 import me.august.lumen.compile.resolve.ResolvingVisitor;
 import me.august.lumen.compile.resolve.TopLevelStatementMarker;
 import me.august.lumen.compile.resolve.impl.NameResolver;
 import me.august.lumen.compile.resolve.lookup.DependencyManager;
-import me.august.lumen.compile.scanner.Lexer;
+import me.august.lumen.compile.scanner.LumenScanner;
+import me.august.lumen.compile.scanner.TokenSource;
 import org.objectweb.asm.ClassWriter;
 
 import java.io.Reader;
@@ -31,18 +32,21 @@ public class Driver {
         this(reader, new DependencyManager());
     }
 
-    public Lexer phase1Scanning() {
-        return new Lexer(reader);
+    public TokenSource phase1Scanning() {
+        return new LumenScanner(reader);
     }
 
-    public Lexer phase1Scanning(Collection<String> ignore) {
-        Lexer lex = phase1Scanning();
-        ignore.forEach(lex::ignore);
-        return lex;
+    public TokenSource phase1Scanning(Collection<String> ignore) {
+        TokenSource lexer = phase1Scanning();
+
+        // TODO fix
+        // ignore.forEach(lex::ignore);
+
+        return lexer;
     }
 
-    public ProgramNode phase2Parsing(Lexer lexer) {
-        return new Parser(lexer, context).parseMain();
+    public ProgramNode phase2Parsing(TokenSource lexer) {
+        return new LumenParser(lexer).parseProgram();
     }
 
     public ProgramNode phase3Resolving(ProgramNode program) {

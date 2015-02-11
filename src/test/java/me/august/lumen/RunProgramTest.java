@@ -2,7 +2,7 @@ package me.august.lumen;
 
 import me.august.lumen.compile.Driver;
 import me.august.lumen.compile.parser.ast.ProgramNode;
-import me.august.lumen.compile.scanner.Lexer;
+import me.august.lumen.compile.scanner.TokenSource;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ public class RunProgramTest {
 
     private byte[] compile(String src) {
         Driver driver = new Driver(new StringReader(src));
-        Lexer lexer   = driver.phase1Scanning();
+        TokenSource lexer   = driver.phase1Scanning();
 
         ProgramNode pgrm = driver.phase2Parsing(lexer);
         driver.phase3Resolving(pgrm);
