@@ -1,10 +1,10 @@
 package me.august.lumen;
 
-import me.august.lumen.compile.CompileBuildContext;
-import me.august.lumen.compile.parser.Parser;
+import me.august.lumen.compile.parser.LumenParser;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.parser.ast.expr.Expression;
-import me.august.lumen.compile.scanner.Lexer;
+import me.august.lumen.compile.scanner.LumenScanner;
+import me.august.lumen.compile.scanner.TokenSource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,15 +30,15 @@ public class Util {
     }
 
     public static ProgramNode parse(String src) {
-        Lexer lexer   = new Lexer(src);
-        Parser parser = new Parser(lexer, new CompileBuildContext());
-        return parser.parseMain();
+        TokenSource lexer   = new LumenScanner(src);
+        LumenParser parser = new LumenParser(lexer);
+        return parser.parseProgram();
     }
 
 
     public static Expression parseExpression(String src) {
-        Lexer lexer   = new Lexer(src);
-        Parser parser = new Parser(lexer, new CompileBuildContext());
+        TokenSource lexer   = new LumenScanner(src);
+        LumenParser parser = new LumenParser(lexer);
 
         return parser.parseExpression();
     }

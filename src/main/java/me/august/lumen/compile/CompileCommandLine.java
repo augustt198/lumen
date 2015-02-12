@@ -7,7 +7,7 @@ import me.august.lumen.common.FileUtil;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.resolve.lookup.DependencyManager;
 import me.august.lumen.compile.resolve.lookup.JarLookup;
-import me.august.lumen.compile.scanner.Lexer;
+import me.august.lumen.compile.scanner.TokenSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +58,7 @@ public class CompileCommandLine implements Runnable {
     private void compileSource(String src, String file) {
         Driver driver = new Driver(new StringReader(src), deps);
 
-        Lexer lexer = driver.phase1Scanning(keywordsToIgnore);
+        TokenSource lexer = driver.phase1Scanning(keywordsToIgnore);
         ProgramNode program = driver.phase2Parsing(lexer);
         driver.phase3Resolving(program);
         driver.phase4Analysis(program);

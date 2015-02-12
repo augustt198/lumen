@@ -74,6 +74,10 @@ public class Token {
         return type.hasAttribute(a);
     }
 
+    public boolean isModifier() {
+        return type.isModifier();
+    }
+
     @Override
     public String toString() {
         return "Token{" +

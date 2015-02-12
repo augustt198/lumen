@@ -100,7 +100,6 @@ public class ExpressionTest {
     @Test
     public void testOwnedExpressions() {
         Expression expr;
-
         expr = Util.parseExpression("foo().bar.qux");
         Assert.assertTrue(
                 "Expression should be an IdentExpr",
