@@ -1,6 +1,9 @@
 package me.august.lumen;
 
-import me.august.lumen.compile.scanner.*;
+import me.august.lumen.compile.scanner.LumenScanner;
+import me.august.lumen.compile.scanner.Token;
+import me.august.lumen.compile.scanner.TokenSource;
+import me.august.lumen.compile.scanner.Type;
 import me.august.lumen.compile.scanner.tokens.ImportPathToken;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
 import org.junit.Assert;

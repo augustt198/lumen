@@ -42,7 +42,7 @@ public class LumenParser extends ExpressionParser {
             // Handle import declaration
             if (token.getType() == IMPORT_KEYWORD) {
 
-                ImportPathToken pathToken = (ImportPathToken) token;
+                ImportPathToken pathToken = (ImportPathToken) consume();
                 imports.add(new ImportNode(
                         pathToken.getPath(), pathToken.getClasses()
                 ));
