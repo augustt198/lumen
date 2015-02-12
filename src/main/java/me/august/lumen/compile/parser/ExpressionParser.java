@@ -30,6 +30,9 @@ public class ExpressionParser implements TokenParser {
         prefixParsers.put(NUMBER,     ComponentParsers.NUMBER_PARSER);
         prefixParsers.put(L_PAREN,    ComponentParsers.GROUPING_PARSER);
         prefixParsers.put(STRING,     ComponentParsers.STRING_PARSER);
+        prefixParsers.put(TRUE,       ComponentParsers.BOOLEAN_PARSER);
+        prefixParsers.put(FALSE,      ComponentParsers.BOOLEAN_PARSER);
+        prefixParsers.put(NULL,       ComponentParsers.NULL_PARSER);
 
 
         infixParsers.put(ASSIGN, new AssignmentParser());
