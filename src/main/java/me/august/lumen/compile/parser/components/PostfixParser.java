@@ -27,7 +27,7 @@ public class PostfixParser implements InfixParser {
 
                 while (parser.accept(Type.L_BRACKET)) {
                     index = parser.parseExpression();
-                    parser.expect(Type.R_PAREN);
+                    parser.expect(Type.R_BRACKET);
                     left = new ArrayAccessExpr(left, index);
                 }
                 return left;

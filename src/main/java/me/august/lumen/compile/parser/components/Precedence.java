@@ -25,7 +25,7 @@ public enum Precedence {
     CALL;
 
     public int getLevel() {
-        return ordinal();
+        return ordinal() + 1;
     }
 
 }

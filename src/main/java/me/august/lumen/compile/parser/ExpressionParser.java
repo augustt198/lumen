@@ -14,8 +14,9 @@ import static me.august.lumen.compile.scanner.Type.*;
 
 public class ExpressionParser implements TokenParser {
 
-    private final static Map<Type, PrefixParser> prefixParsers = new HashMap<>();
-    private final static Map<Type, InfixParser>  infixParsers  = new HashMap<>();
+    private final static Map<Type, PrefixParser> prefixParsers  = new HashMap<>();
+    private final static Map<Type, InfixParser>  infixParsers   = new HashMap<>();
+    private final static Map<Type, InfixParser>  postfixParsers = new HashMap<>();
 
     static {
         UnaryPrefixParser unaryPrefixParser = new UnaryPrefixParser();
@@ -43,11 +44,6 @@ public class ExpressionParser implements TokenParser {
         infixParsers.put(DIV, multiplicativeParser);
         infixParsers.put(REM, multiplicativeParser);
 
-        PostfixParser postfixParser = new PostfixParser();
-        infixParsers.put(INC,       postfixParser);
-        infixParsers.put(DEC,       postfixParser);
-        infixParsers.put(L_BRACKET, postfixParser);
-
         infixParsers.put(QUESTION, new TernaryParser());
         infixParsers.put(RESCUE_KEYWORD, new RescueParser());
 
@@ -73,6 +69,11 @@ public class ExpressionParser implements TokenParser {
         RangeParser rangeParser = new RangeParser();
         infixParsers.put(RANGE_INCLUSIVE, rangeParser);
         infixParsers.put(RANGE_EXCLUSIVE, rangeParser);
+
+        PostfixParser postfixParser = new PostfixParser();
+        postfixParsers.put(INC,       postfixParser);
+        postfixParsers.put(DEC,       postfixParser);
+        postfixParsers.put(L_BRACKET, postfixParser);
     }
 
     private TokenSource tokenSource;
@@ -130,6 +131,11 @@ public class ExpressionParser implements TokenParser {
         }
 
         Expression left = prefixParser.parse(this, token);
+
+        while (postfixParsers.containsKey(peek().getType())) {
+            token = consume();
+            left = postfixParsers.get(token.getType()).parse(this, left, token);
+        }
 
         while (predence < getPrecedence()) {
             token = consume();
