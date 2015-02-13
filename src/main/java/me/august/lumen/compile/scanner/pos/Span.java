@@ -36,4 +36,9 @@ public class Span implements SourcePositionProvider {
     public void setEnd(int end) {
         this.end = end;
     }
+
+    @Override
+    public String toString() {
+        return "Span{" + start + "..." + end + "}";
+    }
 }

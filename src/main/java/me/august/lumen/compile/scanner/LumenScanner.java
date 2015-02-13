@@ -153,7 +153,9 @@ public class LumenScanner implements TokenSource {
                 case ' ' :
                 case '\n':
                 case '\r':
-                case '\t': continue;
+                case '\t':
+                    lastRecordedPosition = currentPosition;
+                    continue;
 
                 default: {
                     char c = (char) chr;

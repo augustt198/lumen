@@ -1,10 +1,12 @@
 package me.august.lumen.compile.parser;
 
+import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.components.*;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.TokenSource;
 import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.pos.Span;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,12 +84,27 @@ public class ExpressionParser implements TokenParser {
     private TokenSource tokenSource;
     private Stack<Token> queuedTokens = new Stack<>();
 
+    private Map<CodeBlock, Span> spanMap = new HashMap<>();
+    private Stack<Span> spanRecorder = new Stack<>();
+
     @Override
     public Token consume() {
+        Token token;
         if (!queuedTokens.empty()) {
-            return queuedTokens.pop();
+            token = queuedTokens.pop();
+        } else {
+            token = tokenSource.nextToken();
         }
-        return tokenSource.nextToken();
+
+        for (Span span : spanRecorder) {
+            if (span.getStart() < 0) {
+                span.setStart(token.getStart());
+            }
+
+            span.setEnd(token.getEnd());
+        }
+
+        return token;
     }
 
     @Override
@@ -95,7 +112,7 @@ public class ExpressionParser implements TokenParser {
         if (!queuedTokens.empty()) {
             return queuedTokens.get(0);
         } else {
-            return queuedTokens.push(consume());
+            return queuedTokens.push(tokenSource.nextToken());
         }
     }
 
@@ -119,12 +136,33 @@ public class ExpressionParser implements TokenParser {
         return false;
     }
 
+    private void startRecording() {
+        spanRecorder.push(new Span(-1, 0));
+    }
+
+    private void stopRecording() {
+        spanRecorder.pop();
+    }
+
+    private <T extends CodeBlock> T endRecording(T obj) {
+        Span span = spanRecorder.pop();
+        spanMap.put(obj, span);
+        return obj;
+    }
+
+    private <T extends CodeBlock> T keepAndEndRecording(T obj) {
+        Span spanCopy = new Span(spanRecorder.lastElement());
+        spanMap.put(obj, spanCopy);
+        return obj;
+    }
+
     public ExpressionParser(TokenSource tokenSource) {
         this.tokenSource = tokenSource;
     }
 
     @Override
     public Expression parseExpression(int predence) {
+        startRecording();
         Token token = consume();
 
         PrefixParser prefixParser = prefixParsers.get(token.getType());
@@ -134,10 +172,12 @@ public class ExpressionParser implements TokenParser {
         }
 
         Expression left = prefixParser.parse(this, token);
+        keepAndEndRecording(left);
 
         while (postfixParsers.containsKey(peek().getType())) {
             token = consume();
             left = postfixParsers.get(token.getType()).parse(this, left, token);
+            keepAndEndRecording(left);
         }
 
         while (predence < getPrecedence()) {
@@ -145,8 +185,10 @@ public class ExpressionParser implements TokenParser {
 
             InfixParser infix = infixParsers.get(token.getType());
             left = infix.parse(this, left, token);
+            keepAndEndRecording(left);
         }
 
+        stopRecording();
         return left;
     }
 
