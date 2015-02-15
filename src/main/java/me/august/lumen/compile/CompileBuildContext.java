@@ -12,13 +12,15 @@ import java.util.Map;
 
 public class CompileBuildContext implements BuildContext {
 
+    private static final int CLASS_VERSION = 51;
+
     private Map<Object, Span> positionMap = new HashMap<>();
     private List<SourceException> errors = new ArrayList<>();
     private boolean cont = true;
 
     @Override
     public int classVersion() {
-        return 51;
+        return CLASS_VERSION;
     }
 
     @Override
@@ -27,7 +29,7 @@ public class CompileBuildContext implements BuildContext {
     }
 
     @Override
-    public void error(String msg, SourcePositionProvider src) {
+    public void error(String msg, SourcePositionProvider src, boolean fatal) {
         SourceException ex = new SourceException(msg);
         ex.beginPos(src.getStart()).endPos(src.getEnd());
 

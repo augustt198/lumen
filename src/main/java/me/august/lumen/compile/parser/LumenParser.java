@@ -35,17 +35,19 @@ public class LumenParser extends ExpressionParser {
 
     public ProgramNode parseProgram() {
         List<ImportNode> imports    = new ArrayList<>();
-        Token token                 = consume();
         ClassNode classNode         = null;
 
+        startRecording();
+        Token token                 = consume();
         while (token.getType() != EOF) {
             // Handle import declaration
             if (token.getType() == IMPORT_KEYWORD) {
 
                 ImportPathToken pathToken = (ImportPathToken) consume();
-                imports.add(new ImportNode(
-                        pathToken.getPath(), pathToken.getClasses()
-                ));
+                ImportNode node = new ImportNode(pathToken.getPath(), pathToken.getClasses());
+                imports.add(node);
+
+                endRecording(node);
 
             // Handle class declaration
             } else if (token.getType() == CLASS_KEYWORD || token.isModifier()) {
@@ -60,10 +62,13 @@ public class LumenParser extends ExpressionParser {
                 }
 
                 classNode = parseClass(modifiers);
+                endRecording(classNode);
             }
 
+            startRecording();
             token = consume();
         }
+        stopRecording();
 
         return new ProgramNode(imports, classNode);
     }
@@ -120,6 +125,7 @@ public class LumenParser extends ExpressionParser {
     private void parseMethodOrField(ClassNode classNode) {
         ModifierSet modifiers = new ModifierSet();
 
+        startRecording();
         boolean hasAccessModifier = false;
         while (peek().isModifier()) {
             modifiers.add(consume().getType().toModifier());
@@ -134,10 +140,14 @@ public class LumenParser extends ExpressionParser {
         if (token.getType() == IDENTIFIER) {
             FieldNode field = parseField(modifiers);
             classNode.getFields().add(field);
+
+            endRecording(field);
         } else if (token.getType() == DEF_KEYWORD) {
             consume(); // consume 'def'
             MethodNode method = parseMethod(modifiers);
             classNode.getMethods().add(method);
+
+            endRecording(method);
         }
     }
 
@@ -188,6 +198,8 @@ public class LumenParser extends ExpressionParser {
 
     private Body parseBody() {
         Body body = new Body();
+        startRecording();
+
         expect(L_BRACE);
 
         while (peek().getType() != R_BRACE) {
@@ -195,35 +207,40 @@ public class LumenParser extends ExpressionParser {
         }
         expect(R_BRACE);
 
-        return body;
+        return endRecording(body);
     }
 
     private CodeBlock parseStatement() {
+        startRecording();
+
+        CodeBlock code;
         if (accept(VAR_KEYWORD)) {
-            return parseLocalVariable();
+            code = parseLocalVariable();
         } else if (accept(L_BRACE)) {
-            return parseBody();
+            code = parseBody();
         } else if (accept(IF_KEYWORD)) {
-            return parseIfStatement(false);
+            code = parseIfStatement(false);
         } else if (accept(UNLESS_KEYWORD)) {
-            return parseIfStatement(true);
+            code = parseIfStatement(true);
         } else if (accept(WHILE_KEYWORD)) {
-            return parseWhileStatement(false);
+            code = parseWhileStatement(false);
         } else if (accept(UNTIL_KEYWORD)) {
-            return parseWhileStatement(true);
+            code = parseWhileStatement(true);
         } else if (accept(EACH_KEYWORD)) {
-            return parseEachStatement();
+            code = parseEachStatement();
         } else if (accept(FOR_KEYWORD)) {
-            return parseForStatement();
+            code = parseForStatement();
         } else if (accept(BREAK_KEYWORD)) {
-            return new BreakStmt();
+            code = new BreakStmt();
         } else if (accept(NEXT_KEYWORD)) {
-            return new NextStmt();
+            code = new NextStmt();
         } else if (accept(RETURN_KEYWORD)) {
-            return new ReturnStmt(parseExpression());
+            code = new ReturnStmt(parseExpression());
         } else {
-            return parseExpression();
+            code = parseExpression();
         }
+
+        return endRecording(code);
     }
 
     private VarStmt parseLocalVariable() {

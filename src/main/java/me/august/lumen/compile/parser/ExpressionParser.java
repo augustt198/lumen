@@ -1,6 +1,5 @@
 package me.august.lumen.compile.parser;
 
-import me.august.lumen.compile.parser.ast.CodeBlock;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.components.*;
 import me.august.lumen.compile.scanner.Token;
@@ -84,7 +83,7 @@ public class ExpressionParser implements TokenParser {
     private TokenSource tokenSource;
     private Stack<Token> queuedTokens = new Stack<>();
 
-    private Map<CodeBlock, Span> spanMap = new HashMap<>();
+    private Map<Object, Span> spanMap = new HashMap<>();
     private Stack<Span> spanRecorder = new Stack<>();
 
     @Override
@@ -136,21 +135,21 @@ public class ExpressionParser implements TokenParser {
         return false;
     }
 
-    private void startRecording() {
+    protected void startRecording() {
         spanRecorder.push(new Span(-1, 0));
     }
 
-    private void stopRecording() {
+    protected void stopRecording() {
         spanRecorder.pop();
     }
 
-    private <T extends CodeBlock> T endRecording(T obj) {
+    protected <T> T endRecording(T obj) {
         Span span = spanRecorder.pop();
         spanMap.put(obj, span);
         return obj;
     }
 
-    private <T extends CodeBlock> T keepAndEndRecording(T obj) {
+    protected <T> T keepAndEndRecording(T obj) {
         Span spanCopy = new Span(spanRecorder.lastElement());
         spanMap.put(obj, spanCopy);
         return obj;

@@ -11,7 +11,8 @@ public interface BuildContext {
 
     int classVersion();
     List<SourceException> errors();
-    void error(String msg, SourcePositionProvider src);
+
+    void error(String msg, SourcePositionProvider src, boolean fatal);
 
     boolean canContinue();
 
