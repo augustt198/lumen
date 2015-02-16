@@ -30,7 +30,7 @@ public class UnaryMinusExpr implements Expression {
 
             visitor.visitInsn(BytecodeUtil.negateInstruction(type));
         } else {
-            throw new RuntimeException("Incompatible types!");
+            context.error("Incompatible types", false, this);
         }
     }
 

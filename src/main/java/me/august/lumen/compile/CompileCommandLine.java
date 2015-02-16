@@ -56,7 +56,7 @@ public class CompileCommandLine implements Runnable {
     }
 
     private void compileSource(String src, String file) {
-        Driver driver = new Driver(new StringReader(src), deps);
+        Driver driver = new Driver(src, deps);
 
         TokenSource lexer = driver.phase1Scanning(keywordsToIgnore);
         ProgramNode program = driver.phase2Parsing(lexer);

@@ -40,6 +40,7 @@ public class AddExpr extends BinaryExpression {
             }
             return (type = widest);
         }
+
         throw new RuntimeException("Incompatible operands: " + leftType + ", " + rightType);
     }
 

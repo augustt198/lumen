@@ -135,8 +135,12 @@ public class VariableVisitor implements ASTVisitor {
     public void visitBreakStmt(BreakStmt stmt) {
         LoopScope loopScope = nextLoop();
 
-        if (loopScope == null)
-            throw new RuntimeException("break used where loop not found");
+        if (loopScope == null) {
+            build.error(
+                    "`break` used where loop not found",
+                    false, stmt
+            );
+        }
 
         stmt.setOwner(loopScope.getLoop());
     }
@@ -145,8 +149,10 @@ public class VariableVisitor implements ASTVisitor {
     public void visitNextStmt(NextStmt stmt) {
         LoopScope loopScope = nextLoop();
 
-        if (loopScope == null)
-            throw new RuntimeException("break used where loop not found");
+        build.error(
+                "`next` used where loop not found",
+                false, stmt
+        );
 
         stmt.setOwner(loopScope.getLoop());
     }
@@ -174,8 +180,12 @@ public class VariableVisitor implements ASTVisitor {
     private void handleIdent(IdentExpr expr) {
         VariableReference var = scope.getVariable(expr.getIdentifier());
 
-        if (var == null)
-            throw new RuntimeException("Undefined variable: " + expr.getIdentifier());
+        if (var == null) {
+            build.error(
+                    "Undefined variable: " + expr.getIdentifier(),
+                    false, expr
+            );
+        }
 
         expr.setVariableReference(var);
         expr.setExpressionType(var.getType());

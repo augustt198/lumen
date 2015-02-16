@@ -1,5 +1,7 @@
 package me.august.lumen;
 
+import me.august.lumen.compile.CompileBuildContext;
+import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.LumenParser;
 import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.parser.ast.expr.Expression;
@@ -30,17 +32,19 @@ public class Util {
     }
 
     public static ProgramNode parse(String src) {
-        TokenSource lexer   = new LumenScanner(src);
-        LumenParser parser = new LumenParser(lexer);
-        return parser.parseProgram();
+        return createParser(src).parseProgram();
     }
 
 
     public static Expression parseExpression(String src) {
-        TokenSource lexer   = new LumenScanner(src);
-        LumenParser parser = new LumenParser(lexer);
+        return createParser(src).parseExpression();
+    }
 
-        return parser.parseExpression();
+    private static LumenParser createParser(String src) {
+        BuildContext context = new CompileBuildContext(src);
+
+        TokenSource lexer   = new LumenScanner(src);
+        return new LumenParser(lexer, context);
     }
 
 }

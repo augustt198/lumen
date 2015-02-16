@@ -41,7 +41,7 @@ public class CastExpr extends Typed implements Expression {
 
         // ensure orig and target are either both primitive, or both objects
         if (BytecodeUtil.isPrimitive(orig) != BytecodeUtil.isPrimitive(target)) {
-            throw new RuntimeException("Incomptable types");
+            context.error("Incompatible types", false, this);
         }
 
         // if both are primitives

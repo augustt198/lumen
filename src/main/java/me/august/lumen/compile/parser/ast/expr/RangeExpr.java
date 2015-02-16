@@ -22,7 +22,7 @@ public class RangeExpr extends BinaryExpression {
 
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
-        throw new UnsupportedOperationException("Illegal use of range.");
+        context.error("Illegal use of range.", false, this);
     }
 
 }

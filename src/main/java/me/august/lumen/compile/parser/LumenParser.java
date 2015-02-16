@@ -1,6 +1,7 @@
 package me.august.lumen.compile.parser;
 
 import me.august.lumen.common.ModifierSet;
+import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.*;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.NotExpr;
@@ -17,6 +18,10 @@ import java.util.List;
 import static me.august.lumen.compile.scanner.Type.*;
 
 public class LumenParser extends ExpressionParser {
+
+    public LumenParser(TokenSource tokenSource, BuildContext context) {
+        super(tokenSource, context);
+    }
 
     public LumenParser(TokenSource tokenSource) {
         super(tokenSource);
@@ -324,8 +329,10 @@ public class LumenParser extends ExpressionParser {
         consume().expectType(IDENTIFIER).expectContent("in");
 
         Expression expr = parseExpression();
-        if (!(expr instanceof RangeExpr))
-            throw new RuntimeException("Expected range");
+        if (!(expr instanceof RangeExpr)) {
+            getBuildContext().error("Expected range", false, expr);
+        }
+
         RangeExpr range = (RangeExpr) expr;
 
         Body body;

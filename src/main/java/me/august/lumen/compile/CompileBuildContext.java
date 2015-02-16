@@ -1,22 +1,32 @@
 package me.august.lumen.compile;
 
+import me.august.lumen.common.TextualSnippet;
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.error.SourceException;
-import me.august.lumen.compile.scanner.pos.SourcePositionProvider;
 import me.august.lumen.compile.scanner.pos.Span;
+import org.fusesource.jansi.Ansi;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import static org.fusesource.jansi.Ansi.Attribute.*;
+import static org.fusesource.jansi.Ansi.Color.*;
+import static org.fusesource.jansi.Ansi.ansi;
+
 
 public class CompileBuildContext implements BuildContext {
 
     private static final int CLASS_VERSION = 51;
 
     private Map<Object, Span> positionMap = new HashMap<>();
-    private List<SourceException> errors = new ArrayList<>();
     private boolean cont = true;
+
+    private String source;
+
+    public CompileBuildContext(String source) {
+        this.source = source;
+    }
+
+    public CompileBuildContext() {}
 
     @Override
     public int classVersion() {
@@ -24,16 +34,20 @@ public class CompileBuildContext implements BuildContext {
     }
 
     @Override
-    public List<SourceException> errors() {
-        return errors;
-    }
+    public void error(String msg, boolean fatal, Object reference) {
+        if (source == null || !positionMap.containsKey(reference)) {
+            Ansi ansi = ansi().a(INTENSITY_BOLD).fg(RED).a("Error: " + msg).reset();
+            System.out.println(ansi);
 
-    @Override
-    public void error(String msg, SourcePositionProvider src, boolean fatal) {
-        SourceException ex = new SourceException(msg);
-        ex.beginPos(src.getStart()).endPos(src.getEnd());
+            ansi = ansi().a(INTENSITY_BOLD).fg(RED).a("(Unknown location)").reset();
+            System.out.println(ansi);
+        } else {
+            Span span = positionMap.get(reference);
+            TextualSnippet snippet = TextualSnippet.selectLines(source, span.getStart(), span.getEnd());
 
-        errors.add(ex);
+            snippet.printError(msg);
+        }
+        System.exit(1);
     }
 
     @Override

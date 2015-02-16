@@ -17,23 +17,26 @@ import java.util.Collection;
 
 public class Driver {
 
-    Reader reader;
-    private CompileBuildContext context = new CompileBuildContext();
+    private CompileBuildContext context;
+
+    private String source;
 
     private NameResolver resolver;
     private DependencyManager deps;
 
-    public Driver(Reader reader, DependencyManager deps) {
-        this.reader = reader;
+    public Driver(String source, DependencyManager deps) {
+        this.source = source;
         this.deps = deps;
+
+        this.context = new CompileBuildContext(source);
     }
 
-    public Driver(Reader reader) {
-        this(reader, new DependencyManager());
+    public Driver(String source) {
+        this(source, new DependencyManager());
     }
 
     public TokenSource phase1Scanning() {
-        return new LumenScanner(reader);
+        return new LumenScanner(source);
     }
 
     public TokenSource phase1Scanning(Collection<String> ignore) {
@@ -46,7 +49,7 @@ public class Driver {
     }
 
     public ProgramNode phase2Parsing(TokenSource lexer) {
-        return new LumenParser(lexer).parseProgram();
+        return new LumenParser(lexer, context).parseProgram();
     }
 
     public ProgramNode phase3Resolving(ProgramNode program) {

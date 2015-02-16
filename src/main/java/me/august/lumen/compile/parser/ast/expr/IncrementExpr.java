@@ -47,8 +47,12 @@ public class IncrementExpr implements Expression {
 
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
-        if (!BytecodeUtil.isNumeric(expressionType()) || expressionType().getSort() > Type.INT)
-            throw new RuntimeException("Incompatible type: " + expressionType());
+        if (!BytecodeUtil.isNumeric(expressionType()) || expressionType().getSort() > Type.INT) {
+            context.error(
+                    "Incompatible type: " + expressionType(),
+                    false, this
+            );
+        }
 
         // If it's postfix we load the value
         // *before* incrementing, so the un-incremented

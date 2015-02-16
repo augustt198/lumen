@@ -25,7 +25,7 @@ public class RunProgramTest {
     }
 
     private byte[] compile(String src) {
-        Driver driver = new Driver(new StringReader(src));
+        Driver driver = new Driver(src);
         TokenSource lexer   = driver.phase1Scanning();
 
         ProgramNode pgrm = driver.phase2Parsing(lexer);

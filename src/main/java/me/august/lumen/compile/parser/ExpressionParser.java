@@ -1,5 +1,7 @@
 package me.august.lumen.compile.parser;
 
+import me.august.lumen.compile.CompileBuildContext;
+import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.components.*;
 import me.august.lumen.compile.scanner.Token;
@@ -83,8 +85,20 @@ public class ExpressionParser implements TokenParser {
     private TokenSource tokenSource;
     private Stack<Token> queuedTokens = new Stack<>();
 
-    private Map<Object, Span> spanMap = new HashMap<>();
     private Stack<Span> spanRecorder = new Stack<>();
+
+    private BuildContext buildContext;
+
+    public ExpressionParser(TokenSource tokenSource) {
+        this.tokenSource  = tokenSource;
+        this.buildContext = new CompileBuildContext();
+    }
+
+
+    public ExpressionParser(TokenSource tokenSource, BuildContext buildContext) {
+        this.tokenSource  = tokenSource;
+        this.buildContext = buildContext;
+    }
 
     @Override
     public Token consume() {
@@ -145,18 +159,14 @@ public class ExpressionParser implements TokenParser {
 
     protected <T> T endRecording(T obj) {
         Span span = spanRecorder.pop();
-        spanMap.put(obj, span);
+        buildContext.positionMap().put(obj, span);
         return obj;
     }
 
     protected <T> T keepAndEndRecording(T obj) {
         Span spanCopy = new Span(spanRecorder.lastElement());
-        spanMap.put(obj, spanCopy);
+        buildContext.positionMap().put(obj, spanCopy);
         return obj;
-    }
-
-    public ExpressionParser(TokenSource tokenSource) {
-        this.tokenSource = tokenSource;
     }
 
     @Override
@@ -200,4 +210,7 @@ public class ExpressionParser implements TokenParser {
         }
     }
 
+    public BuildContext getBuildContext() {
+        return buildContext;
+    }
 }
