@@ -43,11 +43,11 @@ public class TextualSnippet {
             if (count == 0) {
                 first = content.substring(0, selected.getStart());
                 if (count == lines.size() - 1) {
-                    middle = content.substring(selected.getStart(), selected.getEnd() - 1);
-                    last = content.substring(selected.getEnd() - 1);
+                    middle = content.substring(selected.getStart(), selected.getEnd());
+                    last = content.substring(selected.getEnd());
                     extra = underline(
                             ljust + 3 + selected.getStart(),
-                            ljust + 3 + selected.getEnd()
+                            ljust + 4 + selected.getEnd()
                     ).toString();
                 } else {
                     middle = content.substring(selected.getStart());
@@ -111,7 +111,7 @@ public class TextualSnippet {
 
         for (int i = start; i < str.length(); i++) {
             if (i == end) {
-                relativeEndPos = i - lineStartPos + 1;
+                relativeEndPos = i - lineStartPos;
             }
             if (str.charAt(i) == '\n' || i == str.length() - 1) {
                 String sub = str.substring(lineStartPos, i);

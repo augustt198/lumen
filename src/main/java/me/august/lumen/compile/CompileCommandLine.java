@@ -8,6 +8,7 @@ import me.august.lumen.compile.parser.ast.ProgramNode;
 import me.august.lumen.compile.resolve.lookup.DependencyManager;
 import me.august.lumen.compile.resolve.lookup.JarLookup;
 import me.august.lumen.compile.scanner.TokenSource;
+import org.fusesource.jansi.Ansi;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,6 +66,12 @@ public class CompileCommandLine implements Runnable {
 
         String name = program.getClassNode().getName();
         saveBytecode(driver.phase5Bytecode(program), name, file);
+
+        Ansi ansi = Ansi.ansi()
+                .a(Ansi.Attribute.INTENSITY_BOLD).fg(Ansi.Color.GREEN)
+                .a("Successfully compiled " + file)
+                .reset();
+        System.out.println(ansi);
     }
 
     private void saveBytecode(byte[] bytes, String name, String path) {
