@@ -547,59 +547,60 @@ public class LumenScanner implements TokenSource {
         }
     }
 
-    static {
-        KEYWORD_HANDLERS.put(Type.IMPORT_KEYWORD, (lex) -> {
-            lex.read(); // consume whitespace
+    private void handleImport() {
+        read(); // consume whitespace
 
-            StringBuilder sb = new StringBuilder();
-            sb.append(lex.nextPlainIdentifier());
-            List<String> nodes = null;
+        StringBuilder sb = new StringBuilder();
+        sb.append(nextPlainIdentifier());
+        List<String> nodes = null;
 
-            boolean didEnd = false;
-            while (lex.peek() == '.') {
-                sb.append((char) lex.read());
+        boolean didEnd = false;
+        while (peek() == '.') {
+            sb.append((char) read());
 
-                if (didEnd)
-                    // TODO proper exception handling
-                    throw new RuntimeException("import statement already terminated");
+            if (didEnd)
+                // TODO proper exception handling
+                throw new RuntimeException("import statement already terminated");
 
-                if (lex.accept('{')) {
-                    // once we reach a multi-import, it must be the end
-                    didEnd = true;
+            if (accept('{')) {
+                // once we reach a multi-import, it must be the end
+                didEnd = true;
 
-                    lex.consumeWhitespace();
+                consumeWhitespace();
 
-                    nodes = new ArrayList<>();
-                    nodes.add(lex.nextPlainIdentifier().toString());
-                    lex.consumeWhitespace();
+                nodes = new ArrayList<>();
+                nodes.add(nextPlainIdentifier().toString());
+                consumeWhitespace();
 
-                    while (lex.accept(',')) {
-                        lex.consumeWhitespace();
-                        nodes.add(lex.nextPlainIdentifier().toString());
-                    }
-
-                    // TODO proper exception handling
-                    if (lex.read() != '}')
-                        throw new RuntimeException("Expected right brace: }");
-                } else {
-                    sb.append(lex.nextPlainIdentifier());
+                while (accept(',')) {
+                    consumeWhitespace();
+                    nodes.add(nextPlainIdentifier().toString());
                 }
+
+                // TODO proper exception handling
+                if (read() != '}')
+                    throw new RuntimeException("Expected right brace: }");
+            } else {
+                sb.append(nextPlainIdentifier());
             }
+        }
 
-            String importPath = sb.toString();
-            if (nodes == null) {
-                // grab last identifier after dot
-                int lastIdx = importPath.lastIndexOf('.');
-                nodes       = Arrays.asList(importPath.substring(lastIdx + 1));
-                importPath  = importPath.substring(0, lastIdx);
-            }
+        String importPath = sb.toString();
+        if (nodes == null) {
+            // grab last identifier after dot
+            int lastIdx = importPath.lastIndexOf('.');
+            nodes       = Arrays.asList(importPath.substring(lastIdx + 1));
+            importPath  = importPath.substring(0, lastIdx);
+        }
 
-            lex.queuedTokens.push(new ImportPathToken(
-                    sb.toString(), lex.advanceRecorder(), lex.lastRecordedPosition,
-                    importPath, nodes
-            ));
+        queuedTokens.push(new ImportPathToken(
+                sb.toString(), advanceRecorder(), lastRecordedPosition,
+                importPath, nodes
+        ));
+    }
 
-        });
+    static {
+        KEYWORD_HANDLERS.put(Type.IMPORT_KEYWORD, LumenScanner::handleImport);
     }
 
 }

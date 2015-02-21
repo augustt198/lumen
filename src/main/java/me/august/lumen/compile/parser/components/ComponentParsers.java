@@ -1,81 +1,48 @@
 package me.august.lumen.compile.parser.components;
 
-import me.august.lumen.compile.parser.TokenParser;
 import me.august.lumen.compile.parser.ast.expr.*;
-import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.Type;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
 import me.august.lumen.compile.scanner.tokens.StringToken;
 
 public final class ComponentParsers {
 
-    public static final NumberParser NUMBER_PARSER = new NumberParser();
+    public static final PrefixParser NUMBER_PARSER = (parser, token) -> {
+        if (token.getType() == Type.NUMBER) {
+            NumberToken numTok = (NumberToken) token;
+            return new NumExpr(numTok.getValue());
+        } else {
+            throw new RuntimeException("Unexpected token: " + token);
+        }
+    };
 
-    public static final GroupingParser GROUPING_PARSER = new GroupingParser();
+    public static final PrefixParser GROUPING_PARSER = (parser, token) -> {
+        Expression expression = parser.parseExpression();
 
-    public static final StringParser STRING_PARSER = new StringParser();
+        if (parser.consume().getType() != Type.R_PAREN) {
+            throw new RuntimeException("Expected right parenthesis");
+        }
 
-    public static final BooleanParser BOOLEAN_PARSER = new BooleanParser();
+        return expression;
+    };
 
-    public static final NullParser NULL_PARSER = new NullParser();
+    public static final PrefixParser STRING_PARSER = (parser, token) -> {
+        StringToken stringTok = (StringToken) token;
+        return new StringExpr(token.getContent(), stringTok.getQuoteType());
+    };
+
+    public static final PrefixParser BOOLEAN_PARSER = (parser, token) -> {
+        if (token.getType() == Type.TRUE) {
+            return new TrueExpr();
+        } else {
+            return new FalseExpr();
+        }
+    };
+
+    public static final PrefixParser NULL_PARSER =
+            (parser, token) -> new NullExpr();
 
     private ComponentParsers() {}
 
-    private static class NumberParser implements PrefixParser {
-
-        @Override
-        public Expression parse(TokenParser parser, Token token) {
-            if (token.getType() == Type.NUMBER) {
-                NumberToken numTok = (NumberToken) token;
-                return new NumExpr(numTok.getValue());
-            } else {
-                throw new RuntimeException("Unexpected token: " + token);
-            }
-        }
-
-    }
-
-    private static class GroupingParser implements PrefixParser {
-
-        @Override
-        public Expression parse(TokenParser parser, Token token) {
-            Expression expression = parser.parseExpression();
-
-            if (parser.consume().getType() != Type.R_PAREN) {
-                throw new RuntimeException("Expected right parenthesis");
-            }
-
-            return expression;
-        }
-
-    }
-
-    private static class StringParser implements PrefixParser {
-
-        @Override
-        public Expression parse(TokenParser parser, Token token) {
-            StringToken stringTok = (StringToken) token;
-            return new StringExpr(token.getContent(), stringTok.getQuoteType());
-        }
-
-    }
-
-    private static class BooleanParser implements PrefixParser {
-        @Override
-        public Expression parse(TokenParser parser, Token token) {
-            if (token.getType() == Type.TRUE) {
-                return new TrueExpr();
-            } else {
-                return new FalseExpr();
-            }
-        }
-    }
-
-    private static class NullParser implements PrefixParser {
-        @Override
-        public Expression parse(TokenParser parser, Token token) {
-            return new NullExpr();
-        }
-    }
 
 }
