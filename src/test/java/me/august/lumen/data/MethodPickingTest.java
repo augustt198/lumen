@@ -1,12 +1,12 @@
 package me.august.lumen.data;
 
-import junit.framework.Assert;
 import me.august.lumen.common.ModifierSet;
 import me.august.lumen.compile.resolve.convert.Conversions;
 import me.august.lumen.compile.resolve.data.MethodData;
 import me.august.lumen.compile.resolve.data.exception.AmbiguousMethodException;
 import me.august.lumen.compile.resolve.lookup.BuiltinClassLookup;
 import me.august.lumen.compile.resolve.lookup.ClassLookup;
+import org.junit.Assert;
 import org.junit.Test;
 import org.objectweb.asm.Type;
 
