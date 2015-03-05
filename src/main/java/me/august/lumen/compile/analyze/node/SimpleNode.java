@@ -49,9 +49,9 @@ public class SimpleNode<T> {
         }
     }
 
-    public void visitBottomDown(Consumer<SimpleNode<T>> visitor) {
+    public void visitBottomUp(Consumer<SimpleNode<T>> visitor) {
         for (SimpleNode<T> child : children) {
-            child.visitBottomDown(visitor);
+            child.visitBottomUp(visitor);
         }
         visitor.accept(this);
     }

@@ -5,17 +5,15 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-public class BitwiseComplementExpr implements Expression {
+public class BitwiseComplementExpr extends UnaryExpression {
 
-    private Expression value;
-
-    public BitwiseComplementExpr(Expression value) {
-        this.value = value;
+    public BitwiseComplementExpr(Expression operand) {
+        super(operand);
     }
 
     @Override
     public Type expressionType() {
-        Type type = value.expressionType();
+        Type type = operand.expressionType();
 
         if (type.getSort() <= Type.INT)
             return Type.INT_TYPE;
@@ -29,7 +27,7 @@ public class BitwiseComplementExpr implements Expression {
     public void generate(MethodVisitor visitor, BuildContext context) {
         Type type = expressionType();
 
-        value.generate(visitor, context);
+        operand.generate(visitor, context);
 
         int opcode;
         if (type.getSort() == Type.INT) {
@@ -45,8 +43,4 @@ public class BitwiseComplementExpr implements Expression {
         visitor.visitInsn(opcode);
     }
 
-    @Override
-    public Expression[] getChildren() {
-        return new Expression[]{value};
-    }
 }

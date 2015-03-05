@@ -9,19 +9,17 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-public class NotExpr implements Expression, Conditional {
+public class NotExpr extends UnaryExpression implements Conditional {
 
-    private Expression value;
-
-    public NotExpr(Expression value) {
-        this.value = value;
+    public NotExpr(Expression operand) {
+        super(operand);
     }
 
     @Override
     public Branch branch(MethodCodeGen ifBranch, MethodCodeGen elseBranch) {
         Label label = new Label();
         MethodCodeGen cond = (m, c) -> {
-            value.generate(m, c);
+            operand.generate(m, c);
             m.visitJumpInsn(Opcodes.IFNE, label);
         };
         return new Branch(cond, label, ifBranch, elseBranch);
@@ -37,8 +35,4 @@ public class NotExpr implements Expression, Conditional {
         branch(Conditional.PUSH_TRUE, Conditional.PUSH_FALSE).generate(visitor, context);
     }
 
-    @Override
-    public Expression[] getChildren() {
-        return new Expression[]{value};
-    }
 }

@@ -34,6 +34,10 @@ public class NumExpr extends TerminalExpression {
         }
     }
 
+    public Number getValue() {
+        return value;
+    }
+
     @Override
     public boolean isConstant() {
         return true;
