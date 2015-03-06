@@ -1,7 +1,7 @@
 package me.august.lumen.resolve;
 
-import me.august.lumen.compile.parser.ast.ImportNode;
-import me.august.lumen.compile.parser.ast.stmt.VarStmt;
+import me.august.lumen.compile.ast.ImportNode;
+import me.august.lumen.compile.ast.stmt.VarStmt;
 import me.august.lumen.compile.resolve.ResolvingVisitor;
 import me.august.lumen.compile.resolve.impl.NameResolver;
 import me.august.lumen.compile.resolve.type.UnresolvedType;

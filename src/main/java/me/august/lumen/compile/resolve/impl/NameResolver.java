@@ -1,7 +1,7 @@
 package me.august.lumen.compile.resolve.impl;
 
 import me.august.lumen.common.BytecodeUtil;
-import me.august.lumen.compile.parser.ast.ImportNode;
+import me.august.lumen.compile.ast.ImportNode;
 import me.august.lumen.compile.resolve.TypeResolver;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.Type;

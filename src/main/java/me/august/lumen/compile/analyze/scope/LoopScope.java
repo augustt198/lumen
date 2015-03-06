@@ -1,6 +1,6 @@
 package me.august.lumen.compile.analyze.scope;
 
-import me.august.lumen.compile.parser.ast.stmt.Loop;
+import me.august.lumen.compile.ast.stmt.Loop;
 
 public class LoopScope extends Scope {
 

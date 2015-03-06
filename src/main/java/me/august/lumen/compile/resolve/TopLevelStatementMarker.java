@@ -1,8 +1,8 @@
 package me.august.lumen.compile.resolve;
 
 import me.august.lumen.compile.analyze.ASTVisitor;
-import me.august.lumen.compile.parser.ast.CodeBlock;
-import me.august.lumen.compile.parser.ast.stmt.Body;
+import me.august.lumen.compile.ast.CodeBlock;
+import me.august.lumen.compile.ast.stmt.Body;
 
 /**
  * Marks all statements/expressions in a Body

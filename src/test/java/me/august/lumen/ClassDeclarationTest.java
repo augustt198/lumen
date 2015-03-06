@@ -2,8 +2,8 @@ package me.august.lumen;
 
 import me.august.lumen.common.Modifier;
 import me.august.lumen.common.ModifierSet;
-import me.august.lumen.compile.parser.ast.ClassNode;
-import me.august.lumen.compile.parser.ast.ProgramNode;
+import me.august.lumen.compile.ast.ClassNode;
+import me.august.lumen.compile.ast.ProgramNode;
 import org.junit.Assert;
 import org.junit.Test;
 

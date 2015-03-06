@@ -1,7 +1,7 @@
 package me.august.lumen.common;
 
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.parser.ast.expr.Expression;
+import me.august.lumen.compile.ast.expr.Expression;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;

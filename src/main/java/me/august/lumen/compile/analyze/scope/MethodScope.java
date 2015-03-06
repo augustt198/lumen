@@ -1,6 +1,6 @@
 package me.august.lumen.compile.analyze.scope;
 
-import me.august.lumen.compile.parser.ast.MethodNode;
+import me.august.lumen.compile.ast.MethodNode;
 
 public class MethodScope extends Scope {
 

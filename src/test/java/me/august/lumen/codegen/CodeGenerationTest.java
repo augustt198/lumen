@@ -2,7 +2,7 @@ package me.august.lumen.codegen;
 
 import me.august.lumen.Util;
 import me.august.lumen.common.BytecodeUtil;
-import me.august.lumen.compile.parser.ast.expr.Expression;
+import me.august.lumen.compile.ast.expr.Expression;
 import org.junit.Assert;
 import org.junit.Test;
 import org.objectweb.asm.MethodVisitor;

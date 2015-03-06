@@ -1,12 +1,12 @@
 package me.august.lumen;
 
-import me.august.lumen.compile.parser.ast.ClassNode;
-import me.august.lumen.compile.parser.ast.CodeBlock;
-import me.august.lumen.compile.parser.ast.MethodNode;
-import me.august.lumen.compile.parser.ast.ProgramNode;
-import me.august.lumen.compile.parser.ast.stmt.IfStmt;
-import me.august.lumen.compile.parser.ast.stmt.VarStmt;
-import me.august.lumen.compile.parser.ast.stmt.WhileStmt;
+import me.august.lumen.compile.ast.ClassNode;
+import me.august.lumen.compile.ast.CodeBlock;
+import me.august.lumen.compile.ast.MethodNode;
+import me.august.lumen.compile.ast.ProgramNode;
+import me.august.lumen.compile.ast.stmt.IfStmt;
+import me.august.lumen.compile.ast.stmt.VarStmt;
+import me.august.lumen.compile.ast.stmt.WhileStmt;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

@@ -1,13 +1,12 @@
 package me.august.lumen;
 
-import me.august.lumen.compile.Driver;
-import me.august.lumen.compile.parser.ast.ProgramNode;
+import me.august.lumen.compile.driver.Driver;
+import me.august.lumen.compile.ast.ProgramNode;
 import me.august.lumen.compile.scanner.TokenSource;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.PrintStream;
-import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;

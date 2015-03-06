@@ -1,10 +1,10 @@
 package me.august.lumen;
 
-import me.august.lumen.compile.CompileBuildContext;
+import me.august.lumen.compile.driver.CompileBuildContext;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.parser.LumenParser;
-import me.august.lumen.compile.parser.ast.ProgramNode;
-import me.august.lumen.compile.parser.ast.expr.Expression;
+import me.august.lumen.compile.ast.ProgramNode;
+import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.scanner.LumenScanner;
 import me.august.lumen.compile.scanner.TokenSource;
 

@@ -1,7 +1,7 @@
 package me.august.lumen;
 
 
-import me.august.lumen.compile.CompileCommandLine;
+import me.august.lumen.compile.driver.CompileCommandLine;
 import org.fusesource.jansi.AnsiConsole;
 
 public class Main {

@@ -1,6 +1,6 @@
 package me.august.lumen.compile.analyze.var;
 
-import me.august.lumen.compile.parser.ast.expr.Expression;
+import me.august.lumen.compile.ast.expr.Expression;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;

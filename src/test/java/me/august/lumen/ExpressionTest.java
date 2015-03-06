@@ -1,6 +1,6 @@
 package me.august.lumen;
 
-import me.august.lumen.compile.parser.ast.expr.*;
+import me.august.lumen.compile.ast.expr.*;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.junit.Assert;
 import org.junit.Test;

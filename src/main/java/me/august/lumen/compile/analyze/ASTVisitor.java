@@ -1,11 +1,11 @@
 package me.august.lumen.compile.analyze;
 
-import me.august.lumen.compile.parser.ast.ClassNode;
-import me.august.lumen.compile.parser.ast.FieldNode;
-import me.august.lumen.compile.parser.ast.MethodNode;
-import me.august.lumen.compile.parser.ast.ProgramNode;
-import me.august.lumen.compile.parser.ast.expr.Expression;
-import me.august.lumen.compile.parser.ast.stmt.*;
+import me.august.lumen.compile.ast.ClassNode;
+import me.august.lumen.compile.ast.FieldNode;
+import me.august.lumen.compile.ast.MethodNode;
+import me.august.lumen.compile.ast.ProgramNode;
+import me.august.lumen.compile.ast.expr.Expression;
+import me.august.lumen.compile.ast.stmt.*;
 
 /**
  * Visitor pattern used for traversing the AST.
