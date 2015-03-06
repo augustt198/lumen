@@ -4,7 +4,7 @@ import me.august.lumen.compile.parser.TokenParser;
 import me.august.lumen.compile.parser.ast.expr.*;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import me.august.lumen.compile.scanner.Token;
-import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.TokenType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +17,12 @@ public class IdentifierParser implements PrefixParser {
         String identifier = token.getContent();
 
         // Hit separator, must be static field or method call
-        if (parser.accept(Type.SEP)) {
-            String name = parser.consume().expectType(Type.IDENTIFIER).getContent();
+        if (parser.accept(TokenType.SEP)) {
+            String name = parser.consume().expectType(TokenType.IDENTIFIER).getContent();
             UnresolvedType classType = new UnresolvedType(identifier);
 
             // method -> Foo::bar()
-            if (parser.peek().getType() == Type.L_PAREN) {
+            if (parser.peek().getType() == TokenType.L_PAREN) {
                 List<Expression> parameters = parseParameters(parser);
                 expression = new StaticMethodCall(classType, name, parameters);
 
@@ -31,7 +31,7 @@ public class IdentifierParser implements PrefixParser {
                 expression = new StaticField(classType, name);
             }
         } else {
-            if (parser.peek().getType() == Type.L_PAREN) {
+            if (parser.peek().getType() == TokenType.L_PAREN) {
                 List<Expression> parameters = parseParameters(parser);
                 expression = new MethodCallExpr(identifier, parameters);
             } else {
@@ -39,11 +39,11 @@ public class IdentifierParser implements PrefixParser {
             }
         }
 
-        while (parser.accept(Type.DOT)) {
-            String name = parser.consume().expectType(Type.IDENTIFIER).getContent();
+        while (parser.accept(TokenType.DOT)) {
+            String name = parser.consume().expectType(TokenType.IDENTIFIER).getContent();
 
             // instance method call
-            if (parser.peek().getType() == Type.L_PAREN) {
+            if (parser.peek().getType() == TokenType.L_PAREN) {
                 List<Expression> parameters = parseParameters(parser);
                 expression = new MethodCallExpr(name, parameters, expression);
 
@@ -57,17 +57,17 @@ public class IdentifierParser implements PrefixParser {
     }
 
     private List<Expression> parseParameters(TokenParser parser) {
-        parser.expect(Type.L_PAREN);
+        parser.expect(TokenType.L_PAREN);
 
         List<Expression> parameters = new ArrayList<>();
-        while (parser.peek().getType() != Type.R_PAREN) {
+        while (parser.peek().getType() != TokenType.R_PAREN) {
             parameters.add(parser.parseExpression());
 
-            if (!parser.accept(Type.COMMA)) {
+            if (!parser.accept(TokenType.COMMA)) {
                 break;
             }
         }
-        parser.expect(Type.R_PAREN);
+        parser.expect(TokenType.R_PAREN);
 
         return parameters;
     }

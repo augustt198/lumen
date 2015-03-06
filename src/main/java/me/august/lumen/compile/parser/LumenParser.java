@@ -15,7 +15,7 @@ import me.august.lumen.compile.scanner.tokens.ImportPathToken;
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.august.lumen.compile.scanner.Type.*;
+import static me.august.lumen.compile.scanner.TokenType.*;
 
 public class LumenParser extends ExpressionParser {
 

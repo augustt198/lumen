@@ -1,14 +1,14 @@
 package me.august.lumen.compile.scanner.tokens;
 
 import me.august.lumen.compile.scanner.Token;
-import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.TokenType;
 
 public class NumberToken extends Token {
 
     private Number value;
 
     public NumberToken(Number value, int start, int end) {
-        super(value.toString(), start, end, Type.NUMBER);
+        super(value.toString(), start, end, TokenType.NUMBER);
         this.value = value;
     }
 

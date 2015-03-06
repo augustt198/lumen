@@ -1,14 +1,14 @@
 package me.august.lumen.compile.parser.components;
 
 import me.august.lumen.compile.parser.ast.expr.*;
-import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.TokenType;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
 import me.august.lumen.compile.scanner.tokens.StringToken;
 
 public final class ComponentParsers {
 
     public static final PrefixParser NUMBER_PARSER = (parser, token) -> {
-        if (token.getType() == Type.NUMBER) {
+        if (token.getType() == TokenType.NUMBER) {
             NumberToken numTok = (NumberToken) token;
             return new NumExpr(numTok.getValue());
         } else {
@@ -19,7 +19,7 @@ public final class ComponentParsers {
     public static final PrefixParser GROUPING_PARSER = (parser, token) -> {
         Expression expression = parser.parseExpression();
 
-        if (parser.consume().getType() != Type.R_PAREN) {
+        if (parser.consume().getType() != TokenType.R_PAREN) {
             throw new RuntimeException("Expected right parenthesis");
         }
 
@@ -32,7 +32,7 @@ public final class ComponentParsers {
     };
 
     public static final PrefixParser BOOLEAN_PARSER = (parser, token) -> {
-        if (token.getType() == Type.TRUE) {
+        if (token.getType() == TokenType.TRUE) {
             return new TrueExpr();
         } else {
             return new FalseExpr();

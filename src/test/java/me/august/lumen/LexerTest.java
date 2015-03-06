@@ -3,13 +3,13 @@ package me.august.lumen;
 import me.august.lumen.compile.scanner.LumenScanner;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.TokenSource;
-import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.TokenType;
 import me.august.lumen.compile.scanner.tokens.ImportPathToken;
 import me.august.lumen.compile.scanner.tokens.NumberToken;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static me.august.lumen.compile.scanner.Type.*;
+import static me.august.lumen.compile.scanner.TokenType.*;
 
 public class LexerTest {
 
@@ -21,7 +21,7 @@ public class LexerTest {
 
     @Test
     public void testTokens() {
-        Type[] expectedTypes = {
+        TokenType[] expectedTypes = {
             IDENTIFIER,
             GT, GTE, SH_R, U_SH_R,
             LT, LTE, SH_L,
@@ -43,7 +43,7 @@ public class LexerTest {
 
         int count = 0;
         while (true) {
-            Type type = lexer.nextToken().getType();
+            TokenType type = lexer.nextToken().getType();
 
             Assert.assertTrue(
                     "More tokens read than expected",
@@ -90,9 +90,9 @@ public class LexerTest {
         src = "import foo.bar.{baz, wut}";
         lex = createLexer(src);
 
-        Assert.assertEquals(Type.IMPORT_KEYWORD, lex.nextToken().getType());
+        Assert.assertEquals(TokenType.IMPORT_KEYWORD, lex.nextToken().getType());
         tok = lex.nextToken();
-        Assert.assertEquals(Type.IMPORT_PATH, tok.getType());
+        Assert.assertEquals(TokenType.IMPORT_PATH, tok.getType());
         Assert.assertTrue(
                 "Expected token to be an ImportPathToken",
                 tok instanceof ImportPathToken
@@ -102,9 +102,9 @@ public class LexerTest {
         src = "import foo.bar.qux";
         lex = createLexer(src);
 
-        Assert.assertEquals(Type.IMPORT_KEYWORD, lex.nextToken().getType());
+        Assert.assertEquals(TokenType.IMPORT_KEYWORD, lex.nextToken().getType());
         tok = lex.nextToken();
-        Assert.assertEquals(Type.IMPORT_PATH, tok.getType());
+        Assert.assertEquals(TokenType.IMPORT_PATH, tok.getType());
         Assert.assertTrue(
                 "Expected token to be an ImportPathToken",
                 tok instanceof ImportPathToken
@@ -120,7 +120,7 @@ public class LexerTest {
             Token tok = lex.nextToken();
             //System.out.println(tok.getType().name() + ": " + tok.getStart() + ".." + tok.getEnd());
 
-            if (tok.getType() == Type.EOF)
+            if (tok.getType() == TokenType.EOF)
                 break;
         }
     }

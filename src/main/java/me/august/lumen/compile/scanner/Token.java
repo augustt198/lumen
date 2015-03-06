@@ -7,20 +7,20 @@ public class Token {
     private int start;  // start of token in source code (inclusive)
     private int end;    // end of token in source code (exclusive)
 
-    private Type type;
+    private TokenType type;
 
-    public Token(String content, int start, int end, Type type) {
+    public Token(String content, int start, int end, TokenType type) {
         this.content = content;
         this.start = start;
         this.end = end;
         this.type = type;
     }
 
-    public Token expectType(Type type) {
+    public Token expectType(TokenType type) {
         return expectType(type, "Expected token type " + type + ", found " + this.type);
     }
 
-    public Token expectType(Type type, String msg) {
+    public Token expectType(TokenType type, String msg) {
         if (this.type != type) {
             throw new RuntimeException(msg);
         }
@@ -50,7 +50,7 @@ public class Token {
         return end;
     }
 
-    public Type getType() {
+    public TokenType getType() {
         return type;
     }
 
@@ -66,11 +66,11 @@ public class Token {
         this.end = end;
     }
 
-    public void setType(Type type) {
+    public void setType(TokenType type) {
         this.type = type;
     }
 
-    public boolean hasAttribute(Type.Attribute a) {
+    public boolean hasAttribute(TokenType.Attribute a) {
         return type.hasAttribute(a);
     }
 

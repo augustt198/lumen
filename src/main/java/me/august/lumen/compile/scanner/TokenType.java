@@ -2,7 +2,7 @@ package me.august.lumen.compile.scanner;
 
 import me.august.lumen.common.Modifier;
 
-public enum Type {
+public enum TokenType {
 
     L_PAREN,    // (
     R_PAREN,    // )
@@ -125,19 +125,19 @@ public enum Type {
 
     private String[] keywords;
 
-    Type() {
+    TokenType() {
         this(new Attribute[]{});
     }
 
-    Type(String... keywords) {
+    TokenType(String... keywords) {
         this.keywords = keywords;
     }
 
-    Type(Attribute... attrs) {
+    TokenType(Attribute... attrs) {
         this.attrs = attrs;
     }
 
-    Type(String[] keywords, Attribute... attrs) {
+    TokenType(String[] keywords, Attribute... attrs) {
         this.keywords = keywords;
         this.attrs    = attrs;
     }

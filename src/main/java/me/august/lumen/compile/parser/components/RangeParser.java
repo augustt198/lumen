@@ -7,20 +7,20 @@ import me.august.lumen.compile.parser.ast.expr.IdentExpr;
 import me.august.lumen.compile.parser.ast.expr.RangeExpr;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import me.august.lumen.compile.scanner.Token;
-import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.TokenType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.august.lumen.compile.scanner.Type.*;
+import static me.august.lumen.compile.scanner.TokenType.*;
 
 public class RangeParser implements InfixParser {
 
     @Override
     public Expression parse(TokenParser parser, Expression left, Token token) {
-        boolean inclusive = token.getType() == Type.RANGE_INCLUSIVE;
+        boolean inclusive = token.getType() == TokenType.RANGE_INCLUSIVE;
 
-        if (parser.accept(Type.L_BRACKET)) {
+        if (parser.accept(TokenType.L_BRACKET)) {
             return parseArrayInitializer(parser, left);
         } else {
             Expression right = parser.parseExpression(getPrecedence());

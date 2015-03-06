@@ -1,14 +1,14 @@
 package me.august.lumen.compile.scanner.tokens;
 
 import me.august.lumen.compile.scanner.Token;
-import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.TokenType;
 
 public class StringToken extends Token {
 
     private QuoteType quoteType;
 
     public StringToken(String content, QuoteType quoteType, int start, int end) {
-        super(content, start, end, Type.STRING);
+        super(content, start, end, TokenType.STRING);
         this.quoteType = quoteType;
     }
 

@@ -3,7 +3,7 @@ package me.august.lumen.compile.parser;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import me.august.lumen.compile.scanner.Token;
-import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.TokenType;
 
 public interface TokenParser {
 
@@ -16,15 +16,15 @@ public interface TokenParser {
     Token consume();
     Token peek();
 
-    boolean accept(Type type);
-    boolean expect(Type type);
+    boolean accept(TokenType type);
+    boolean expect(TokenType type);
 
     default UnresolvedType nextUnresolvedType() {
-        String identifier = consume().expectType(Type.IDENTIFIER).getContent();
+        String identifier = consume().expectType(TokenType.IDENTIFIER).getContent();
         int dimensions    = 0;
 
-        while (accept(Type.L_BRACKET)) {
-            consume().expectType(Type.R_BRACKET);
+        while (accept(TokenType.L_BRACKET)) {
+            consume().expectType(TokenType.R_BRACKET);
             dimensions++;
         }
 
@@ -33,7 +33,7 @@ public interface TokenParser {
 
     default String expectIdentifier() {
         Token token = consume();
-        if (token.getType() != Type.IDENTIFIER) {
+        if (token.getType() != TokenType.IDENTIFIER) {
             throw new RuntimeException("Expected identifier");
         }
 

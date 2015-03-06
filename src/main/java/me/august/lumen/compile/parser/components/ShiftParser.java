@@ -4,7 +4,7 @@ import me.august.lumen.compile.parser.TokenParser;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.ShiftExpr;
 import me.august.lumen.compile.scanner.Token;
-import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.TokenType;
 
 public class ShiftParser implements InfixParser {
 
@@ -20,7 +20,7 @@ public class ShiftParser implements InfixParser {
         return Precedence.SHIFT.getLevel();
     }
 
-    private ShiftExpr.Op getOperation(Type type) {
+    private ShiftExpr.Op getOperation(TokenType type) {
         switch (type) {
             case SH_L: return ShiftExpr.Op.SH_L;
             case SH_R: return ShiftExpr.Op.SH_R;

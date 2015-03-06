@@ -6,20 +6,20 @@ import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.components.*;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.TokenSource;
-import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.TokenType;
 import me.august.lumen.compile.scanner.pos.Span;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import static me.august.lumen.compile.scanner.Type.*;
+import static me.august.lumen.compile.scanner.TokenType.*;
 
 public class ExpressionParser implements TokenParser {
 
-    private final static Map<Type, PrefixParser> prefixParsers  = new HashMap<>();
-    private final static Map<Type, InfixParser>  infixParsers   = new HashMap<>();
-    private final static Map<Type, InfixParser>  postfixParsers = new HashMap<>();
+    private final static Map<TokenType, PrefixParser> prefixParsers  = new HashMap<>();
+    private final static Map<TokenType, InfixParser>  infixParsers   = new HashMap<>();
+    private final static Map<TokenType, InfixParser>  postfixParsers = new HashMap<>();
 
     static {
         UnaryPrefixParser unaryPrefixParser = new UnaryPrefixParser();
@@ -130,7 +130,7 @@ public class ExpressionParser implements TokenParser {
     }
 
     @Override
-    public boolean expect(Type type) {
+    public boolean expect(TokenType type) {
         Token token = consume();
         if (token.getType() != type) {
             throw new RuntimeException("Expected " + type + ", found " + token.getType());
@@ -140,7 +140,7 @@ public class ExpressionParser implements TokenParser {
     }
 
     @Override
-    public boolean accept(Type type) {
+    public boolean accept(TokenType type) {
         if (peek().getType() == type) {
             consume();
             return true;

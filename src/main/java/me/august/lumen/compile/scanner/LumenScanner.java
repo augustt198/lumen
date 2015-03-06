@@ -11,15 +11,15 @@ import java.io.StringReader;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static me.august.lumen.compile.scanner.Type.*;
+import static me.august.lumen.compile.scanner.TokenType.*;
 
 public class LumenScanner implements TokenSource {
 
-    private static Map<String, Type> KEYWORD_MAP = new HashMap<>();
+    private static Map<String, TokenType> KEYWORD_MAP = new HashMap<>();
 
     // initialize keyword map
     static {
-        for (Type type : Type.values()) {
+        for (TokenType type : TokenType.values()) {
             if (type.getKeywords() == null) continue;;
             for (String keyword : type.getKeywords()) {
                 KEYWORD_MAP.put(keyword, type);
@@ -27,7 +27,7 @@ public class LumenScanner implements TokenSource {
         }
     }
 
-    private static Map<Type, Consumer<LumenScanner>> KEYWORD_HANDLERS = new HashMap<>();
+    private static Map<TokenType, Consumer<LumenScanner>> KEYWORD_HANDLERS = new HashMap<>();
 
     private Reader reader;
 
@@ -93,11 +93,11 @@ public class LumenScanner implements TokenSource {
         while (peek() == ' ') read();
     }
 
-    private Token newToken(Type type) {
+    private Token newToken(TokenType type) {
         return newToken(type, null);
     }
 
-    private Token newToken(Type type, String source) {
+    private Token newToken(TokenType type, String source) {
         return new Token(source, advanceRecorder(), currentPosition, type);
     }
 
@@ -293,7 +293,7 @@ public class LumenScanner implements TokenSource {
             Token next = nextToken();
 
             if (next.getType() == IDENTIFIER && next.getContent().equals("a")) {
-                Type type = identifier.equals("is") ? INSTANCEOF_KEYWORD : NOT_INSTANCEOF_KEYWORD;
+                TokenType type = identifier.equals("is") ? INSTANCEOF_KEYWORD : NOT_INSTANCEOF_KEYWORD;
                 return newToken(type);
             } else {
                 queuedTokens.push(next);
@@ -600,7 +600,7 @@ public class LumenScanner implements TokenSource {
     }
 
     static {
-        KEYWORD_HANDLERS.put(Type.IMPORT_KEYWORD, LumenScanner::handleImport);
+        KEYWORD_HANDLERS.put(TokenType.IMPORT_KEYWORD, LumenScanner::handleImport);
     }
 
 }

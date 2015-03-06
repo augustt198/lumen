@@ -4,7 +4,7 @@ import me.august.lumen.compile.parser.TokenParser;
 import me.august.lumen.compile.parser.ast.expr.Expression;
 import me.august.lumen.compile.parser.ast.expr.TernaryExpr;
 import me.august.lumen.compile.scanner.Token;
-import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.TokenType;
 
 public class TernaryParser implements InfixParser {
 
@@ -12,7 +12,7 @@ public class TernaryParser implements InfixParser {
     public Expression parse(TokenParser parser, Expression left, Token token) {
         Expression ifBranch = parser.parseExpression(getPrecedence());
 
-        parser.expect(Type.COLON);
+        parser.expect(TokenType.COLON);
 
         Expression elseBranch = parser.parseExpression(getPrecedence());
 

@@ -7,7 +7,7 @@ import me.august.lumen.compile.parser.ast.expr.NotExpr;
 import me.august.lumen.compile.parser.ast.expr.RelExpr;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import me.august.lumen.compile.scanner.Token;
-import me.august.lumen.compile.scanner.Type;
+import me.august.lumen.compile.scanner.TokenType;
 
 public class RelationalParser implements InfixParser {
 
@@ -32,7 +32,7 @@ public class RelationalParser implements InfixParser {
         return Precedence.RELATIONAL.getLevel();
     }
 
-    private RelExpr.Op getOperator(Type type) {
+    private RelExpr.Op getOperator(TokenType type) {
         switch (type) {
             case GT:  return RelExpr.Op.GT;
             case GTE: return RelExpr.Op.GTE;
