@@ -1,8 +1,8 @@
 package me.august.lumen.compile.driver;
 
 import me.august.lumen.compile.analyze.VariableVisitor;
-import me.august.lumen.compile.parser.LumenParser;
 import me.august.lumen.compile.ast.ProgramNode;
+import me.august.lumen.compile.parser.LumenParser;
 import me.august.lumen.compile.resolve.LumenTypeVisitor;
 import me.august.lumen.compile.resolve.ResolvingVisitor;
 import me.august.lumen.compile.resolve.TopLevelStatementMarker;

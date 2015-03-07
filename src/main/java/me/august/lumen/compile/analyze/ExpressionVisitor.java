@@ -1,6 +1,6 @@
 package me.august.lumen.compile.analyze;
 
-import me.august.lumen.compile.parser.ast.expr.*;
+import me.august.lumen.compile.ast.expr.*;
 
 // java pls
 public interface ExpressionVisitor extends ASTVisitor {

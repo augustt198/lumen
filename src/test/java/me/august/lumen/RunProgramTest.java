@@ -1,7 +1,7 @@
 package me.august.lumen;
 
-import me.august.lumen.compile.driver.Driver;
 import me.august.lumen.compile.ast.ProgramNode;
+import me.august.lumen.compile.driver.Driver;
 import me.august.lumen.compile.scanner.TokenSource;
 import org.junit.Assert;
 import org.junit.Test;

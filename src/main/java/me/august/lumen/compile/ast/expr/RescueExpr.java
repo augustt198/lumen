@@ -1,7 +1,7 @@
 package me.august.lumen.compile.ast.expr;
 
-import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.ast.Typed;
+import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;

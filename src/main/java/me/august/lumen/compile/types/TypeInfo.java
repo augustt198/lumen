@@ -1,6 +1,6 @@
 package me.august.lumen.compile.types;
 
-import me.august.lumen.compile.parser.ast.expr.Expression;
+import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.Type;
 

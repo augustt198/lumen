@@ -1,9 +1,9 @@
 package me.august.lumen.compile.parser.parsers;
 
-import me.august.lumen.compile.parser.TokenParser;
 import me.august.lumen.compile.ast.expr.AndExpr;
 import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.ast.expr.OrExpr;
+import me.august.lumen.compile.parser.TokenParser;
 import me.august.lumen.compile.scanner.Token;
 
 public final class LogicParsers {

@@ -1,6 +1,7 @@
 package me.august.lumen.compile.analyze.node;
 
-import me.august.lumen.compile.parser.ast.expr.Expression;
+
+import me.august.lumen.compile.ast.expr.Expression;
 
 import java.util.ArrayList;
 import java.util.List;

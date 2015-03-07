@@ -1,8 +1,8 @@
 package me.august.lumen.compile.parser.parsers;
 
-import me.august.lumen.compile.parser.TokenParser;
 import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.ast.expr.TernaryExpr;
+import me.august.lumen.compile.parser.TokenParser;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.TokenType;
 

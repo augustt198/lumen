@@ -5,7 +5,6 @@ import me.august.lumen.compile.analyze.scope.*;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.analyze.var.VariableReference;
-import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.ast.ClassNode;
 import me.august.lumen.compile.ast.FieldNode;
 import me.august.lumen.compile.ast.MethodNode;
@@ -15,6 +14,7 @@ import me.august.lumen.compile.ast.expr.IdentExpr;
 import me.august.lumen.compile.ast.expr.OwnedExpr;
 import me.august.lumen.compile.ast.expr.RescueExpr;
 import me.august.lumen.compile.ast.stmt.*;
+import me.august.lumen.compile.codegen.BuildContext;
 import org.objectweb.asm.Type;
 
 import java.util.ArrayList;

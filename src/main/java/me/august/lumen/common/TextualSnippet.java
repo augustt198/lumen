@@ -6,8 +6,8 @@ import org.fusesource.jansi.Ansi;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static org.fusesource.jansi.Ansi.Attribute.*;
-import static org.fusesource.jansi.Ansi.Color.*;
+import static org.fusesource.jansi.Ansi.Attribute.INTENSITY_BOLD;
+import static org.fusesource.jansi.Ansi.Color.RED;
 import static org.fusesource.jansi.Ansi.ansi;
 
 public class TextualSnippet {

@@ -1,9 +1,9 @@
 package me.august.lumen.compile.parser.parsers;
 
-import me.august.lumen.compile.parser.TokenParser;
 import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.ast.expr.IdentExpr;
 import me.august.lumen.compile.ast.expr.RescueExpr;
+import me.august.lumen.compile.parser.TokenParser;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.TokenType;

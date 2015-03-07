@@ -8,8 +8,8 @@ import org.fusesource.jansi.Ansi;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.fusesource.jansi.Ansi.Attribute.*;
-import static org.fusesource.jansi.Ansi.Color.*;
+import static org.fusesource.jansi.Ansi.Attribute.INTENSITY_BOLD;
+import static org.fusesource.jansi.Ansi.Color.RED;
 import static org.fusesource.jansi.Ansi.ansi;
 
 

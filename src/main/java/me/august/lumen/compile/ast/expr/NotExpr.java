@@ -4,6 +4,7 @@ import me.august.lumen.compile.codegen.Branch;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.Conditional;
 import me.august.lumen.compile.codegen.MethodCodeGen;
+import me.august.lumen.compile.parser.ast.expr.UnaryExpression;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
