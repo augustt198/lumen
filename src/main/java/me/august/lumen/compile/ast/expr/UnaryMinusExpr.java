@@ -5,22 +5,20 @@ import me.august.lumen.compile.codegen.BuildContext;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-public class UnaryMinusExpr implements Expression {
+public class UnaryMinusExpr extends UnaryExpression {
 
-    private Expression value;
-
-    public UnaryMinusExpr(Expression value) {
-        this.value = value;
+    public UnaryMinusExpr(Expression operand) {
+        super(operand);
     }
 
     @Override
     public Type expressionType() {
-        return value.expressionType();
+        return operand.expressionType();
     }
 
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
-        value.generate(visitor, context);
+        operand.generate(visitor, context);
 
         Type type = expressionType();
 
@@ -34,8 +32,4 @@ public class UnaryMinusExpr implements Expression {
         }
     }
 
-    @Override
-    public Expression[] getChildren() {
-        return new Expression[]{value};
-    }
 }

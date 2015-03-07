@@ -8,9 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Skeletal representation of a Java class.
@@ -19,6 +17,8 @@ import java.util.List;
  * super class, and implemented interfaces.
  */
 public class ClassData extends BaseData {
+
+    private static Map<Class<?>, ClassData> FROM_CLASS_CACHE = new HashMap<>();
 
     int version;
 
@@ -41,6 +41,10 @@ public class ClassData extends BaseData {
     }
 
     public static ClassData fromClass(Class<?> cls) {
+        if (FROM_CLASS_CACHE.containsKey(cls)) {
+            return FROM_CLASS_CACHE.get(cls);
+        }
+
         ClassData data = new ClassData(cls.getName(), new ModifierSet(cls.getModifiers()));
 
         if (cls.getSuperclass() != null)
@@ -71,6 +75,7 @@ public class ClassData extends BaseData {
 
             data.getFields().add(fieldData);
         }
+        FROM_CLASS_CACHE.put(cls, data);
         return data;
     }
 
@@ -142,7 +147,7 @@ public class ClassData extends BaseData {
         return fields;
     }
 
-    public String getSuperClass() {
+    public String getSuperclass() {
         return superClass;
     }
 

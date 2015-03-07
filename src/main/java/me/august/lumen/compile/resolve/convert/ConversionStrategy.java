@@ -28,6 +28,16 @@ public class ConversionStrategy {
         return steps;
     }
 
+    public boolean isValid() {
+        for (Conversion conversion : steps) {
+            if (conversion == null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public String toString() {
         return "ConversionStrategy{" +

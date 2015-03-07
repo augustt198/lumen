@@ -5,6 +5,8 @@ import me.august.lumen.compile.codegen.BuildContext;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
+// NOTE: AddExpr does NOT necessarily indicate addition,
+// it is *additive* (which includes subtraction)
 public class AddExpr extends BinaryExpression {
 
     public enum Op {

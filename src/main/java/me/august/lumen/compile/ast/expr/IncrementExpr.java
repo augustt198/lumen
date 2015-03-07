@@ -10,7 +10,7 @@ import org.objectweb.asm.Type;
 
 // We're pretending to use the POP instruction, because
 // the same rules apply to incrementing.
-public class IncrementExpr implements Expression {
+public class IncrementExpr extends UnaryExpression {
 
     public enum Op {
         INC(1), DEC(-1);
@@ -32,6 +32,7 @@ public class IncrementExpr implements Expression {
     private boolean shouldGen = true;
 
     public IncrementExpr(Expression value, Op op, boolean postfix) {
+        super(value);
         if (!(value instanceof VariableExpression))
             throw new IllegalArgumentException("Invalid type, expected variable");
 
@@ -87,8 +88,4 @@ public class IncrementExpr implements Expression {
         shouldGen = !flag;
     }
 
-    @Override
-    public Expression[] getChildren() {
-        return new Expression[]{value};
-    }
 }

@@ -1,8 +1,9 @@
 package me.august.lumen.compile.resolve.convert.types;
 
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-public class Conversion {
+public abstract class Conversion {
 
     private Type original;
     private Type target;
@@ -19,6 +20,8 @@ public class Conversion {
     public Type getTarget() {
         return target;
     }
+
+    public abstract void applyConversion(MethodVisitor visitor);
 
     @Override
     public String toString() {
