@@ -54,19 +54,19 @@ public class Driver {
     public ProgramNode phase3Resolving(ProgramNode program) {
         resolver = new NameResolver(program.getImports());
         ResolvingVisitor typeVisitor = new ResolvingVisitor(resolver);
-        program.accept(typeVisitor);
+        program.acceptTopDown(typeVisitor);
 
         return program;
     }
 
     public ProgramNode phase4Analysis(ProgramNode program) {
         VariableVisitor visitor = new VariableVisitor(context);
-        program.accept(visitor);
+        program.acceptTopDown(visitor);
 
         LumenTypeVisitor typeVisitor = new LumenTypeVisitor(resolver, deps, context);
-        program.accept(typeVisitor);
+        program.acceptTopDown(typeVisitor);
 
-        program.accept(new TopLevelStatementMarker());
+        program.acceptTopDown(new TopLevelStatementMarker());
 
         return program;
     }

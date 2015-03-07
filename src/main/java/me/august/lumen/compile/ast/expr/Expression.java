@@ -22,22 +22,7 @@ public interface Expression extends CodeBlock, VisitorConsumer {
         if (!isConstant()) throw new UnsupportedOperationException("This expression is not constant");
     }
 
-    default void accept(ASTVisitor visitor) {
-        if (getChildren() != null) {
-            for (Expression child : getChildren()) {
-                if (child == null) continue;
-                child.accept(visitor);
-            }
-        }
-
-        if (this instanceof OwnedExpr) {
-            Expression owned = ((OwnedExpr) this).getOwner();
-            if (owned != null)
-                owned.accept(visitor);
-        }
-        visitor.visitExpression(this);
-    }
-
+    @Override
     default void acceptTopDown(ASTVisitor visitor) {
         visitor.visitExpression(this);
 
@@ -47,10 +32,13 @@ public interface Expression extends CodeBlock, VisitorConsumer {
 
         if (this instanceof OwnedExpr) {
             Expression owned = ((OwnedExpr) this).getOwner();
-            owned.acceptTopDown(visitor);
+            if (owned != null) {
+                owned.acceptTopDown(visitor);
+            }
         }
     }
 
+    @Override
     default void acceptBottomUp(ASTVisitor visitor) {
         for (Expression child : getChildren()) {
             child.acceptBottomUp(visitor);

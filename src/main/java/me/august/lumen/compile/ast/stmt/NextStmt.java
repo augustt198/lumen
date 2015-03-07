@@ -32,7 +32,12 @@ public class NextStmt implements CodeBlock, VisitorConsumer {
     }
 
     @Override
-    public void accept(ASTVisitor astVisitor) {
-        astVisitor.visitNextStmt(this);
+    public void acceptTopDown(ASTVisitor visitor) {
+        visitor.visitNextStmt(this);
+    }
+
+    @Override
+    public void acceptBottomUp(ASTVisitor visitor) {
+        acceptTopDown(visitor);
     }
 }

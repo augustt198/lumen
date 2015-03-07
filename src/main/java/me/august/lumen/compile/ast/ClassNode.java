@@ -67,13 +67,21 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
     }
 
     @Override
-    public void accept(ASTVisitor visitor) {
+    public void acceptTopDown(ASTVisitor visitor) {
         visitor.visitClass(this);
 
         fields.forEach(visitor::visitField);
-        for (MethodNode method : methods) {
-            method.accept(visitor);
-        }
+        methods.forEach((m) -> m.acceptTopDown(visitor));
+
+        visitor.visitClassEnd(this);
+    }
+
+    @Override
+    public void acceptBottomUp(ASTVisitor visitor) {
+        visitor.visitClass(this);
+
+        fields.forEach(visitor::visitField);
+        methods.forEach((m) -> m.acceptBottomUp(visitor));
 
         visitor.visitClassEnd(this);
     }

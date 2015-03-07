@@ -74,16 +74,29 @@ public class IfStmt implements CodeBlock, VisitorConsumer {
     }
 
     @Override
-    public void accept(ASTVisitor visitor) {
-        condition.accept(visitor);
-        trueBody.accept(visitor);
+    public void acceptTopDown(ASTVisitor visitor) {
+        condition.acceptTopDown(visitor);
+        trueBody.acceptTopDown(visitor);
 
         for (ElseIf eif : elseIfs) {
-            eif.condition.accept(visitor);
-            eif.body.accept(visitor);
+            eif.condition.acceptTopDown(visitor);
+            eif.body.acceptTopDown(visitor);
         }
 
-        if (elseBody != null) elseBody.accept(visitor);
+        if (elseBody != null) elseBody.acceptTopDown(visitor);
+    }
+
+    @Override
+    public void acceptBottomUp(ASTVisitor visitor) {
+        condition.acceptBottomUp(visitor);
+        trueBody.acceptBottomUp(visitor);
+
+        for (ElseIf eif : elseIfs) {
+            eif.condition.acceptBottomUp(visitor);
+            eif.body.acceptBottomUp(visitor);
+        }
+
+        if (elseBody != null) elseBody.acceptBottomUp(visitor);
     }
 
     public static class ElseIf {

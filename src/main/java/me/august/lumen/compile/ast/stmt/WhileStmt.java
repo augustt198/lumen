@@ -37,11 +37,19 @@ public class WhileStmt implements CodeBlock, VisitorConsumer, Loop {
     }
 
     @Override
-    public void accept(ASTVisitor astVisitor) {
-        astVisitor.visitWhileStmt(this);
+    public void acceptTopDown(ASTVisitor visitor) {
+        visitor.visitWhileStmt(this);
 
-        condition.accept(astVisitor);
-        body.accept(astVisitor);
+        condition.acceptTopDown(visitor);
+        body.acceptTopDown(visitor);
+    }
+
+    @Override
+    public void acceptBottomUp(ASTVisitor visitor) {
+        condition.acceptBottomUp(visitor);
+        body.acceptBottomUp(visitor);
+
+        visitor.visitWhileStmt(this);
     }
 
     private Branch toBranch() {

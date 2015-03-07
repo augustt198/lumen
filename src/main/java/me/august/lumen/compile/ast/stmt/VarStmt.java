@@ -46,11 +46,18 @@ public class VarStmt extends Typed implements CodeBlock, VisitorConsumer {
     }
 
     @Override
-    public void accept(ASTVisitor astVisitor) {
-        if (defaultValue != null)
-            defaultValue.accept(astVisitor);
+    public void acceptTopDown(ASTVisitor visitor) {
+        visitor.visitVar(this);
 
-        astVisitor.visitVar(this);
+        if (defaultValue != null) {
+            defaultValue.acceptTopDown(visitor);
+        }
+    }
+
+    @Override
+    public void acceptBottomUp(ASTVisitor visitor) {
+        defaultValue.acceptBottomUp(visitor);
+        visitor.visitVar(this);
     }
 
     @Override

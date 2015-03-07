@@ -32,7 +32,12 @@ public class BreakStmt implements CodeBlock, VisitorConsumer {
     }
 
     @Override
-    public void accept(ASTVisitor astVisitor) {
-        astVisitor.visitBreakStmt(this);
+    public void acceptTopDown(ASTVisitor visitor) {
+        visitor.visitBreakStmt(this);
+    }
+
+    @Override
+    public void acceptBottomUp(ASTVisitor visitor) {
+        acceptTopDown(visitor);
     }
 }

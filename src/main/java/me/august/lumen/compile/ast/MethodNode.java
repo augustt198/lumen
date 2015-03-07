@@ -31,9 +31,16 @@ public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
     }
 
     @Override
-    public void accept(ASTVisitor visitor) {
+    public void acceptTopDown(ASTVisitor visitor) {
         visitor.visitMethod(this);
-        body.accept(visitor);
+        body.acceptTopDown(visitor);
+        visitor.visitMethodEnd(this);
+    }
+
+    @Override
+    public void acceptBottomUp(ASTVisitor visitor) {
+        visitor.visitMethod(this);
+        body.acceptBottomUp(visitor);
         visitor.visitMethodEnd(this);
     }
 

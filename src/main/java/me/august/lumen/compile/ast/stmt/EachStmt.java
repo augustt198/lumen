@@ -86,11 +86,19 @@ public class EachStmt implements CodeBlock, VisitorConsumer, Loop {
     }
 
     @Override
-    public void accept(ASTVisitor astVisitor) {
-        expr.accept(astVisitor);
-        astVisitor.visitEachStmt(this);
+    public void acceptTopDown(ASTVisitor visitor) {
+        visitor.visitEachStmt(this);
 
-        body.accept(astVisitor);
+        expr.acceptTopDown(visitor);
+        body.acceptTopDown(visitor);
+    }
+
+    @Override
+    public void acceptBottomUp(ASTVisitor visitor) {
+        expr.acceptTopDown(visitor);
+        body.acceptTopDown(visitor);
+
+        visitor.visitEachStmt(this);
     }
 
     public String getIdent() {

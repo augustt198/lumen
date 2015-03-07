@@ -59,15 +59,16 @@ public class VariableResolutionTest {
 
         cls.getMethods().add(method);
 
-        PROGRAM.accept(new LumenTypeVisitor(new NameResolver(), new DependencyManager(), null));
+        PROGRAM.acceptTopDown(new LumenTypeVisitor(new NameResolver(), new DependencyManager(), null));
     }
 
     @Test
     public void testVariableResolution() {
         VariableVisitor visitor = new VariableVisitor(null);
-        PROGRAM.accept(visitor);
+        PROGRAM.acceptTopDown(visitor);
 
         VariableReference var = IDENT_EXPR.getVariableReference();
+        System.out.println("var = " + var);
         Assert.assertTrue(
                 "Expected identifier to be local",
                 var instanceof LocalVariable

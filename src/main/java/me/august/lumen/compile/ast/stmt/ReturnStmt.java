@@ -31,10 +31,14 @@ public class ReturnStmt implements CodeBlock, VisitorConsumer {
     }
 
     @Override
-    public void accept(ASTVisitor astVisitor) {
-        if (value != null)
-            value.accept(astVisitor);
+    public void acceptTopDown(ASTVisitor visitor) {
+        visitor.visitReturn(this);
+        value.acceptTopDown(visitor);
+    }
 
-        astVisitor.visitReturn(this);
+    @Override
+    public void acceptBottomUp(ASTVisitor visitor) {
+        value.acceptBottomUp(visitor);
+        visitor.visitReturn(this);
     }
 }

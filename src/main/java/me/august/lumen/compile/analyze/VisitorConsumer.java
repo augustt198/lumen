@@ -1,12 +1,10 @@
 package me.august.lumen.compile.analyze;
 
-import java.util.function.Consumer;
-
 /**
  * Interface for visiting an AST from the top down
  * and from the bottom up.
  */
-public interface VisitorConsumer extends Consumer<ASTVisitor> {
+public interface VisitorConsumer {
 
     /**
      * Traverses from the top down, meaning a

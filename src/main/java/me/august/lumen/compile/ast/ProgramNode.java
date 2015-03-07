@@ -38,9 +38,16 @@ public class ProgramNode implements VisitorConsumer {
     }
 
     @Override
-    public void accept(ASTVisitor visitor) {
+    public void acceptTopDown(ASTVisitor visitor) {
         visitor.visitProgram(this);
-        classNode.accept(visitor);
+        classNode.acceptTopDown(visitor);
+        visitor.visitProgramEnd(this);
+    }
+
+    @Override
+    public void acceptBottomUp(ASTVisitor visitor) {
+        visitor.visitProgram(this);
+        classNode.acceptBottomUp(visitor);
         visitor.visitProgramEnd(this);
     }
 
