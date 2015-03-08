@@ -2,13 +2,11 @@ package me.august.lumen.compile.resolve.data;
 
 import me.august.lumen.common.ModifierSet;
 import me.august.lumen.compile.resolve.lookup.ClassLookup;
-import org.objectweb.asm.*;
+import org.objectweb.asm.Type;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Skeletal representation of a Java class.
@@ -18,65 +16,26 @@ import java.util.*;
  */
 public class ClassData extends BaseData {
 
-    private static Map<Class<?>, ClassData> FROM_CLASS_CACHE = new HashMap<>();
-
     int version;
 
-    List<MethodData> methods = new ArrayList<>();
-    List<FieldData> fields   = new ArrayList<>();
+    List<MethodData> methods;
+    List<FieldData> fields;
 
     String superClass;
     String[] interfaces;
 
     public ClassData(String name, ModifierSet modifiers) {
         super(name, modifiers);
+
+        methods = new ArrayList<>();
+        fields = new ArrayList<>();
     }
 
-    public static ClassData fromClassFile(InputStream input) throws IOException {
-        ClassReader reader = new ClassReader(input);
-        ClassAnalyzer analyzer = new ClassAnalyzer();
-        reader.accept(analyzer, 0);
-
-        return analyzer.classData;
-    }
-
-    public static ClassData fromClass(Class<?> cls) {
-        if (FROM_CLASS_CACHE.containsKey(cls)) {
-            return FROM_CLASS_CACHE.get(cls);
-        }
-
-        ClassData data = new ClassData(cls.getName(), new ModifierSet(cls.getModifiers()));
-
-        if (cls.getSuperclass() != null)
-            data.superClass = cls.getSuperclass().getName();
-
-        String[] interfaces = new String[cls.getInterfaces().length];
-        for (int i = 0; i < interfaces.length; i++) {
-            interfaces[i] = cls.getInterfaces()[i].getName();
-        }
-        data.interfaces = interfaces;
-
-        for (Method method : cls.getDeclaredMethods()) {
-            Type returnType = Type.getType(method.getReturnType());
-            Type[] paramsTypes = new Type[method.getParameterCount()];
-            for (int i = 0; i < paramsTypes.length; i++) {
-                paramsTypes[i] = Type.getType(method.getParameterTypes()[i]);
-            }
-            ModifierSet mods = new ModifierSet(method.getModifiers());
-            MethodData methodData = new MethodData(method.getName(), returnType, paramsTypes, mods);
-
-            data.getMethods().add(methodData);
-        }
-
-        for (Field field : cls.getDeclaredFields()) {
-            ModifierSet mods = new ModifierSet(field.getModifiers());
-            Type type = Type.getType(field.getType());
-            FieldData fieldData = new FieldData(field.getName(), type, mods);
-
-            data.getFields().add(fieldData);
-        }
-        FROM_CLASS_CACHE.put(cls, data);
-        return data;
+    public ClassData(String name, ModifierSet mods, int version, String sup, String[] itfs) {
+        super(name, mods);
+        this.version = version;
+        this.superClass = sup;
+        this.interfaces = itfs;
     }
 
     public boolean isAssignableTo(String type, ClassLookup lookup) {
@@ -173,43 +132,6 @@ public class ClassData extends BaseData {
 
     public boolean isInterface() {
         return modifiers.isInterface();
-    }
-
-    private static class ClassAnalyzer extends ClassVisitor {
-        ClassData classData;
-
-        public ClassAnalyzer() {
-            super(Opcodes.ASM5);
-        }
-
-        @Override
-        public void visit(int version, int access, String name, String signature, String sup, String[] impls) {
-            ModifierSet modifiers = new ModifierSet(access);
-            classData = new ClassData(name, modifiers);
-            classData.version    = version;
-            classData.superClass = sup;
-            classData.interfaces = impls;
-        }
-
-        @Override
-        public MethodVisitor visitMethod(int access, String name, String desc, String sig, String[] exs) {
-            Type methodType = Type.getMethodType(desc);
-            Type returnType = methodType.getReturnType();
-            Type[] types    = methodType.getArgumentTypes();
-
-            MethodData method = new MethodData(name, returnType, types, new ModifierSet(access));
-            classData.methods.add(method);
-
-            return super.visitMethod(access, name, desc, sig, exs);
-        }
-
-        @Override
-        public FieldVisitor visitField(int access, String name, String desc, String sig, Object val) {
-            Type type = Type.getType(desc);
-            FieldData field = new FieldData(name, type, new ModifierSet(access));
-            classData.fields.add(field);
-            return super.visitField(access, name, desc, sig, val);
-        }
     }
 
 }

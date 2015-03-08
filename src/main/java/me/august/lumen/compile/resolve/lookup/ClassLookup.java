@@ -9,10 +9,19 @@ public interface ClassLookup {
     boolean hasClass(String path);
 
     default ClassData lookup(Type type) {
-        if (type.getSort() == Type.OBJECT)
+        if (type.getSort() == Type.OBJECT) {
             return lookup(type.getClassName());
-        else
+        } else {
             return null;
+        }
+    }
+
+    default ClassData lookup(Class<?> cls) {
+        if (cls.isArray() || cls.isPrimitive()) {
+            return null;
+        } else {
+            return lookup(cls.getName());
+        }
     }
 
 }

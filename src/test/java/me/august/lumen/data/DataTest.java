@@ -1,6 +1,8 @@
 package me.august.lumen.data;
 
 import me.august.lumen.compile.resolve.data.ClassData;
+import me.august.lumen.compile.resolve.lookup.BuiltinClassLookup;
+import me.august.lumen.compile.resolve.lookup.ClassLookup;
 import me.august.lumen.compile.resolve.lookup.DependencyManager;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,7 +11,9 @@ public class DataTest {
 
     @Test
     public void testClassData() {
-        ClassData data = ClassData.fromClass(String.class);
+        ClassLookup lookup = new BuiltinClassLookup();
+
+        ClassData data = lookup.lookup(String.class);
 
         Assert.assertEquals(
                 String.class.getName(),
@@ -28,38 +32,38 @@ public class DataTest {
 
     @Test
     public void testAssignableTo() {
-        DependencyManager deps = new DependencyManager();
+        ClassLookup lookup = new BuiltinClassLookup();
         ClassData data;
 
-        data = ClassData.fromClass(String.class);
+        data = lookup.lookup(String.class);
 
         Assert.assertTrue(
                 "Expected String to be assignable to String",
-                data.isAssignableTo("java.lang.String", deps)
+                data.isAssignableTo("java.lang.String", lookup)
         );
 
         Assert.assertTrue(
                 "Expected String to be assignable to Object",
-                data.isAssignableTo("java.lang.Object", deps)
+                data.isAssignableTo("java.lang.Object", lookup)
         );
 
         Assert.assertTrue(
                 "Expected String to be assignable to CharSequence",
-                data.isAssignableTo("java.lang.CharSequence", deps)
+                data.isAssignableTo("java.lang.CharSequence", lookup)
         );
 
-        data = ClassData.fromClass(Object.class);
+        data = lookup.lookup(Object.class);
 
         Assert.assertFalse(
                 "Expected Object to not be assignable to String",
-                data.isAssignableTo("java.lang.String", deps)
+                data.isAssignableTo("java.lang.String", lookup)
         );
 
-        data = ClassData.fromClass(CharSequence.class);
+        data = lookup.lookup(CharSequence.class);
 
         Assert.assertTrue(
                 "Expected CharSequence to be assignable to Object",
-                data.isAssignableTo("java.lang.Object", deps)
+                data.isAssignableTo("java.lang.Object", lookup)
         );
     }
 

@@ -17,8 +17,8 @@ public class TypeUtilTest {
         ClassLookup lookup = new BuiltinClassLookup();
 
         Set<ClassData> ancestors = TypeUtil.commonAncestors(
-                ClassData.fromClass(RuntimeException.class),
-                ClassData.fromClass(IOException.class),
+                lookup.lookup(RuntimeException.class),
+                lookup.lookup(IOException.class),
                 lookup
         );
 

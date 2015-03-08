@@ -1,6 +1,7 @@
 package me.august.lumen.compile.resolve.lookup;
 
 import me.august.lumen.compile.resolve.data.ClassData;
+import me.august.lumen.compile.resolve.lookup.factory.ASMClassDataFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,7 +31,10 @@ public class JarLookup implements ClassLookup {
         JarEntry entry = jar.getJarEntry(path);
 
         try {
-            ClassData classData = ClassData.fromClassFile(jar.getInputStream(entry));
+            ClassData classData = ASMClassDataFactory.createClassData(
+                    jar.getInputStream(entry)
+            );
+
             cache.put(path, classData);
             return classData;
         } catch (IOException e) {

@@ -1,6 +1,7 @@
 package me.august.lumen.compile.resolve.lookup;
 
 import me.august.lumen.compile.resolve.data.ClassData;
+import me.august.lumen.compile.resolve.lookup.factory.ReflectionClassDataFactory;
 
 public class BuiltinClassLookup implements ClassLookup {
 
@@ -9,7 +10,7 @@ public class BuiltinClassLookup implements ClassLookup {
         Class<?> cls = safeForName(path);
         if (cls == null) return null;
 
-        return ClassData.fromClass(cls);
+        return ReflectionClassDataFactory.createClassData(cls);
     }
 
     @Override
