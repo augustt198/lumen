@@ -18,17 +18,14 @@ public class ClassData extends BaseData {
 
     int version;
 
-    List<MethodData> methods;
-    List<FieldData> fields;
+    List<MethodData> methods = new ArrayList<>();
+    List<FieldData> fields   = new ArrayList<>();
 
     String superClass;
     String[] interfaces;
 
     public ClassData(String name, ModifierSet modifiers) {
         super(name, modifiers);
-
-        methods = new ArrayList<>();
-        fields = new ArrayList<>();
     }
 
     public ClassData(String name, ModifierSet mods, int version, String sup, String[] itfs) {

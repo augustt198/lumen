@@ -1,7 +1,5 @@
 package me.august.lumen.compile.ast.expr;
 
-import me.august.lumen.compile.ast.expr.Expression;
-
 public class UnaryExpression implements Expression {
 
     protected Expression operand;

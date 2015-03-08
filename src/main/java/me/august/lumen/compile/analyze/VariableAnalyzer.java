@@ -1,12 +1,12 @@
 package me.august.lumen.compile.analyze;
 
-import me.august.lumen.compile.analyze.scope.ClassScope;
-import me.august.lumen.compile.analyze.scope.LoopScope;
-import me.august.lumen.compile.analyze.scope.Scope;
+import me.august.lumen.compile.analyze.scope.*;
 import me.august.lumen.compile.analyze.var.ClassVariable;
+import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.analyze.var.VariableReference;
 import me.august.lumen.compile.ast.ClassNode;
 import me.august.lumen.compile.ast.FieldNode;
+import me.august.lumen.compile.ast.MethodNode;
 import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.ast.expr.IdentExpr;
 import me.august.lumen.compile.ast.stmt.*;
@@ -99,7 +99,36 @@ public class VariableAnalyzer implements ASTVisitor {
             );
         }
 
+        ident.setVariableReference(variable);
+
         variableLookup.put(ident, variable);
+    }
+
+    @Override
+    public void visitVar(VarStmt var) {
+        // local variable declared, add it to the
+        // scope's variable table
+
+        int nextIndex = scope.nextLocalVariableIndex(isStaticMethod());
+
+        LocalVariable localVar = new LocalVariable(nextIndex, var.getResolvedType());
+
+        scope.setVariable(var.getName(), localVar);
+    }
+
+    @Override
+    public void visitMethod(MethodNode method) {
+        scope = new MethodScope(scope, method);
+    }
+
+    @Override
+    public void visitMethodEnd(MethodNode method) {
+        popScope();
+    }
+
+    private boolean isStaticMethod() {
+        MethodScope methodScope = (MethodScope) scope.fromType(ScopeType.METHOD);
+        return methodScope.getMethod().isStatic();
     }
 
     public VariableReference getVariableReference(Expression expr) {

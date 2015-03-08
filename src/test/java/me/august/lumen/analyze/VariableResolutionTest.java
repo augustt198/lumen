@@ -1,7 +1,7 @@
 package me.august.lumen.analyze;
 
 import me.august.lumen.common.ModifierSet;
-import me.august.lumen.compile.analyze.VariableVisitor;
+import me.august.lumen.compile.analyze.VariableAnalyzer;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.analyze.var.VariableReference;
@@ -9,6 +9,7 @@ import me.august.lumen.compile.ast.*;
 import me.august.lumen.compile.ast.expr.IdentExpr;
 import me.august.lumen.compile.ast.stmt.Body;
 import me.august.lumen.compile.ast.stmt.VarStmt;
+import me.august.lumen.compile.driver.CompileBuildContext;
 import me.august.lumen.compile.resolve.LumenTypeVisitor;
 import me.august.lumen.compile.resolve.impl.NameResolver;
 import me.august.lumen.compile.resolve.lookup.DependencyManager;
@@ -64,8 +65,8 @@ public class VariableResolutionTest {
 
     @Test
     public void testVariableResolution() {
-        VariableVisitor visitor = new VariableVisitor(null);
-        PROGRAM.acceptTopDown(visitor);
+        VariableAnalyzer analyzer = new VariableAnalyzer(new CompileBuildContext());
+        PROGRAM.acceptTopDown(analyzer);
 
         VariableReference var = IDENT_EXPR.getVariableReference();
         System.out.println("var = " + var);
