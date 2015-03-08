@@ -1,4 +1,4 @@
-package me.august.lumen.compile.parser.ast.expr;
+package me.august.lumen.compile.ast.expr;
 
 import me.august.lumen.compile.ast.expr.Expression;
 

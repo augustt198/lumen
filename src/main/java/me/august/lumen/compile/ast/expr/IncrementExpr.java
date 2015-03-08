@@ -4,7 +4,6 @@ import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.analyze.var.VariableReference;
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.parser.ast.expr.UnaryExpression;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
