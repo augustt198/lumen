@@ -36,7 +36,7 @@ public class VariableResolutionTest {
     }
      */
     static {
-        Typed supType = new Typed(UnresolvedType.OBJECT_TYPE);
+        TypedNode supType = new TypedNode(UnresolvedType.OBJECT_TYPE);
         ClassNode cls = new ClassNode("Foo", supType, new String[0], new ModifierSet());
         PROGRAM = new ProgramNode(new ImportNode[0], cls);
 

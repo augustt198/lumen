@@ -5,14 +5,14 @@ import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.ast.CodeBlock;
-import me.august.lumen.compile.ast.Typed;
+import me.august.lumen.compile.ast.TypedNode;
 import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-public class VarStmt extends Typed implements CodeBlock, VisitorConsumer {
+public class VarStmt extends TypedNode implements CodeBlock, VisitorConsumer {
 
     private String name;
     private Expression defaultValue;

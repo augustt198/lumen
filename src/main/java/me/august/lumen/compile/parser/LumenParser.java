@@ -81,7 +81,7 @@ public class LumenParser extends ExpressionParser {
     private ClassNode parseClass(ModifierSet modifiers) {
         String name = consume().expectType(IDENTIFIER).getContent();
 
-        Typed superClass = new Typed(parseSuperclass());
+        TypedNode superClass = new TypedNode(parseSuperclass());
         String[] interfaces = parseImplementsInterfaces();
 
         expect(L_BRACE);

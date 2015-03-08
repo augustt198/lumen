@@ -90,15 +90,15 @@ public class EachStmt implements CodeBlock, VisitorConsumer, Loop {
         visitor.visitEachStmt(this);
 
         expr.acceptTopDown(visitor);
-        body.acceptTopDown(visitor);
+        body.acceptTopDown(visitor, false);
     }
 
     @Override
     public void acceptBottomUp(ASTVisitor visitor) {
-        expr.acceptTopDown(visitor);
-        body.acceptTopDown(visitor);
-
         visitor.visitEachStmt(this);
+
+        expr.acceptTopDown(visitor);
+        body.acceptTopDown(visitor, false);
     }
 
     public String getIdent() {

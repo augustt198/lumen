@@ -1,6 +1,6 @@
 package me.august.lumen.compile.ast.expr;
 
-import me.august.lumen.compile.ast.Typed;
+import me.august.lumen.compile.ast.TypedNode;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.MethodCodeGen;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
@@ -10,7 +10,7 @@ import org.objectweb.asm.Type;
 
 import java.util.List;
 
-public class StaticMethodCall extends Typed implements Expression {
+public class StaticMethodCall extends TypedNode implements Expression {
 
     private String methodName;
 

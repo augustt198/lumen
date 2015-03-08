@@ -1,6 +1,6 @@
 package me.august.lumen.compile.ast.expr;
 
-import me.august.lumen.compile.ast.Typed;
+import me.august.lumen.compile.ast.TypedNode;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.MethodVisitor;
@@ -10,7 +10,7 @@ import org.objectweb.asm.Type;
 // NOTE: unlike most other expressions, this expression type
 // has the *same* precedence as RelExpr. They have been separated
 // for ease of use.
-public class InstanceofExpr extends Typed implements Expression {
+public class InstanceofExpr extends TypedNode implements Expression {
 
     private Expression value;
 

@@ -4,7 +4,7 @@ import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.ast.ClassNode;
 import me.august.lumen.compile.ast.FieldNode;
 import me.august.lumen.compile.ast.MethodNode;
-import me.august.lumen.compile.ast.Typed;
+import me.august.lumen.compile.ast.TypedNode;
 import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.ast.stmt.VarStmt;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
@@ -17,7 +17,7 @@ public abstract class TypeVisitor implements ASTVisitor {
 
     protected abstract Type resolveType(UnresolvedType unresolved);
 
-    public void visitType(Typed type) {
+    public void visitType(TypedNode type) {
         Type resolved = resolveType(type.getUnresolvedType());
         type.setResolvedType(resolved);
     }
@@ -41,10 +41,10 @@ public abstract class TypeVisitor implements ASTVisitor {
 
     @Override
     public void visitExpression(Expression expr) {
-        if (expr instanceof Typed) {
-            Typed typed = (Typed) expr;
-            if (!typed.isResolved())
-                visitType((Typed) expr);
+        if (expr instanceof TypedNode) {
+            TypedNode typedNode = (TypedNode) expr;
+            if (!typedNode.isResolved())
+                visitType((TypedNode) expr);
         }
     }
 

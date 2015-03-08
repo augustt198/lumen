@@ -14,7 +14,7 @@ import org.objectweb.asm.Type;
 
 import java.util.List;
 
-public class MethodNode extends Typed implements VisitorConsumer, ClassCodeGen {
+public class MethodNode extends TypedNode implements VisitorConsumer, ClassCodeGen {
 
     private String name;
     private ModifierSet modifiers;

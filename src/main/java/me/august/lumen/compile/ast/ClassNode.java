@@ -17,13 +17,13 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
 
     private ModifierSet modifiers;
     private String name;
-    private Typed superClass;
+    private TypedNode superClass;
     private String[] interfaces;
 
     private List<FieldNode> fields = new ArrayList<>();
     private List<MethodNode> methods = new ArrayList<>();
 
-    public ClassNode(String name, Typed superClass, String[] interfaces, ModifierSet modifiers) {
+    public ClassNode(String name, TypedNode superClass, String[] interfaces, ModifierSet modifiers) {
         this.name       = name;
         this.superClass = superClass;
         this.interfaces = interfaces;
@@ -114,7 +114,7 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
         return name;
     }
 
-    public Typed getSuperClass() {
+    public TypedNode getSuperClass() {
         return superClass;
     }
 
@@ -122,7 +122,7 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
         return interfaces;
     }
 
-    public void setSuperClass(Typed superClass) {
+    public void setSuperClass(TypedNode superClass) {
         this.superClass = superClass;
     }
 }

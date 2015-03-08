@@ -83,15 +83,15 @@ public class ForStmt implements CodeBlock, VisitorConsumer, Loop {
 
         range.getLeft().acceptTopDown(visitor);
         range.getRight().acceptTopDown(visitor);
-        body.acceptTopDown(visitor);
+        body.acceptTopDown(visitor, false);
     }
 
     @Override
     public void acceptBottomUp(ASTVisitor visitor) {
+        visitor.visitForStmt(this);
+
         range.getLeft().acceptBottomUp(visitor);
         range.getRight().acceptBottomUp(visitor);
-        body.acceptBottomUp(visitor);
-
-        visitor.visitForStmt(this);
+        body.acceptBottomUp(visitor, false);
     }
 }

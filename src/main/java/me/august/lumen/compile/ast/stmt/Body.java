@@ -48,17 +48,32 @@ public class Body implements CodeBlock, VisitorConsumer {
 
     @Override
     public void acceptTopDown(ASTVisitor visitor) {
-        visitor.visitBody(this);
+        acceptTopDown(visitor, true);
+    }
+
+    public void acceptTopDown(ASTVisitor visitor, boolean visitSelf) {
+        if (visitSelf) {
+            visitor.visitBody(this);
+        }
+
         for (CodeBlock code : children) {
             if (code instanceof VisitorConsumer)
                 ((VisitorConsumer) code).acceptTopDown(visitor);
         }
         visitor.visitBodyEnd(this);
+
     }
 
     @Override
     public void acceptBottomUp(ASTVisitor visitor) {
-        visitor.visitBody(this);
+        acceptBottomUp(visitor, true);
+    }
+
+    public void acceptBottomUp(ASTVisitor visitor, boolean visitSelf) {
+        if (visitSelf) {
+            visitor.visitBody(this);
+        }
+
         for (CodeBlock code : children) {
             if (code instanceof VisitorConsumer)
                 ((VisitorConsumer) code).acceptBottomUp(visitor);

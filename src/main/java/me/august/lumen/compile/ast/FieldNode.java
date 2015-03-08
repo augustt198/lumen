@@ -7,7 +7,7 @@ import me.august.lumen.compile.codegen.ClassCodeGen;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.ClassVisitor;
 
-public class FieldNode extends Typed implements ClassCodeGen {
+public class FieldNode extends TypedNode implements ClassCodeGen {
 
     private String name;
     private ModifierSet modifiers;

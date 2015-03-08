@@ -4,7 +4,7 @@ import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.method.MethodReference;
 import me.august.lumen.compile.analyze.var.ArrayLengthReference;
 import me.august.lumen.compile.analyze.var.ClassVariable;
-import me.august.lumen.compile.ast.Typed;
+import me.august.lumen.compile.ast.TypedNode;
 import me.august.lumen.compile.ast.expr.*;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.resolve.data.ClassData;
@@ -44,11 +44,11 @@ public class LumenTypeVisitor implements ASTVisitor {
 
     // TODO split up this mega-method
     private void handleRoot(Expression expr) {
-        if (expr instanceof Typed) {
-            Typed typed = (Typed) expr;
-            if (!typed.isResolved()) {
-                Type type = resolver.resolveType(typed.getUnresolvedType());
-                typed.setResolvedType(type);
+        if (expr instanceof TypedNode) {
+            TypedNode typedNode = (TypedNode) expr;
+            if (!typedNode.isResolved()) {
+                Type type = resolver.resolveType(typedNode.getUnresolvedType());
+                typedNode.setResolvedType(type);
             }
         }
 

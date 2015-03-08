@@ -3,12 +3,12 @@ package me.august.lumen.compile.ast;
 import me.august.lumen.compile.resolve.type.UnresolvedType;
 import org.objectweb.asm.Type;
 
-public class Typed {
+public class TypedNode {
 
     protected UnresolvedType unresolvedType;
     protected Type resolvedType;
 
-    public Typed(UnresolvedType unresolvedType) {
+    public TypedNode(UnresolvedType unresolvedType) {
         this.unresolvedType = unresolvedType;
     }
 
