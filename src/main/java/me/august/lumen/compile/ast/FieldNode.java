@@ -4,16 +4,16 @@ import me.august.lumen.common.ModifierSet;
 import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.ClassCodeGen;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.objectweb.asm.ClassVisitor;
 
-public class FieldNode extends TypedNode implements ClassCodeGen {
+public class FieldNode extends SingleTypedNode implements ClassCodeGen {
 
     private String name;
     private ModifierSet modifiers;
     private Expression defaultValue;
 
-    public FieldNode(String name, UnresolvedType type, ModifierSet modifiers) {
+    public FieldNode(String name, BasicType type, ModifierSet modifiers) {
         super(type);
         this.name = name;
         this.modifiers = modifiers;

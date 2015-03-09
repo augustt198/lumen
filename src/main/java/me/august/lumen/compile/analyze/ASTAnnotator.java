@@ -11,6 +11,24 @@ public class ASTAnnotator<T> {
         return map.get(obj);
     }
 
+    public T getValueOrFail(Object obj) {
+        T val = getValue(obj);
+        if (val == null) {
+            throw new RuntimeException("Could not find value for : " + obj);
+        } else {
+            return val;
+        }
+    }
+
+    public T getValueOrFail(Object obj, RuntimeException ex) {
+        T val = getValue(obj);
+        if (val == null) {
+            throw ex;
+        } else {
+            return val;
+        }
+    }
+
     protected void setValue(Object obj, T val) {
         map.put(obj, val);
     }

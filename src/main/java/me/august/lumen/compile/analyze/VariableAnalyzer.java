@@ -1,6 +1,7 @@
 package me.august.lumen.compile.analyze;
 
 import me.august.lumen.compile.analyze.scope.*;
+import me.august.lumen.compile.analyze.types.BasicTypeInfo;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.analyze.var.VariableReference;
@@ -22,9 +23,12 @@ public class VariableAnalyzer implements ASTVisitor {
     private Map<Expression, VariableReference> variableLookup
             = new LinkedHashMap<>();
 
+    private TypeAnnotator types;
+
     private BuildContext context;
 
-    public VariableAnalyzer(BuildContext context) {
+    public VariableAnalyzer(TypeAnnotator types, BuildContext context) {
+        this.types   = types;
         this.context = context;
     }
 
@@ -39,8 +43,10 @@ public class VariableAnalyzer implements ASTVisitor {
         scope = new ClassScope(cls.getName());
 
         for (FieldNode field : cls.getFields()) {
+            BasicTypeInfo typeInfo = (BasicTypeInfo) types.getValue(field);
+
             ClassVariable fieldRef = new ClassVariable(
-                    cls.getName(), field.getName(), field.getResolvedType()
+                    cls.getName(), field.getName(), typeInfo.getResolvedType()
             );
             scope.setVariable(field.getName(), fieldRef);
         }
@@ -111,7 +117,11 @@ public class VariableAnalyzer implements ASTVisitor {
 
         int nextIndex = scope.nextLocalVariableIndex(isStaticMethod());
 
-        LocalVariable localVar = new LocalVariable(nextIndex, var.getResolvedType());
+        BasicTypeInfo typeInfo = (BasicTypeInfo) types.getValue(var);
+
+        LocalVariable localVar = new LocalVariable(
+                nextIndex, typeInfo.getResolvedType()
+        );
 
         scope.setVariable(var.getName(), localVar);
     }

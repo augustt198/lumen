@@ -7,7 +7,7 @@ import me.august.lumen.compile.ast.MethodNode;
 import me.august.lumen.compile.ast.TypedNode;
 import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.ast.stmt.VarStmt;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.objectweb.asm.Type;
 
 /**
@@ -15,7 +15,7 @@ import org.objectweb.asm.Type;
  */
 public abstract class TypeVisitor implements ASTVisitor {
 
-    protected abstract Type resolveType(UnresolvedType unresolved);
+    protected abstract Type resolveType(BasicType unresolved);
 
     public void visitType(TypedNode type) {
         Type resolved = resolveType(type.getUnresolvedType());

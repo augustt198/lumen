@@ -1,25 +1,25 @@
 package me.august.lumen.compile.ast.expr;
 
 import me.august.lumen.common.BytecodeUtil;
+import me.august.lumen.compile.ast.SingleTypedNode;
 import me.august.lumen.compile.ast.TypedNode;
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 import java.util.List;
 
-public class ArrayInitializerExpr extends TypedNode implements Expression {
+public class ArrayInitializerExpr extends SingleTypedNode implements Expression {
 
     private List<Expression> lengths;
     private int dims;
 
-    public ArrayInitializerExpr(UnresolvedType type, List<Expression> lengths, int dims) {
-        super(type);
+    public ArrayInitializerExpr(BasicType type, List<Expression> lengths, int dims) {
+        // turn base type into array type
+        super(new BasicType(type.getBaseName(), dims));
         this.lengths  = lengths;
         this.dims     = dims;
-
-        super.unresolvedType = new UnresolvedType(type.getBaseName(), dims);
     }
 
     public boolean isMultidimensional() {

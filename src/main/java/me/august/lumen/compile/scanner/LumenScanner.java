@@ -20,7 +20,9 @@ public class LumenScanner implements TokenSource {
     // initialize keyword map
     static {
         for (TokenType type : TokenType.values()) {
-            if (type.getKeywords() == null) continue;;
+            if (type.getKeywords() == null) {
+                continue;
+            }
             for (String keyword : type.getKeywords()) {
                 KEYWORD_MAP.put(keyword, type);
             }

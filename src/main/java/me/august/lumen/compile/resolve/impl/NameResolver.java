@@ -3,7 +3,7 @@ package me.august.lumen.compile.resolve.impl;
 import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.ast.ImportNode;
 import me.august.lumen.compile.resolve.TypeResolver;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.objectweb.asm.Type;
 
 public class NameResolver implements TypeResolver {
@@ -15,7 +15,7 @@ public class NameResolver implements TypeResolver {
     }
 
     @Override
-    public Type resolveType(UnresolvedType unresolved) {
+    public Type resolveType(BasicType unresolved) {
         // if unresolved type is a primitive or primitive
         // array, no resolution is needed
         if (unresolved.baseIsPrimitive())

@@ -2,7 +2,7 @@ package me.august.lumen.compile.parser.parsers;
 
 import me.august.lumen.compile.ast.expr.*;
 import me.august.lumen.compile.parser.TokenParser;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.TokenType;
 
@@ -19,7 +19,7 @@ public class IdentifierParser implements PrefixParser {
         // Hit separator, must be static field or method call
         if (parser.accept(TokenType.SEP)) {
             String name = parser.consume().expectType(TokenType.IDENTIFIER).getContent();
-            UnresolvedType classType = new UnresolvedType(identifier);
+            BasicType classType = new BasicType(identifier);
 
             // method -> Foo::bar()
             if (parser.peek().getType() == TokenType.L_PAREN) {

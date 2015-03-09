@@ -1,21 +1,22 @@
 package me.august.lumen.compile.ast.expr;
 
+import me.august.lumen.compile.ast.SingleTypedNode;
 import me.august.lumen.compile.ast.TypedNode;
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-public class RescueExpr extends TypedNode implements Expression {
+public class RescueExpr extends SingleTypedNode implements Expression {
 
     private Expression tryExpression;
     private Expression catchExpression;
 
     private int exceptionVariableIndex;
 
-    public RescueExpr(UnresolvedType type, Expression tryExpression, Expression catchExpression) {
+    public RescueExpr(BasicType type, Expression tryExpression, Expression catchExpression) {
         super(type);
         this.tryExpression = tryExpression;
         this.catchExpression = catchExpression;

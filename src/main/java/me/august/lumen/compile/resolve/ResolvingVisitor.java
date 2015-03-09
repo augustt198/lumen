@@ -1,7 +1,7 @@
 package me.august.lumen.compile.resolve;
 
 import me.august.lumen.compile.resolve.impl.NameResolver;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.objectweb.asm.Type;
 
 public class ResolvingVisitor extends TypeVisitor {
@@ -13,7 +13,7 @@ public class ResolvingVisitor extends TypeVisitor {
     }
 
     @Override
-    public Type resolveType(UnresolvedType simple) {
+    public Type resolveType(BasicType simple) {
         return resolver.resolveType(simple);
     }
 }

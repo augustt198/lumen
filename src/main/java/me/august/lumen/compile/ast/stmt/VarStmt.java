@@ -5,25 +5,26 @@ import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.ast.CodeBlock;
+import me.august.lumen.compile.ast.SingleTypedNode;
 import me.august.lumen.compile.ast.TypedNode;
 import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-public class VarStmt extends TypedNode implements CodeBlock, VisitorConsumer {
+public class VarStmt extends SingleTypedNode implements CodeBlock, VisitorConsumer {
 
     private String name;
     private Expression defaultValue;
 
     private LocalVariable ref;
 
-    public VarStmt(String name, UnresolvedType type) {
+    public VarStmt(String name, BasicType type) {
         this(name, type, null);
     }
 
-    public VarStmt(String name, UnresolvedType type, Expression defaultValue) {
+    public VarStmt(String name, BasicType type, Expression defaultValue) {
         super(type);
         this.name = name;
         this.defaultValue = defaultValue;

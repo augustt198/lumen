@@ -1,18 +1,19 @@
 package me.august.lumen.compile.ast.expr;
 
 import me.august.lumen.common.BytecodeUtil;
+import me.august.lumen.compile.ast.SingleTypedNode;
 import me.august.lumen.compile.ast.TypedNode;
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-public class CastExpr extends TypedNode implements Expression {
+public class CastExpr extends SingleTypedNode implements Expression {
 
     private Expression value;
 
-    public CastExpr(Expression value, UnresolvedType type) {
+    public CastExpr(Expression value, BasicType type) {
         super(type);
         this.value = value;
     }
@@ -23,7 +24,8 @@ public class CastExpr extends TypedNode implements Expression {
 
     @Override
     public Type expressionType() {
-        return getResolvedType();
+        //return getResolvedType();
+        return null;
     }
 
     @Override

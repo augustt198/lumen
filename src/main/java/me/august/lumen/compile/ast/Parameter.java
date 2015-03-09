@@ -1,12 +1,12 @@
 package me.august.lumen.compile.ast;
 
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 
-public class Parameter extends TypedNode {
+public class Parameter extends SingleTypedNode {
 
     private String name;
 
-    public Parameter(String name, UnresolvedType type) {
+    public Parameter(String name, BasicType type) {
         super(type);
         this.name = name;
     }

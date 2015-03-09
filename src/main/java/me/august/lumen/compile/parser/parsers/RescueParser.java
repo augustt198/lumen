@@ -4,7 +4,7 @@ import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.ast.expr.IdentExpr;
 import me.august.lumen.compile.ast.expr.RescueExpr;
 import me.august.lumen.compile.parser.TokenParser;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.TokenType;
 
@@ -13,12 +13,12 @@ public class RescueParser implements InfixParser {
     @Override
     public Expression parse(TokenParser parser, Expression left, Token token) {
         Expression catchExpr;
-        UnresolvedType type = null;
+        BasicType type = null;
 
         if (parser.peek().getType() == TokenType.IDENTIFIER) {
             String identifier = parser.consume().getContent();
             if (parser.accept(TokenType.R_ARROW)) {
-                type = new UnresolvedType(identifier);
+                type = new BasicType(identifier);
                 catchExpr = parser.parseExpression(getPrecedence());
             } else {
                 catchExpr = new IdentExpr(identifier);

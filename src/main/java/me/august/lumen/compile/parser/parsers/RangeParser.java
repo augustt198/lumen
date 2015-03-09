@@ -5,7 +5,7 @@ import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.ast.expr.IdentExpr;
 import me.august.lumen.compile.ast.expr.RangeExpr;
 import me.august.lumen.compile.parser.TokenParser;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.TokenType;
 
@@ -34,7 +34,7 @@ public class RangeParser implements InfixParser {
         }
 
         IdentExpr ident = (IdentExpr) left;
-        UnresolvedType type = new UnresolvedType(ident.getIdentifier());
+        BasicType type = new BasicType(ident.getIdentifier());
 
         List<Expression> lengths = new ArrayList<>();
         int dims = 1;

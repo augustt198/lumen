@@ -1,18 +1,18 @@
 package me.august.lumen.compile.ast;
 
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.objectweb.asm.Type;
 
 public class TypedNode {
 
-    protected UnresolvedType unresolvedType;
+    protected BasicType unresolvedType;
     protected Type resolvedType;
 
-    public TypedNode(UnresolvedType unresolvedType) {
+    public TypedNode(BasicType unresolvedType) {
         this.unresolvedType = unresolvedType;
     }
 
-    public UnresolvedType getUnresolvedType() {
+    public BasicType getUnresolvedType() {
         return unresolvedType;
     }
 

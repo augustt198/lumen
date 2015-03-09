@@ -5,6 +5,10 @@ import me.august.lumen.compile.resolve.data.ClassData;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DependencyManager bundles together several individual
+ * class lookups to form one class lookup
+ */
 public class DependencyManager implements ClassLookup {
 
     List<ClassLookup> sources = new ArrayList<>();

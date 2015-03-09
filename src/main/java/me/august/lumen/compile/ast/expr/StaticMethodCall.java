@@ -1,16 +1,17 @@
 package me.august.lumen.compile.ast.expr;
 
+import me.august.lumen.compile.ast.SingleTypedNode;
 import me.august.lumen.compile.ast.TypedNode;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.MethodCodeGen;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import java.util.List;
 
-public class StaticMethodCall extends TypedNode implements Expression {
+public class StaticMethodCall extends SingleTypedNode implements Expression {
 
     private String methodName;
 
@@ -21,7 +22,7 @@ public class StaticMethodCall extends TypedNode implements Expression {
 
     private boolean pop;
 
-    public StaticMethodCall(UnresolvedType classType, String methodName, List<Expression> parameters) {
+    public StaticMethodCall(BasicType classType, String methodName, List<Expression> parameters) {
         super(classType);
         this.methodName = methodName;
         this.parameters = parameters;

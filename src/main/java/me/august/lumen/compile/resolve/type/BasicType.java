@@ -4,22 +4,22 @@ import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.common.StringUtil;
 import org.objectweb.asm.Type;
 
-public class UnresolvedType {
+public class BasicType {
 
-    public static UnresolvedType OBJECT_TYPE =
-        new UnresolvedType("Object");
+    public static BasicType OBJECT_TYPE =
+        new BasicType("Object");
 
-    public static UnresolvedType VOID_TYPE =
-        new UnresolvedType("void");
+    public static BasicType VOID_TYPE =
+        new BasicType("void");
 
     private String baseName;
     private int dims;
 
-    public UnresolvedType(String baseName) {
+    public BasicType(String baseName) {
         this(baseName, 0);
     }
 
-    public UnresolvedType(String baseName, int dims) {
+    public BasicType(String baseName, int dims) {
         this.baseName = baseName;
         this.dims = dims;
     }
@@ -40,6 +40,18 @@ public class UnresolvedType {
         return baseName;
     }
 
+    public BasicType getBaseType() {
+        return new BasicType(baseName);
+    }
+
+    public BasicType getComponentType() {
+        if (isArray()) {
+            throw new IllegalStateException("Type is not an array");
+        }
+
+        return new BasicType(baseName, dims - 1);
+    }
+
     public int getArrayDimensions() {
         return dims;
     }
@@ -58,7 +70,7 @@ public class UnresolvedType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UnresolvedType that = (UnresolvedType) o;
+        BasicType that = (BasicType) o;
 
         if (dims != that.dims) return false;
         if (baseName != null ? !baseName.equals(that.baseName) : that.baseName != null) return false;

@@ -13,7 +13,7 @@ import me.august.lumen.compile.driver.CompileBuildContext;
 import me.august.lumen.compile.resolve.LumenTypeVisitor;
 import me.august.lumen.compile.resolve.impl.NameResolver;
 import me.august.lumen.compile.resolve.lookup.DependencyManager;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,21 +37,21 @@ public class VariableResolutionTest {
     }
      */
     static {
-        TypedNode supType = new TypedNode(UnresolvedType.OBJECT_TYPE);
+        TypedNode supType = new TypedNode(BasicType.OBJECT_TYPE);
         ClassNode cls = new ClassNode("Foo", supType, new String[0], new ModifierSet());
         PROGRAM = new ProgramNode(new ImportNode[0], cls);
 
-        UnresolvedType type;
+        BasicType type;
 
-        type = new UnresolvedType("boolean");
+        type = new BasicType("boolean");
         cls.getFields().add(new FieldNode("field", type, new ModifierSet()));
 
-        type = UnresolvedType.VOID_TYPE;
+        type = BasicType.VOID_TYPE;
         MethodNode method = new MethodNode("foo", type, new ArrayList<>(), new ModifierSet());
 
         Body body = new Body();
 
-        type = new UnresolvedType("boolean");
+        type = new BasicType("boolean");
         body.addCode(new VarStmt("the_var", type));
         body.addCode(IDENT_EXPR = new IdentExpr("the_var"));
         body.addCode(FIELD_IDENT_EXPR = new IdentExpr("field"));

@@ -1,7 +1,7 @@
 package me.august.lumen.compile.parser;
 
 import me.august.lumen.compile.ast.expr.Expression;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.TokenType;
 
@@ -19,7 +19,7 @@ public interface TokenParser {
     boolean accept(TokenType type);
     boolean expect(TokenType type);
 
-    default UnresolvedType nextUnresolvedType() {
+    default BasicType nextUnresolvedType() {
         String identifier = consume().expectType(TokenType.IDENTIFIER).getContent();
         int dimensions    = 0;
 
@@ -28,7 +28,7 @@ public interface TokenParser {
             dimensions++;
         }
 
-        return new UnresolvedType(identifier, dimensions);
+        return new BasicType(identifier, dimensions);
     }
 
     default String expectIdentifier() {

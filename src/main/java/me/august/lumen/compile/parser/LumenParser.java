@@ -7,7 +7,7 @@ import me.august.lumen.compile.ast.expr.NotExpr;
 import me.august.lumen.compile.ast.expr.RangeExpr;
 import me.august.lumen.compile.ast.stmt.*;
 import me.august.lumen.compile.codegen.BuildContext;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.TokenSource;
 import me.august.lumen.compile.scanner.tokens.ImportPathToken;
@@ -95,11 +95,11 @@ public class LumenParser extends ExpressionParser {
         return classNode;
     }
 
-    private UnresolvedType parseSuperclass() {
+    private BasicType parseSuperclass() {
         if (accept(COLON)) {
             return nextUnresolvedType();
         } else {
-            return UnresolvedType.OBJECT_TYPE;
+            return BasicType.OBJECT_TYPE;
         }
     }
 
@@ -160,7 +160,7 @@ public class LumenParser extends ExpressionParser {
         String name = consume().expectType(IDENTIFIER).getContent();
         expect(COLON); // consume ':'
 
-        UnresolvedType type = nextUnresolvedType();
+        BasicType type = nextUnresolvedType();
         FieldNode field = new FieldNode(name, type, modifiers);
 
         if (accept(ASSIGN)) {
@@ -173,11 +173,11 @@ public class LumenParser extends ExpressionParser {
     private MethodNode parseMethod(ModifierSet modifiers) {
         String name = consume().expectType(IDENTIFIER).getContent();
 
-        UnresolvedType type;
+        BasicType type;
         if (accept(COLON)) {
             type = nextUnresolvedType();
         } else {
-            type = UnresolvedType.VOID_TYPE;
+            type = BasicType.VOID_TYPE;
         }
 
         List<Parameter> parameters = new ArrayList<>();
@@ -185,7 +185,7 @@ public class LumenParser extends ExpressionParser {
             while (peek().getType() != R_PAREN) {
                 String parameterName = consume().expectType(IDENTIFIER).getContent();
                 expect(COLON);
-                UnresolvedType parameterType = nextUnresolvedType();
+                BasicType parameterType = nextUnresolvedType();
 
                 parameters.add(new Parameter(parameterName, parameterType));
 
@@ -252,7 +252,7 @@ public class LumenParser extends ExpressionParser {
         String name = consume().expectType(IDENTIFIER).getContent();
         expect(COLON);
 
-        UnresolvedType type = nextUnresolvedType();
+        BasicType type = nextUnresolvedType();
         Expression value = accept(ASSIGN) ? parseExpression() : null;
 
         return new VarStmt(name, type, value);

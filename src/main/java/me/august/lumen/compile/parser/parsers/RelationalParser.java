@@ -5,7 +5,7 @@ import me.august.lumen.compile.ast.expr.InstanceofExpr;
 import me.august.lumen.compile.ast.expr.NotExpr;
 import me.august.lumen.compile.ast.expr.RelExpr;
 import me.august.lumen.compile.parser.TokenParser;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import me.august.lumen.compile.scanner.Token;
 import me.august.lumen.compile.scanner.TokenType;
 
@@ -15,7 +15,7 @@ public class RelationalParser implements InfixParser {
     public Expression parse(TokenParser parser, Expression left, Token token) {
         switch (token.getType()) {
             case INSTANCEOF_KEYWORD:
-                UnresolvedType type = parser.nextUnresolvedType();
+                BasicType type = parser.nextUnresolvedType();
                 return new InstanceofExpr(left, type);
             case NOT_INSTANCEOF_KEYWORD:
                 type = parser.nextUnresolvedType();

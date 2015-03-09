@@ -6,7 +6,7 @@ import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.ast.stmt.Body;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.ClassCodeGen;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -14,7 +14,7 @@ import org.objectweb.asm.Type;
 
 import java.util.List;
 
-public class MethodNode extends TypedNode implements VisitorConsumer, ClassCodeGen {
+public class MethodNode extends SingleTypedNode implements VisitorConsumer, ClassCodeGen {
 
     private String name;
     private ModifierSet modifiers;
@@ -23,7 +23,7 @@ public class MethodNode extends TypedNode implements VisitorConsumer, ClassCodeG
 
     private Body body;
 
-    public MethodNode(String name, UnresolvedType returnType, List<Parameter> parameters, ModifierSet modifiers) {
+    public MethodNode(String name, BasicType returnType, List<Parameter> parameters, ModifierSet modifiers) {
         super(returnType);
         this.name = name;
         this.parameters = parameters;

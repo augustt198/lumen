@@ -1,7 +1,7 @@
 package me.august.lumen;
 
 import me.august.lumen.compile.ast.expr.*;
-import me.august.lumen.compile.resolve.type.UnresolvedType;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.objectweb.asm.Type;
@@ -205,7 +205,7 @@ public class ExpressionTest {
 
         rescue = (RescueExpr) expr;
 
-        UnresolvedType expected = new UnresolvedType("ArithmeticException");
+        BasicType expected = new BasicType("ArithmeticException");
         Assert.assertEquals(
                 "Expected `ArithmeticException` type",
                 expected,
