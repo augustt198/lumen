@@ -12,7 +12,7 @@ public class NumExpr extends TerminalExpression {
 
     public NumExpr(Number value) {
         this.value = value;
-        type = BytecodeUtil.numberType(value.getClass());
+        type = BytecodeUtil.unboxedNumberType(value.getClass());
     }
 
     @Override

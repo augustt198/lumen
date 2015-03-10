@@ -83,5 +83,11 @@ public class AddExpr extends BinaryExpression {
         visitor.visitInsn(opcode);
     }
 
+    public boolean isAddition() {
+        return op == Op.ADD;
+    }
 
+    public boolean isSubtraction() {
+        return op == Op.SUB;
+    }
 }

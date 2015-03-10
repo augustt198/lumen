@@ -24,6 +24,8 @@ public interface ExpressionVisitor extends ASTVisitor {
             visitFalseExpression((FalseExpr) expr);
         else if (expr instanceof NumExpr)
             visitNumberExpression((NumExpr) expr);
+        else if (expr instanceof StringExpr)
+            visitStringExpression((StringExpr) expr);
         else if (expr instanceof IdentExpr)
             visitIdentExpression((IdentExpr) expr);
         else if (expr instanceof NullExpr)
@@ -81,6 +83,7 @@ public interface ExpressionVisitor extends ASTVisitor {
     default void visitTrueExpression(TrueExpr expr) {}
     default void visitFalseExpression(FalseExpr expr) {}
     default void visitNumberExpression(NumExpr expr) {}
+    default void visitStringExpression(StringExpr expr) {}
     default void visitIdentExpression(IdentExpr expr) {}
     default void visitNullExpression(NullExpr expr) {}
     default void visitArrayAccessExpression(ArrayAccessExpr expr) {}

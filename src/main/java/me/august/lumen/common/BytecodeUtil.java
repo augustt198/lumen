@@ -242,21 +242,31 @@ public final class BytecodeUtil implements Opcodes {
 
 
     private static Set<Type> BOXED_TYPES;
+    private static Set<Type> NUMERIC_BOXED_TYPES;
 
     static {
         Class[] classes = new Class[]{
-            Byte.class, Character.class, Short.class, Integer.class,
+            Byte.class, Short.class, Integer.class,
             Long.class, Float.class, Double.class
         };
 
-        BOXED_TYPES = new HashSet<>(classes.length);
+        NUMERIC_BOXED_TYPES = new HashSet<>(classes.length);
 
-        for (Class cls : classes)
-            BOXED_TYPES.add(Type.getType(cls));
+        for (Class cls : classes) {
+            NUMERIC_BOXED_TYPES.add(Type.getType(cls));
+        }
+
+        BOXED_TYPES = new HashSet<>(NUMERIC_BOXED_TYPES);
+        BOXED_TYPES.add(Type.getType(Character.class));
+        BOXED_TYPES.add(Type.getType(Boolean.class));
     }
 
     public static boolean isBoxedType(Type type) {
         return BOXED_TYPES.contains(type);
+    }
+
+    public static boolean isNumericBoxedType(Type type) {
+        return NUMERIC_BOXED_TYPES.contains(type);
     }
 
     public static boolean isPrimitive(Type type) {
@@ -272,8 +282,19 @@ public final class BytecodeUtil implements Opcodes {
         return type.getSort() >= Type.CHAR && type.getSort() <= Type.DOUBLE;
     }
 
-    public static Type numberType(Class<? extends Number> cls) {
-        switch (cls.getSimpleName()) {
+    public static Type unboxedNumberType(Class<? extends Number> cls) {
+        return unboxedNumberType(cls.getSimpleName());
+    }
+
+    public static Type unboxedNumberType(Type type) {
+        String name = type.getClassName();
+        name = name.substring(name.lastIndexOf('.') + 1);
+
+        return unboxedNumberType(name);
+    }
+
+    private static Type unboxedNumberType(String str) {
+        switch (str) {
             case "Float":   return Type.FLOAT_TYPE;
             case "Double":  return Type.DOUBLE_TYPE;
             case "Integer": return Type.INT_TYPE;
