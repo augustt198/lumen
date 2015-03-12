@@ -2,9 +2,12 @@ package me.august.lumen.compile.analyze;
 
 import me.august.lumen.common.BytecodeUtil;
 import me.august.lumen.compile.ast.expr.*;
+import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.resolve.convert.ConversionStrategy;
+import me.august.lumen.compile.resolve.convert.Conversions;
 import me.august.lumen.compile.resolve.convert.types.PrimitiveWidening;
 import me.august.lumen.compile.resolve.convert.types.UnboxingConversion;
+import me.august.lumen.compile.resolve.lookup.ClassLookup;
 import org.objectweb.asm.Type;
 
 import java.util.HashMap;
@@ -20,6 +23,14 @@ public class TypeAnalyzer extends ASTAnnotator<Type> implements ExpressionVisito
 
     private Map<Expression, ConversionStrategy> conversions
             = new HashMap<>();
+
+    private ClassLookup lookup;
+    private BuildContext build;
+
+    public TypeAnalyzer(ClassLookup lookup, BuildContext build) {
+        this.lookup = lookup;
+        this.build  = build;
+    }
 
     public void visitNumberExpression(NumExpr expr) {
         Type type = BytecodeUtil.unboxedNumberType(expr.getValue().getClass());
@@ -43,8 +54,10 @@ public class TypeAnalyzer extends ASTAnnotator<Type> implements ExpressionVisito
 
     @Override
     public void visitIdentExpression(IdentExpr expr) {
-        Type type = expr.getVariableReference().getType();
-        setValue(expr, type);
+        if (expr.getOwner() == null) {
+            Type type = expr.getVariableReference().getType();
+            setValue(expr, type);
+        }
     }
 
     @Override
@@ -167,4 +180,79 @@ public class TypeAnalyzer extends ASTAnnotator<Type> implements ExpressionVisito
 
         setValue(expr, type);
     }
+
+    @Override
+    public void visitAssignmentExpression(AssignmentExpr expr) {
+        Type varType = expr.getLeft().getVariableReference().getType();
+        Type valType = getValue(expr.getRight());
+
+        ConversionStrategy conversion = Conversions.convert(
+                valType, varType, lookup
+        );
+
+        if (conversion.isValid()) {
+            conversions.put(expr.getRight(), conversion);
+        } else {
+            build.error(
+                    "Cannot assign " + valType + " to " + varType,
+                    true, expr
+            );
+        }
+    }
+
+    @Override
+    public void visitArrayAccessExpression(ArrayAccessExpr expr) {
+        // type of x in x[foo]
+        Type targetType = getValue(expr.getTarget());
+        Type componentType = BytecodeUtil.componentType(targetType);
+
+        setValue(expr, componentType);
+    }
+
+    @Override
+    public void visitBitwiseComplementExpression(BitwiseComplementExpr expr) {
+        handleNumericalUnary(expr);
+    }
+
+    @Override
+    public void visitUnaryMinusExpression(UnaryMinusExpr expr) {
+        handleNumericalUnary(expr);
+    }
+
+    private void handleNumericalUnary(UnaryExpression expr) {
+        Type operandType = getValue(expr.getOperand());
+
+        Type targetType = Type.INT_TYPE;
+        if (operandType == Type.LONG_TYPE) {
+            targetType = Type.LONG_TYPE;
+        }
+
+        setValue(expr, targetType);
+    }
+
+    @Override
+    public void visitIncrementExpression(IncrementExpr expr) {
+        Type operandType = getValue(expr.getOperand());
+        setValue(expr, operandType);
+    }
+
+    @Override
+    public void visitNotExpression(NotExpr expr) {
+        handleLogicExpression(expr);
+    }
+
+    @Override
+    public void visitAndExpression(AndExpr expr) {
+        handleLogicExpression(expr);
+    }
+
+    @Override
+    public void visitOrExpression(OrExpr expr) {
+        handleLogicExpression(expr);
+    }
+
+    private void handleLogicExpression(Expression expr) {
+        setValue(expr, Type.BOOLEAN_TYPE);
+    }
+
 }

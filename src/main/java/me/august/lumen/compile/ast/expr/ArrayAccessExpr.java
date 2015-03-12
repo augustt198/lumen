@@ -10,25 +10,25 @@ import java.util.function.Consumer;
 
 public class ArrayAccessExpr implements Expression, VariableExpression, VariableReference {
 
-    private Expression value;
+    private Expression target;
     private Expression index;
 
-    public ArrayAccessExpr(Expression value, Expression index) {
-        this.value = value;
+    public ArrayAccessExpr(Expression target, Expression index) {
+        this.target = target;
         this.index = index;
     }
 
     @Override
     public Type expressionType() {
-        if (value == null || value.expressionType() == null)
+        if (target == null || target.expressionType() == null)
             return null;
 
-        return BytecodeUtil.componentType(value.expressionType());
+        return BytecodeUtil.componentType(target.expressionType());
     }
 
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
-        value.generate(visitor, context);
+        target.generate(visitor, context);
         index.generate(visitor, context);
 
         int opcode = BytecodeUtil.arrayLoadOpcode(expressionType());
@@ -37,7 +37,7 @@ public class ArrayAccessExpr implements Expression, VariableExpression, Variable
 
     @Override
     public Expression[] getChildren() {
-        return new Expression[]{value, index};
+        return new Expression[]{target, index};
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ArrayAccessExpr implements Expression, VariableExpression, Variable
 
     @Override
     public void generateSetCode(MethodVisitor m, Consumer<MethodVisitor> insn) {
-        value.generate(m, null);
+        target.generate(m, null);
         index.generate(m, null);
         insn.accept(m);
 
@@ -65,5 +65,13 @@ public class ArrayAccessExpr implements Expression, VariableExpression, Variable
 
         int opcode = BytecodeUtil.arrayStoreOpcode(expressionType());
         m.visitInsn(opcode);
+    }
+
+    public Expression getIndex() {
+        return index;
+    }
+
+    public Expression getTarget() {
+        return target;
     }
 }

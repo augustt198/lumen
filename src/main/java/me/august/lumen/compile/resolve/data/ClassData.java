@@ -39,6 +39,14 @@ public class ClassData extends BaseData {
         return assignableDistance(type, lookup, 0) > -1;
     }
 
+    public boolean isAssignableTo(Type type, ClassLookup lookup) {
+        return isAssignableTo(type.getClassName(), lookup);
+    }
+
+    public boolean isAssignableTo(ClassData cls, ClassLookup lookup) {
+        return isAssignableTo(cls.getName(), lookup);
+    }
+
     public int assignableDistance(Type type, ClassLookup lookup) {
         if (type.getSort() == Type.OBJECT) {
             return assignableDistance(type.getClassName(), lookup);
