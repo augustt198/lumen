@@ -6,7 +6,6 @@ import me.august.lumen.compile.analyze.VisitorConsumer;
 import me.august.lumen.compile.analyze.var.LocalVariable;
 import me.august.lumen.compile.ast.CodeBlock;
 import me.august.lumen.compile.ast.SingleTypedNode;
-import me.august.lumen.compile.ast.TypedNode;
 import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.resolve.type.BasicType;

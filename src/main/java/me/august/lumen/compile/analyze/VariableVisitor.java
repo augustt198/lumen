@@ -19,7 +19,6 @@ import org.objectweb.asm.Type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class VariableVisitor implements ASTVisitor {

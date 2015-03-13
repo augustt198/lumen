@@ -3,7 +3,6 @@ package me.august.lumen.compile.ast.expr;
 import me.august.lumen.compile.analyze.var.StaticVariable;
 import me.august.lumen.compile.analyze.var.VariableReference;
 import me.august.lumen.compile.ast.SingleTypedNode;
-import me.august.lumen.compile.ast.TypedNode;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.resolve.type.BasicType;
 import org.objectweb.asm.MethodVisitor;
