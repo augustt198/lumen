@@ -25,7 +25,9 @@ public class ConstructorCallExpr extends SingleTypedNode implements Expression {
 
     @Override
     public void generate(MethodVisitor visitor, BuildContext context) {
-        visitor.visitTypeInsn(Opcodes.NEW, getResolvedType().getInternalName());
+        String internalName = getTypeInfo().getResolvedType().getInternalName();
+
+        visitor.visitTypeInsn(Opcodes.NEW, internalName);
         visitor.visitInsn(Opcodes.DUP);
 
         Type[] paramTypes = new Type[params.size()];
@@ -39,7 +41,7 @@ public class ConstructorCallExpr extends SingleTypedNode implements Expression {
 
         visitor.visitMethodInsn(
             Opcodes.INVOKESPECIAL,
-            getResolvedType().getInternalName(),
+            internalName,
             "<init>",
             methodType.getDescriptor(),
             false
@@ -48,6 +50,6 @@ public class ConstructorCallExpr extends SingleTypedNode implements Expression {
 
     @Override
     public Type expressionType() {
-        return getResolvedType();
+        return getTypeInfo().getResolvedType();
     }
 }

@@ -12,13 +12,13 @@ import me.august.lumen.compile.resolve.type.BasicType;
  */
 public class SingleTypedNode implements TypeInfoProducer {
 
-    private BasicTypeInfo info;
+    protected BasicTypeInfo typeInfo;
 
     public SingleTypedNode(BasicType type) {
-        this.info = new BasicTypeInfo(type);
+        this.typeInfo = new BasicTypeInfo(type);
     }
 
     public BasicTypeInfo getTypeInfo() {
-        return info;
+        return typeInfo;
     }
 }

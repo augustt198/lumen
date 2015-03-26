@@ -81,12 +81,14 @@ public class LumenParser extends ExpressionParser {
     private ClassNode parseClass(ModifierSet modifiers) {
         String name = consume().expectType(IDENTIFIER).getContent();
 
-        TypedNode superClass = new TypedNode(parseSuperclass());
+        BasicType superclass = parseSuperclass();
         String[] interfaces = parseImplementsInterfaces();
 
         expect(L_BRACE);
 
-        ClassNode classNode = new ClassNode(name, superClass, interfaces, modifiers);
+        ClassNode classNode = new ClassNode(
+                name, superclass, interfaces, modifiers
+        );
 
         while (!accept(R_BRACE)) {
             parseMethodOrField(classNode);
@@ -331,6 +333,7 @@ public class LumenParser extends ExpressionParser {
         Expression expr = parseExpression();
         if (!(expr instanceof RangeExpr)) {
             getBuildContext().error("Expected range", false, expr);
+            return null; //unreachable
         }
 
         RangeExpr range = (RangeExpr) expr;

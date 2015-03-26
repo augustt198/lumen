@@ -162,4 +162,12 @@ public class Conversions {
         return null;
     }
 
+    public static MethodData pickMethod(List<Type> types, List<MethodData> methods, ClassLookup lookup)
+            throws AmbiguousMethodException {
+        Type[] typesArr = types.toArray(new Type[types.size()]);
+        MethodData[] methodsArr = methods.toArray(new MethodData[methods.size()]);
+
+        return pickMethod(typesArr, methodsArr, lookup);
+    }
+
 }

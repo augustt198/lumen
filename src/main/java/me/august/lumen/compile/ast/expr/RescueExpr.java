@@ -46,7 +46,8 @@ public class RescueExpr extends SingleTypedNode implements Expression {
         Label end    = new Label();
         Label handle = new Label();
 
-        visitor.visitTryCatchBlock(start, end, handle, getResolvedType().getInternalName());
+        Type type = getTypeInfo().getResolvedType();
+        visitor.visitTryCatchBlock(start, end, handle, type.getInternalName());
 
         visitor.visitLabel(start);
         tryExpression.generate(visitor, context);

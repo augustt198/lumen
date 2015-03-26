@@ -27,12 +27,10 @@ public class RescueParser implements InfixParser {
             catchExpr = parser.parseExpression(getPrecedence());
         }
 
-        RescueExpr expr = new RescueExpr(type, left, catchExpr);
         if (type == null) {
-            expr.setResolvedType(org.objectweb.asm.Type.getType(Exception.class));
+            type = new BasicType("Exception");
         }
-
-        return expr;
+        return new RescueExpr(type, left, catchExpr);
     }
 
     @Override

@@ -5,6 +5,7 @@ import me.august.lumen.compile.ast.expr.*;
 // java pls
 public interface ExpressionVisitor extends ASTVisitor {
 
+    // ew
     @Override
     default void visitExpression(Expression expr) {
         if (expr instanceof OwnedExpr)
@@ -56,6 +57,8 @@ public interface ExpressionVisitor extends ASTVisitor {
             visitAddExpression((AddExpr) expr);
         else if (expr instanceof RelExpr)
             visitRelExpression((RelExpr) expr);
+        else if (expr instanceof InstanceofExpr)
+            visitInstanceofExpression((InstanceofExpr) expr);
         else if (expr instanceof BitXorExpr)
             visitBitXorExpression((BitXorExpr) expr);
         else if (expr instanceof BitOrExpr)
@@ -101,6 +104,7 @@ public interface ExpressionVisitor extends ASTVisitor {
     default void visitShiftExpression(ShiftExpr expr) {}
     default void visitAddExpression(AddExpr expr) {}
     default void visitRelExpression(RelExpr expr) {}
+    default void visitInstanceofExpression(InstanceofExpr expr) {}
     default void visitBitXorExpression(BitXorExpr expr) {}
     default void visitBitOrExpression(BitOrExpr expr) {}
     default void visitMultExpression(MultExpr expr) {}

@@ -37,7 +37,7 @@ public class CastExpr extends SingleTypedNode implements Expression {
         value.generate(visitor, context);
 
         Type orig   = value.expressionType();
-        Type target = getResolvedType();
+        Type target = getTypeInfo().getResolvedType();
 
 
         // ensure orig and target are either both primitive, or both objects

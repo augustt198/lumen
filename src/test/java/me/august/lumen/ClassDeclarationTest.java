@@ -52,7 +52,7 @@ public class ClassDeclarationTest {
 
         ClassNode cls = program.getClassNode();
 
-        String type = cls.getSuperClass().getUnresolvedType().getBaseName();
+        String type = cls.getTypeInfo().getUnresolvedSuperclassType().getBaseName();
         Assert.assertEquals(
                 "Expected class's superclass to be 'Bar'",
                 "Bar", type

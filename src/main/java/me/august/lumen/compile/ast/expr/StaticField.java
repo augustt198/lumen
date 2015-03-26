@@ -21,7 +21,7 @@ public class StaticField extends SingleTypedNode implements VariableExpression {
     }
 
     public String getClassName() {
-        return unresolvedType.getBaseName();
+        return getTypeInfo().getResolvedType().getClassName();
     }
 
     public String getFieldName() {
@@ -42,7 +42,8 @@ public class StaticField extends SingleTypedNode implements VariableExpression {
         if (variableReference != null) return variableReference;
 
         return variableReference = new StaticVariable(
-            getResolvedType().getInternalName(), fieldName, type
+                getTypeInfo().getResolvedType().getInternalName(),
+                fieldName, type
         );
     }
 

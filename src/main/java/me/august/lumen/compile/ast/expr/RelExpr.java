@@ -13,4 +13,7 @@ public class RelExpr extends BinaryExpression {
         this.op = op;
     }
 
+    public Op getOp() {
+        return op;
+    }
 }

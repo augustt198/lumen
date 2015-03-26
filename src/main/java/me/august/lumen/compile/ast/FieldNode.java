@@ -39,7 +39,7 @@ public class FieldNode extends SingleTypedNode implements ClassCodeGen {
     public void generate(ClassVisitor visitor, BuildContext context) {
         // `null, null` represents `signature (generics), value`
         visitor.visitField(
-            modifiers.getValue(), getName(), getResolvedType().getDescriptor(),
+            modifiers.getValue(), getName(), getTypeInfo().getResolvedType().getDescriptor(),
             null, null // signature, value
         );
     }
@@ -48,7 +48,7 @@ public class FieldNode extends SingleTypedNode implements ClassCodeGen {
     public String toString() {
         return "FieldNode{" +
             "name='" + name + '\'' +
-            ", type='" + unresolvedType + '\'' +
+            ", type='" + getTypeInfo() + '\'' +
             ", modifiers=" + modifiers +
             ", defaultValue=" + defaultValue +
             '}';

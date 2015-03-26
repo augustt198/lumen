@@ -28,7 +28,7 @@ public class StaticMethodCall extends SingleTypedNode implements Expression {
     }
 
     public String getClassName() {
-        return unresolvedType.getBaseName();
+        return getTypeInfo().getResolvedType().getClassName();
     }
 
     public String getMethodName() {

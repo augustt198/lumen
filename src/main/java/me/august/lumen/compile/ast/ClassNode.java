@@ -3,8 +3,11 @@ package me.august.lumen.compile.ast;
 import me.august.lumen.common.ModifierSet;
 import me.august.lumen.compile.analyze.ASTVisitor;
 import me.august.lumen.compile.analyze.VisitorConsumer;
+import me.august.lumen.compile.analyze.types.ClassTypeInfo;
+import me.august.lumen.compile.analyze.types.TypeInfo;
 import me.august.lumen.compile.codegen.BuildContext;
 import me.august.lumen.compile.codegen.ClassCodeGen;
+import me.august.lumen.compile.resolve.type.BasicType;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -13,19 +16,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ClassNode implements ClassCodeGen, VisitorConsumer {
+public class ClassNode implements ClassCodeGen, VisitorConsumer, TypeInfoProducer {
 
     private ModifierSet modifiers;
     private String name;
-    private TypedNode superClass;
     private String[] interfaces;
 
     private List<FieldNode> fields = new ArrayList<>();
     private List<MethodNode> methods = new ArrayList<>();
 
-    public ClassNode(String name, TypedNode superClass, String[] interfaces, ModifierSet modifiers) {
+    private ClassTypeInfo typeInfo;
+
+    public ClassNode(String name, BasicType superClass, String[] interfaces, ModifierSet modifiers) {
         this.name       = name;
-        this.superClass = superClass;
+
+        BasicType[] itfs = Arrays.stream(interfaces)
+                .map(BasicType::new)
+                .toArray(s -> new BasicType[interfaces.length]);
+
+        typeInfo = new ClassTypeInfo(superClass, itfs);
         this.interfaces = interfaces;
         this.modifiers  = modifiers;
     }
@@ -37,7 +46,7 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
             modifiers.getValue(),
             name,
             null,
-            superClass.getResolvedType().getInternalName(),
+            typeInfo.getResolvedSuperclassType().getInternalName(),
             interfaces
         );
 
@@ -57,7 +66,7 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
         method.visitVarInsn(Opcodes.ALOAD, 0);
         method.visitMethodInsn(
             Opcodes.INVOKESPECIAL,
-            superClass.getResolvedType().getInternalName(),
+            typeInfo.getResolvedSuperclassType().getInternalName(),
             "<init>", "()V", false
         );
         method.visitInsn(Opcodes.RETURN);
@@ -89,13 +98,13 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
     @Override
     public String toString() {
         return "ClassNode{" +
-            "modifiers=" + modifiers +
-            ", name='" + name + '\'' +
-            ", superClass='" + superClass + '\'' +
-            ", interfaces=" + Arrays.toString(interfaces) +
-            ", fields=" + fields +
-            ", methods=" + methods +
-            '}';
+                "fields=" + fields +
+                ", modifiers=" + modifiers +
+                ", name='" + name + '\'' +
+                ", interfaces=" + Arrays.toString(interfaces) +
+                ", methods=" + methods +
+                ", typeInfo=" + typeInfo +
+                '}';
     }
 
     public List<FieldNode> getFields() {
@@ -114,15 +123,13 @@ public class ClassNode implements ClassCodeGen, VisitorConsumer {
         return name;
     }
 
-    public TypedNode getSuperClass() {
-        return superClass;
-    }
-
     public String[] getInterfaces() {
         return interfaces;
     }
 
-    public void setSuperClass(TypedNode superClass) {
-        this.superClass = superClass;
+    @Override
+    public ClassTypeInfo getTypeInfo() {
+        return typeInfo;
     }
+
 }

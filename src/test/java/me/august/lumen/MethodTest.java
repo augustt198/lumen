@@ -46,7 +46,7 @@ public class MethodTest {
         );
         assertEquals(
                 "Expected variable type to be 'String'",
-                "String", var.getUnresolvedType().getBaseName()
+                "String", var.getTypeInfo().getUnresolvedType().getBaseName()
         );
         assertTrue(
                 "Expected variable to have default value",

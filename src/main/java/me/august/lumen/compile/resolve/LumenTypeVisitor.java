@@ -54,19 +54,21 @@ public class LumenTypeVisitor implements ASTVisitor {
 
         if (expr instanceof StaticField) {
             StaticField stc = (StaticField) expr;
+            Type classType  = stc.getTypeInfo().getResolvedType();
 
-            ClassData cls = deps.lookup(stc.getResolvedType().getClassName());
+            ClassData cls = deps.lookup(classType.getClassName());
             if (cls == null)
-                throw new RuntimeException("Unknown class: " + stc.getResolvedType());
+                throw new RuntimeException("Unknown class: " + classType);
 
             FieldData field = cls.getField(stc.getFieldName());
             stc.setType(field.getType());
         } else if (expr instanceof StaticMethodCall) {
             StaticMethodCall call = (StaticMethodCall) expr;
+            Type classType = call.getTypeInfo().getResolvedType();
 
-            ClassData cls = deps.lookup(call.getResolvedType().getClassName());
+            ClassData cls = deps.lookup(classType.getClassName());
             if (cls == null)
-                throw new RuntimeException("Unknown class: " + call.getResolvedType());
+                throw new RuntimeException("Unknown class: " + classType);
 
             String methodName = call.getMethodName();
             MethodData method = methodForTypes(cls.getMethods(methodName), call.getParameters());
@@ -77,7 +79,7 @@ public class LumenTypeVisitor implements ASTVisitor {
             Type methodType = methodType(method.getReturnType(), call.getParameters());
 
             call.setRef(new MethodReference.Static(
-                call.getResolvedType().getInternalName(), methodName, methodType
+                classType.getInternalName(), methodName, methodType
             ));
         }
 

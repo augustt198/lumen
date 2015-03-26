@@ -1,10 +1,9 @@
 package me.august.lumen.compile.resolve;
 
 import me.august.lumen.compile.analyze.ASTVisitor;
-import me.august.lumen.compile.ast.ClassNode;
-import me.august.lumen.compile.ast.FieldNode;
-import me.august.lumen.compile.ast.MethodNode;
-import me.august.lumen.compile.ast.TypedNode;
+import me.august.lumen.compile.analyze.types.BasicTypeInfo;
+import me.august.lumen.compile.analyze.types.TypeInfo;
+import me.august.lumen.compile.ast.*;
 import me.august.lumen.compile.ast.expr.Expression;
 import me.august.lumen.compile.ast.stmt.VarStmt;
 import me.august.lumen.compile.resolve.type.BasicType;
@@ -13,13 +12,20 @@ import org.objectweb.asm.Type;
 /**
  * A common visitor pattern for all AST nodes associated with a type.
  */
-public abstract class TypeVisitor implements ASTVisitor {
+public class TypeVisitor implements ASTVisitor {
 
-    protected abstract Type resolveType(BasicType unresolved);
+    private TypeResolver resolver;
 
-    public void visitType(TypedNode type) {
-        Type resolved = resolveType(type.getUnresolvedType());
-        type.setResolvedType(resolved);
+    public TypeVisitor(TypeResolver resolver) {
+        this.resolver = resolver;
+    }
+
+    private void visitType(TypeInfo typeInfo) {
+        typeInfo.resolve(resolver);
+    }
+
+    public void visitType(TypeInfoProducer producer) {
+        visitType(producer.getTypeInfo());
     }
 
     @Override
@@ -41,17 +47,13 @@ public abstract class TypeVisitor implements ASTVisitor {
 
     @Override
     public void visitExpression(Expression expr) {
-        if (expr instanceof TypedNode) {
-            TypedNode typedNode = (TypedNode) expr;
-            if (!typedNode.isResolved())
-                visitType((TypedNode) expr);
+        if (expr instanceof TypeInfoProducer) {
+            visitType((TypeInfoProducer) expr);
         }
     }
 
     @Override
     public void visitClass(ClassNode cls) {
-        if (!cls.getSuperClass().isResolved()) {
-            visitType(cls.getSuperClass());
-        }
+        visitType(cls);
     }
 }

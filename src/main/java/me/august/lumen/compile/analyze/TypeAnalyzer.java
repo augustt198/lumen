@@ -7,11 +7,17 @@ import me.august.lumen.compile.resolve.convert.ConversionStrategy;
 import me.august.lumen.compile.resolve.convert.Conversions;
 import me.august.lumen.compile.resolve.convert.types.PrimitiveWidening;
 import me.august.lumen.compile.resolve.convert.types.UnboxingConversion;
+import me.august.lumen.compile.resolve.data.ClassData;
+import me.august.lumen.compile.resolve.data.FieldData;
+import me.august.lumen.compile.resolve.data.MethodData;
+import me.august.lumen.compile.resolve.data.exception.AmbiguousMethodException;
 import me.august.lumen.compile.resolve.lookup.ClassLookup;
 import org.objectweb.asm.Type;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * NOTE: this visitor should be called from
@@ -50,14 +56,6 @@ public class TypeAnalyzer extends ASTAnnotator<Type> implements ExpressionVisito
     @Override
     public void visitFalseExpression(FalseExpr expr) {
         setValue(expr, Type.BOOLEAN_TYPE);
-    }
-
-    @Override
-    public void visitIdentExpression(IdentExpr expr) {
-        if (expr.getOwner() == null) {
-            Type type = expr.getVariableReference().getType();
-            setValue(expr, type);
-        }
     }
 
     @Override
@@ -255,4 +253,206 @@ public class TypeAnalyzer extends ASTAnnotator<Type> implements ExpressionVisito
         setValue(expr, Type.BOOLEAN_TYPE);
     }
 
+    private static final Type BOXED_BOOLEAN_TYPE = Type.getType(Boolean.class);
+
+    private void handleBooleanCondition(Expression expr) {
+        Type type = getValue(expr);
+
+        // boxed boolean
+        if (type.equals(BOXED_BOOLEAN_TYPE)) {
+            ConversionStrategy conversion = new ConversionStrategy();
+            conversion.addStep(new UnboxingConversion(type));
+            conversions.put(expr, conversion);
+            setValue(expr, Type.BOOLEAN_TYPE);
+        }
+    }
+
+    @Override
+    public void visitInstanceofExpression(InstanceofExpr expr) {
+        handleLogicExpression(expr);
+    }
+
+    @Override
+    public void visitArrayInitializerExpression(ArrayInitializerExpr expr) {
+        Type type = expr.getTypeInfo().getResolvedType();
+        setValue(expr, type);
+    }
+
+    @Override
+    public void visitEqExpression(EqExpr expr) {
+        Type lType = getValue(expr.getLeft());
+        Type rType = getValue(expr.getRight());
+        ConversionStrategy lConvert = new ConversionStrategy();
+        ConversionStrategy rConvert = new ConversionStrategy();
+
+        // if left=numeric, right=boxed numeric or vice-versa
+        boolean numeric = true;
+        if (BytecodeUtil.isPrimitive(lType) && BytecodeUtil.isNumericBoxedType(rType)) {
+            Type unboxed = BytecodeUtil.unboxedNumberType(rType);
+            rConvert.addStep(new UnboxingConversion(rType, unboxed));
+            rType = unboxed;
+        } else if (BytecodeUtil.isNumericBoxedType(lType) && BytecodeUtil.isNumeric(rType)) {
+            Type unboxed = BytecodeUtil.unboxedNumberType(lType);
+            lConvert.addStep(new UnboxingConversion(lType, unboxed));
+            lType = unboxed;
+        } else {
+            numeric = false;
+        }
+
+        if (numeric) {
+            int cmp = BytecodeUtil.compareWidth(lType, rType);
+
+            if (cmp > 0) {
+                lConvert.addStep(new PrimitiveWidening(rType, lType));
+            } else if (cmp < 0) {
+                lConvert.addStep(new PrimitiveWidening(lType, rType));
+            }
+        }
+
+        conversions.put(expr.getLeft(), lConvert);
+        conversions.put(expr.getRight(), rConvert);
+
+        handleLogicExpression(expr);
+    }
+
+    @Override
+    public void visitRelExpression(RelExpr expr) {
+        Type lType = getValue(expr.getLeft());
+        Type rType = getValue(expr.getRight());
+        ConversionStrategy lConvert = new ConversionStrategy();
+        ConversionStrategy rConvert = new ConversionStrategy();
+
+        if (BytecodeUtil.isNumericBoxedType(lType)) {
+            Type unboxed = BytecodeUtil.unboxedNumberType(lType);
+            lConvert.addStep(new UnboxingConversion(lType, unboxed));
+            lType = unboxed;
+        }
+        if (BytecodeUtil.isNumericBoxedType(rType)) {
+            Type unboxed = BytecodeUtil.unboxedNumberType(rType);
+            rConvert.addStep(new UnboxingConversion(rType, unboxed));
+            rType = unboxed;
+        }
+
+        if (!BytecodeUtil.isNumeric(lType) || !BytecodeUtil.isNumeric(rType)) {
+            build.error(
+                    "Uncompatible types: " + lType + ", " + rType,
+                    true, expr
+            );
+        }
+
+
+        int cmp = BytecodeUtil.compareWidth(lType, rType);
+        if (cmp > 0) {
+            lConvert.addStep(new PrimitiveWidening(rType, lType));
+        } else if (cmp < 0) {
+            lConvert.addStep(new PrimitiveWidening(lType, rType));
+        }
+
+        conversions.put(expr.getLeft(), lConvert);
+        conversions.put(expr.getRight(), rConvert);
+
+        handleLogicExpression(expr);
+    }
+
+    @Override
+    public void visitOwnedExpression(OwnedExpr expr) {
+        if (expr.getOwner() != null) {
+            visitExpression(expr.getOwner());
+        }
+    }
+
+    @Override
+    public void visitIdentExpression(IdentExpr expr) {
+        if (expr.getOwner() == null) {
+            Type type = expr.getVariableReference().getType();
+            setValue(expr, type);
+        } else {
+            Type ownerType = getValue(expr.getOwner());
+            ClassData data = lookup.lookup(ownerType);
+            if (data == null) {
+                build.error(
+                        "Undefined class: " + ownerType,
+                        true, expr
+                );
+                return; // unreachable
+            }
+
+            FieldData field = data.getField(expr.getIdentifier());
+            if (field == null) {
+                build.error(
+                        "Undefined instance variable: " + expr.getIdentifier(),
+                        true, expr
+                );
+                return; // unreachable
+            }
+
+            setValue(expr, field.getType());
+        }
+    }
+
+    @Override
+    public void visitStaticFieldExpression(StaticField expr) {
+        Type classType = expr.getTypeInfo().getResolvedType();
+        ClassData data = lookup.lookup(classType);
+
+        if (data == null) {
+            build.error(
+                    "Undefined class: " + classType,
+                    true, expr
+            );
+            return; // unreachable
+        }
+
+        FieldData field = data.getField(expr.getFieldName());
+        if (field == null) {
+            build.error(
+                    "Undefined static variable: " + expr.getFieldName(),
+                    true, expr
+            );
+            return; // unreachable
+        }
+
+        setValue(expr, field.getType());
+    }
+
+    @Override
+    public void visitMethodCallExpression(MethodCallExpr expr) {
+        Type ownerType = getValue(expr.getOwner());
+
+        ClassData data = lookup.lookup(ownerType);
+        if (data == null) {
+            build.error(
+                    "Undefined class: " + ownerType,
+                    true, expr
+            );
+            return; // unreachable
+        }
+
+        List<Type> types = expr.getParams()
+                .stream()
+                .map(this::getValue)
+                .collect(Collectors.toList());
+
+        try {
+            MethodData method = Conversions.pickMethod(
+                    types,
+                    data.getMethods(expr.getIdentifier()), lookup
+            );
+
+            setValue(expr, method.getReturnType());
+        } catch (AmbiguousMethodException e) {
+            build.error(
+                    "Ambiguous method call",
+                    true, expr
+            );
+        }
+    }
+
+    @Override
+    public void visitTernaryExpression(TernaryExpr expr) {
+        handleBooleanCondition(expr.getCondition());
+
+        Type retType = getValue(expr.getTrueExpr());
+        setValue(expr, retType);
+    }
 }

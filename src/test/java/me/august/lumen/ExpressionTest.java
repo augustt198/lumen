@@ -1,6 +1,8 @@
 package me.august.lumen;
 
+import me.august.lumen.compile.analyze.TypeAnnotator;
 import me.august.lumen.compile.ast.expr.*;
+import me.august.lumen.compile.resolve.impl.NameResolver;
 import me.august.lumen.compile.resolve.type.BasicType;
 import org.junit.Assert;
 import org.junit.Test;
@@ -75,7 +77,10 @@ public class ExpressionTest {
         );
 
         StaticField field = (StaticField) expr;
-        Assert.assertEquals("Foo", field.getClassName());
+        Assert.assertEquals(
+                "Foo",
+                field.getTypeInfo().getUnresolvedType().getBaseName()
+        );
         Assert.assertEquals("bar", field.getFieldName());
     }
 
@@ -89,7 +94,7 @@ public class ExpressionTest {
         );
 
         StaticMethodCall method = (StaticMethodCall) expr;
-        Assert.assertEquals("Foo", method.getClassName());
+        Assert.assertEquals("Foo", method.getTypeInfo().getUnresolvedType().getBaseName());
         Assert.assertEquals("bar", method.getMethodName());
         Assert.assertTrue(
                 "Method parameters should be empty",
@@ -145,7 +150,7 @@ public class ExpressionTest {
         Assert.assertEquals(
                 "Cast target type should be 'Bar'",
                 "Bar",
-                cast.getUnresolvedType().getBaseName()
+                cast.getTypeInfo().getUnresolvedType().getBaseName()
         );
     }
 
@@ -185,6 +190,7 @@ public class ExpressionTest {
         RescueExpr rescue;
 
         expr = Util.parseExpression("2 / 0 rescue 10");
+        expr.acceptTopDown(new TypeAnnotator(new NameResolver()));
 
         Assert.assertTrue(
                 "Expression should be a RescueExpr",
@@ -193,7 +199,11 @@ public class ExpressionTest {
 
         rescue = (RescueExpr) expr;
 
-        Assert.assertEquals("Expected `Exception` type", Type.getType(Exception.class), rescue.getResolvedType());
+        Assert.assertEquals(
+                "Expected `Exception` type",
+                Type.getType(Exception.class),
+                rescue.getTypeInfo().getResolvedType()
+        );
 
 
         expr = Util.parseExpression("2 / 0 rescue ArithmeticException -> 10");
@@ -209,7 +219,7 @@ public class ExpressionTest {
         Assert.assertEquals(
                 "Expected `ArithmeticException` type",
                 expected,
-                rescue.getUnresolvedType()
+                rescue.getTypeInfo().getUnresolvedType()
         );
     }
 

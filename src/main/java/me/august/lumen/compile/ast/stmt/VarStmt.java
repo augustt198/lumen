@@ -66,7 +66,7 @@ public class VarStmt extends SingleTypedNode implements CodeBlock, VisitorConsum
         // we don't know *where* to store this variable
         if (defaultValue == null || ref == null) return;
 
-        Type type = getResolvedType();
+        Type type = getTypeInfo().getResolvedType();
 
         // get expression value
         defaultValue.generate(visitor, context);

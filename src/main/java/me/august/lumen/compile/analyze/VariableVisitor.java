@@ -45,7 +45,7 @@ public class VariableVisitor implements ASTVisitor {
 
     @Override
     public void visitField(FieldNode field) {
-        Type type = field.getResolvedType();
+        Type type = field.getTypeInfo().getResolvedType();
         scope.setVariable(field.getName(), new ClassVariable(
             className,
             field.getName(),
@@ -61,7 +61,7 @@ public class VariableVisitor implements ASTVisitor {
         int idx = method.isStatic() ? -1 : 0;
         for (Parameter param : method.getParameters()) {
             idx++;
-            Type type = param.getResolvedType();
+            Type type = param.getTypeInfo().getResolvedType();
             scope.setVariable(param.getName(), new LocalVariable(idx, type));
         }
 
@@ -159,7 +159,7 @@ public class VariableVisitor implements ASTVisitor {
 
     @Override
     public void visitVar(VarStmt var) {
-        Type type = var.getResolvedType();
+        Type type = var.getTypeInfo().getResolvedType();
         LocalVariable ref = new LocalVariable(nextLocalIndex(), type);
         scope.setVariable(var.getName(), ref);
         var.setRef(ref);

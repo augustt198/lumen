@@ -46,8 +46,10 @@ public class MethodNode extends SingleTypedNode implements VisitorConsumer, Clas
 
     @Override
     public void generate(ClassVisitor visitor, BuildContext context) {
-        Type returnType   = getResolvedType();
-        Type[] paramTypes = parameters.stream().map(Parameter::getResolvedType).toArray(Type[]::new);
+        Type returnType   = getTypeInfo().getResolvedType();
+        Type[] paramTypes = parameters.stream()
+                .map((p) -> p.getTypeInfo().getResolvedType())
+                .toArray(Type[]::new);
 
             MethodVisitor method = visitor.visitMethod(
                 modifiers.getValue(), name, // access modifier
@@ -58,7 +60,7 @@ public class MethodNode extends SingleTypedNode implements VisitorConsumer, Clas
         method.visitCode();
         body.generate(method, context);
 
-        if (getResolvedType().getSort() == Type.VOID)
+        if (returnType.getSort() == Type.VOID)
             method.visitInsn(Opcodes.RETURN);
 
         // TODO *actually* compute maxs
@@ -68,11 +70,6 @@ public class MethodNode extends SingleTypedNode implements VisitorConsumer, Clas
 
     public boolean isStatic() {
         return modifiers.isStatic();
-    }
-
-    @Override
-    public void setResolvedType(Type resolvedType) {
-        super.setResolvedType(resolvedType == null ? Type.VOID_TYPE : resolvedType);
     }
 
     public List<Parameter> getParameters() {

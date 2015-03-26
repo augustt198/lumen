@@ -1,6 +1,7 @@
 package me.august.lumen.analyze;
 
 import me.august.lumen.common.ModifierSet;
+import me.august.lumen.compile.analyze.TypeAnnotator;
 import me.august.lumen.compile.analyze.VariableAnalyzer;
 import me.august.lumen.compile.analyze.var.ClassVariable;
 import me.august.lumen.compile.analyze.var.LocalVariable;
@@ -37,8 +38,7 @@ public class VariableResolutionTest {
     }
      */
     static {
-        TypedNode supType = new TypedNode(BasicType.OBJECT_TYPE);
-        ClassNode cls = new ClassNode("Foo", supType, new String[0], new ModifierSet());
+        ClassNode cls = new ClassNode("Foo", BasicType.OBJECT_TYPE, new String[0], new ModifierSet());
         PROGRAM = new ProgramNode(new ImportNode[0], cls);
 
         BasicType type;
@@ -65,7 +65,11 @@ public class VariableResolutionTest {
 
     @Test
     public void testVariableResolution() {
-        VariableAnalyzer analyzer = new VariableAnalyzer(new CompileBuildContext());
+        TypeAnnotator typeAnnotator = new TypeAnnotator(new NameResolver());
+        PROGRAM.acceptTopDown(typeAnnotator);
+        VariableAnalyzer analyzer = new VariableAnalyzer(
+                typeAnnotator, new CompileBuildContext()
+        );
         PROGRAM.acceptTopDown(analyzer);
 
         VariableReference var = IDENT_EXPR.getVariableReference();

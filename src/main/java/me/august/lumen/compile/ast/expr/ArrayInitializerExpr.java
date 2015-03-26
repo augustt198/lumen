@@ -42,7 +42,7 @@ public class ArrayInitializerExpr extends SingleTypedNode implements Expression 
 
     @Override
     public Type expressionType() {
-        return getResolvedType();
+        return getTypeInfo().getResolvedType();
     }
 
     @Override

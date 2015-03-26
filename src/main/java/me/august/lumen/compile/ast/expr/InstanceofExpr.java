@@ -23,7 +23,10 @@ public class InstanceofExpr extends SingleTypedNode implements Expression {
     public void generate(MethodVisitor visitor, BuildContext context) {
         value.generate(visitor, context);
 
-        visitor.visitTypeInsn(Opcodes.INSTANCEOF, getResolvedType().getInternalName());
+        visitor.visitTypeInsn(
+                Opcodes.INSTANCEOF,
+                getTypeInfo().getResolvedType().getInternalName()
+        );
     }
 
     @Override
