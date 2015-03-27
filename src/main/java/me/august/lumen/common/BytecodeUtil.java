@@ -164,7 +164,7 @@ public final class BytecodeUtil implements Opcodes {
             case "byte":    return "B";
             case "float":   return "F";
             case "double":  return "D";
-            case "long":    return "L";
+            case "long":    return "J";
             case "char":    return "C";
             case "short":   return "S";
             case "void":    return "V";

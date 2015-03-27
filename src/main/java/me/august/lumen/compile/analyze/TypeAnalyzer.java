@@ -190,6 +190,7 @@ public class TypeAnalyzer extends ASTAnnotator<Type> implements ExpressionVisito
 
         if (conversion.isValid()) {
             conversions.put(expr.getRight(), conversion);
+            setValue(expr, valType);
         } else {
             build.error(
                     "Cannot assign " + valType + " to " + varType,

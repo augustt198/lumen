@@ -7,6 +7,7 @@ import me.august.lumen.compile.codegen.BuildContext;
 import org.objectweb.asm.MethodVisitor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Body implements CodeBlock, VisitorConsumer {
@@ -14,17 +15,16 @@ public class Body implements CodeBlock, VisitorConsumer {
     private List<CodeBlock> children;
 
     public Body() {
-        this(new ArrayList<>());
+        this.children = new ArrayList<>();
     }
 
     public Body(List<CodeBlock> children) {
         this.children = children;
     }
 
-    public Body(CodeBlock child) {
+    public Body(CodeBlock... child) {
         // initialize `children`
-        this();
-        children.add(child);
+        this(new ArrayList<>(Arrays.asList(child)));
     }
 
     public void addCode(CodeBlock code) {

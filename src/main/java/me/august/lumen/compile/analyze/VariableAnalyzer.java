@@ -137,6 +137,10 @@ public class VariableAnalyzer implements ASTVisitor {
     }
 
     private boolean isStaticMethod() {
+        if (scope == null) {
+            return false;
+        }
+
         MethodScope methodScope = (MethodScope) scope.fromType(ScopeType.METHOD);
         return methodScope.getMethod().isStatic();
     }

@@ -46,7 +46,9 @@ public interface Expression extends CodeBlock, VisitorConsumer {
 
         if (this instanceof OwnedExpr) {
             Expression owned = ((OwnedExpr) this).getOwner();
-            owned.acceptBottomUp(visitor);
+            if (owned != null) {
+                owned.acceptBottomUp(visitor);
+            }
         }
 
         visitor.visitExpression(this);

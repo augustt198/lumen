@@ -73,7 +73,6 @@ public class VariableResolutionTest {
         PROGRAM.acceptTopDown(analyzer);
 
         VariableReference var = IDENT_EXPR.getVariableReference();
-        System.out.println("var = " + var);
         Assert.assertTrue(
                 "Expected identifier to be local",
                 var instanceof LocalVariable

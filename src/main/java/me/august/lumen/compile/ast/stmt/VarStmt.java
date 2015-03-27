@@ -56,7 +56,9 @@ public class VarStmt extends SingleTypedNode implements CodeBlock, VisitorConsum
 
     @Override
     public void acceptBottomUp(ASTVisitor visitor) {
-        defaultValue.acceptBottomUp(visitor);
+        if (defaultValue != null) {
+            defaultValue.acceptBottomUp(visitor);
+        }
         visitor.visitVar(this);
     }
 
